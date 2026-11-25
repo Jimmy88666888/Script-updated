@@ -7,9 +7,10 @@
 
 ## 安装 / 更新
 
-在 Tampermonkey 中打开下面任一 `raw` 链接即可安装；已安装的脚本由 Tampermonkey 按 `@version` 自动提示更新。
+在 Tampermonkey 中打开下面任一链接即可安装；已安装的脚本由 Tampermonkey 按 `@version` 自动提示更新。
 
-- 安装入口：`https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/scripts/<文件名>`
+- 电脑端（jsDelivr 镜像）：`https://cdn.jsdelivr.net/gh/Jimmy88666888/edge-userscripts@main/scripts/<文件名>`
+- 手机端（raw 默认）：`https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/scripts/<文件名>`
 - 全部脚本的机器可读清单：[`updates.json`](updates.json)
 
 ## 脚本清单
@@ -18,32 +19,43 @@
 | --- | --- | --- | --- |
 | [AC-baidu 重定向优化](scripts/ac-baidu-search.user.js) | 27.20 | 上游（GreasyFork） | update.greasyfork.org/scripts/14178 |
 | [AdGuard Extra](scripts/adguard-extra.user.js) | 1.1.41 | 上游（AdGuard） | userscripts.adtidy.org/release/adguard-extra |
-| [EdgeDL](scripts/edge-dl.user.js) | 2.3.3-local-float-toggle | 本仓库 | 本地修改版（原 github.com/Chumor/EdgeDL） |
+| [EdgeDL](scripts/edge-dl.user.js) | 2.3.3-local-float-toggle | 本仓库·raw（手机端默认） | 本地修改版（原 github.com/Chumor/EdgeDL） |
 | [GitHub 中文化插件](scripts/github-chinese.user.js) | 1.9.2.4-2026-11-10 | 上游（GreasyFork） | update.greasyfork.org/scripts/435208 |
 | [GitHub 增强 - 高速下载](scripts/github-fast-download.user.js) | 2.6.41 | 上游（GreasyFork） | update.greasyfork.org/scripts/412245 |
 | [Google & baidu Switcher](scripts/google-baidu-switcher.user.js) | 2026.11.07.1 | 上游（GreasyFork） | update.greasyfork.org/scripts/12909 |
-| [HTML5 手机版](scripts/html5-video-mobile.user.js) | 72.09 | 本仓库 | 本地维护 |
-| [HTML5 视频播放工具（增强合并版）](scripts/html5-video-player-merged.user.js) | 2.2.6-merged | 本仓库 | 本地维护 |
-| [LinkSwift 网盘直链下载](scripts/linkswift.user.js) | 1.1.3 | 本仓库 | github.com/hmjz100/LinkSwift |
+| [HTML5 手机版](scripts/html5-video-mobile.user.js) | 72.09 | 本仓库·raw（手机端默认） | 本地维护 |
+| [HTML5 视频播放工具（增强合并版）](scripts/html5-video-player-merged.user.js) | 2.2.6-merged | 本仓库·镜像（已本地化） | 本地维护 |
+| [LinkSwift 网盘直链下载](scripts/linkswift.user.js) | 1.1.3 | 本仓库·镜像 | github.com/hmjz100/LinkSwift |
 | [Pagetual 自动翻页](scripts/pagetual.user.js) | 1.9.37.134 | 上游（GreasyFork） | update.greasyfork.org/scripts/438684 |
 | [redirect 外链跳转](scripts/redirect-external-link.user.js) | 1.67.0 | 上游（GreasyFork） | update.greasyfork.org/scripts/416338 |
 | [Telegram Media Downloader](scripts/telegram-media-downloader.user.js) | 2.01 | 上游（GreasyFork） | update.greasyfork.org/scripts/446342 |
-| [Markdown（原 Universal Post → Markdown）](scripts/universal-post-to-markdown.user.js) | 2.9.5 | 本仓库 | 本地维护 |
-| [视频剧集信息显示](scripts/video-episode-info.user.js) | 6.6 | 本仓库 | 本地维护 |
-| [视频全屏显示时间（全站通用增强版）](scripts/video-fullscreen-clock.user.js) | 0.6.10 | 本仓库 | 本地维护 |
+| [Markdown（原 Universal Post → Markdown）](scripts/universal-post-to-markdown.user.js) | 2.9.5 | 本仓库·镜像 | 本地维护 |
+| [视频剧集信息显示](scripts/video-episode-info.user.js) | 6.6 | 本仓库·镜像 | 本地维护 |
+| [视频全屏显示时间（全站通用增强版）](scripts/video-fullscreen-clock.user.js) | 0.6.10 | 本仓库·镜像 | 本地维护 |
 | [全网VIP视频免费破解去广告](scripts/vip-video-unlock.user.js) | 3.2.1 | 上游（GreasyFork） | update.greasyfork.org/scripts/537189 |
 
 ## 自更新机制
 
-- **本仓库托管更新（7 个）**：脚本头部带两行
+- **电脑端脚本（5 个）走镜像**：`@updateURL` / `@downloadURL` 指向 jsDelivr
+  ```js
+  // @updateURL    https://cdn.jsdelivr.net/gh/Jimmy88666888/edge-userscripts@main/scripts/<文件名>
+  // @downloadURL  https://cdn.jsdelivr.net/gh/Jimmy88666888/edge-userscripts@main/scripts/<文件名>
+  ```
+- **手机端脚本（2 个）保持默认 raw**：
   ```js
   // @updateURL    https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/scripts/<文件名>
   // @downloadURL  https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/scripts/<文件名>
   ```
-  发布新版时只需改动脚本内的 `// @version`，Tampermonkey 下次检查即拉取；其余内容未改动。
+- 两类脚本发布新版时都只需改动脚本内的 `// @version`，Tampermonkey 下次检查即拉取；其余内容未改动。jsDelivr 对 `@main` 分支引用有缓存（约 12 小时），镜像更新会滞后于仓库。
 - **上游托管（9 个）**：保留原作者自己的 `@updateURL`，不抢更新通道；仓库只做镜像，避免让这些脚本失去上游真实更新。
 - **自动同步**：`.github/workflows/sync.yml` 每日 03:17（UTC）运行 `node tools/sync.mjs`，抓取上游 meta 比对 `@version`，发现新版就替换文件、更新 `updates.json` 并提交。也可在 Actions 页面手动 `workflow_dispatch`。
 - **旧版本归档**：被替换的历史版本放在 `archive/<脚本名>/<版本>.user.js`，便于回滚。
+
+## 2026-11-24 更新通道调整
+
+- 电脑端 5 个脚本（HTML5 增强合并版 / LinkSwift / Markdown / 视频剧集信息显示 / 视频全屏显示时间）的 `@updateURL`、`@downloadURL` 改为 jsDelivr 镜像，避开 raw 域名在部分网络不可达的问题。
+- 后加入的手机端 2 个脚本（EdgeDL / HTML5 手机版）保持 raw 默认通道，未改动。
+- 电脑端 HTML5 增强合并版改为**本地脚本身份**：`@namespace` 由 `https://greasyfork.org/users/7036` 换成 `local.edge-userscripts/html5-video-player-merged`，与该脚本在作者侧的更新身份彻底断开；`@homepage` 保留作为来源说明。因 `@name + @namespace` 变化，Tampermonkey 会把它当成新脚本，需重新安装一次。
 
 ## 2026-11-24 合并记录
 

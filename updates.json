@@ -10,6 +10,8 @@
     "upstream": "https://update.greasyfork.org/scripts/14178/AC-baidu-%E9%87%8D%E5%AE%9A%E5%90%91%E4%BC%98%E5%8C%96%E7%99%BE%E5%BA%A6%E6%90%9C%E7%8B%97%E8%B0%B7%E6%AD%8C%E5%BF%85%E5%BA%94%E6%90%9C%E7%B4%A2_favicon_%E5%8F%8C%E5%88%97.meta.js",
     "upstream_install": "https://update.greasyfork.org/scripts/14178/AC-baidu-%E9%87%8D%E5%AE%9A%E5%90%91%E4%BC%98%E5%8C%96%E7%99%BE%E5%BA%A6%E6%90%9C%E7%8B%97%E8%B0%B7%E6%AD%8C%E5%BF%85%E5%BA%94%E6%90%9C%E7%B4%A2_favicon_%E5%8F%8C%E5%88%97.user.js",
     "update_channel": "upstream",
+    "mirror": "",
+    "update_url": "https://update.greasyfork.org/scripts/14178/AC-baidu-%E9%87%8D%E5%AE%9A%E5%90%91%E4%BC%98%E5%8C%96%E7%99%BE%E5%BA%A6%E6%90%9C%E7%8B%97%E8%B0%B7%E6%AD%8C%E5%BF%85%E5%BA%94%E6%90%9C%E7%B4%A2_favicon_%E5%8F%8C%E5%88%97.meta.js",
     "raw": "https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/scripts/ac-baidu-search.user.js",
     "match": []
   },
@@ -24,6 +26,8 @@
     "upstream": "https://userscripts.adtidy.org/release/adguard-extra/1.0/adguard-extra.meta.js",
     "upstream_install": "https://userscripts.adtidy.org/release/adguard-extra/1.0/adguard-extra.user.js",
     "update_channel": "upstream",
+    "mirror": "",
+    "update_url": "https://userscripts.adtidy.org/release/adguard-extra/1.0/adguard-extra.meta.js",
     "raw": "https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/scripts/adguard-extra.user.js",
     "match": [
       "*://*/*"
@@ -40,6 +44,8 @@
     "upstream": "",
     "upstream_install": "",
     "update_channel": "repo",
+    "mirror": "raw",
+    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/scripts/edge-dl.user.js",
     "raw": "https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/scripts/edge-dl.user.js",
     "match": [
       "*://*/*"
@@ -56,6 +62,8 @@
     "upstream": "https://update.greasyfork.org/scripts/435208/GitHub%20%E4%B8%AD%E6%96%87%E5%8C%96%E6%8F%92%E4%BB%B6.meta.js",
     "upstream_install": "https://update.greasyfork.org/scripts/435208/GitHub%20%E4%B8%AD%E6%96%87%E5%8C%96%E6%8F%92%E4%BB%B6.user.js",
     "update_channel": "upstream",
+    "mirror": "",
+    "update_url": "https://update.greasyfork.org/scripts/435208/GitHub%20%E4%B8%AD%E6%96%87%E5%8C%96%E6%8F%92%E4%BB%B6.meta.js",
     "raw": "https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/scripts/github-chinese.user.js",
     "match": [
       "https://github.com/*",
@@ -75,6 +83,8 @@
     "upstream": "https://update.greasyfork.org/scripts/412245/Github%20%E5%A2%9E%E5%BC%BA%20-%20%E9%AB%98%E9%80%9F%E4%B8%8B%E8%BD%BD.meta.js",
     "upstream_install": "https://update.greasyfork.org/scripts/412245/Github%20%E5%A2%9E%E5%BC%BA%20-%20%E9%AB%98%E9%80%9F%E4%B8%8B%E8%BD%BD.user.js",
     "update_channel": "upstream",
+    "mirror": "",
+    "update_url": "https://update.greasyfork.org/scripts/412245/Github%20%E5%A2%9E%E5%BC%BA%20-%20%E9%AB%98%E9%80%9F%E4%B8%8B%E8%BD%BD.meta.js",
     "raw": "https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/scripts/github-fast-download.user.js",
     "match": [
       "*://github.com/*",
@@ -92,6 +102,8 @@
     "upstream": "https://update.greasyfork.org/scripts/12909/%E4%BC%98%E9%9B%85%E7%9A%84%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E5%8A%A9%E6%89%8B.meta.js",
     "upstream_install": "https://update.greasyfork.org/scripts/12909/%E4%BC%98%E9%9B%85%E7%9A%84%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E5%8A%A9%E6%89%8B.user.js",
     "update_channel": "upstream",
+    "mirror": "",
+    "update_url": "https://update.greasyfork.org/scripts/12909/%E4%BC%98%E9%9B%85%E7%9A%84%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E5%8A%A9%E6%89%8B.meta.js",
     "raw": "https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/scripts/google-baidu-switcher.user.js",
     "match": [
       "*://www.baidu.com/*",
@@ -320,6 +332,8 @@
     "upstream": "",
     "upstream_install": "",
     "update_channel": "repo",
+    "mirror": "raw",
+    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/scripts/html5-video-mobile.user.js",
     "raw": "https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/scripts/html5-video-mobile.user.js",
     "match": [
       "http://*/*",
@@ -332,11 +346,13 @@
     "version": "2.2.6-merged",
     "author": "",
     "license": "MIT",
-    "namespace": "https://greasyfork.org/users/7036",
+    "namespace": "local.edge-userscripts/html5-video-player-merged",
     "description": "视频截图；切换画中画；缓存视频；万能网页全屏；自动跳过同名剧集片头片尾；常用快捷键（空格/K 播放暂停、J/L 快退快进10秒、方向键、音量、数字键跳转进度、D/F 帧步进、C/X/Z 变速、R 重置速度、Q 静音、P 截图、I 画中画、M 缓存、N 下一集、回车/Shift+回车/W 全屏、H 快捷键面板）。全站通用，站点增强支持油管、B站、优酷、爱奇艺、腾讯、芒果、斗鱼、虎牙等。",
     "upstream": "",
     "upstream_install": "",
     "update_channel": "repo",
+    "mirror": "jsdelivr",
+    "update_url": "https://cdn.jsdelivr.net/gh/Jimmy88666888/edge-userscripts@main/scripts/html5-video-player-merged.user.js",
     "raw": "https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/scripts/html5-video-player-merged.user.js",
     "match": [
       "*://*/*"
@@ -353,6 +369,8 @@
     "upstream": "",
     "upstream_install": "",
     "update_channel": "repo",
+    "mirror": "jsdelivr",
+    "update_url": "https://cdn.jsdelivr.net/gh/Jimmy88666888/edge-userscripts@main/scripts/linkswift.user.js",
     "raw": "https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/scripts/linkswift.user.js",
     "match": [
       "*://pan.baidu.com/disk/home*",
@@ -407,6 +425,8 @@
     "upstream": "https://update.greasyfork.org/scripts/438684/Pagetual.meta.js",
     "upstream_install": "https://update.greasyfork.org/scripts/438684/Pagetual.user.js",
     "update_channel": "upstream",
+    "mirror": "",
+    "update_url": "https://update.greasyfork.org/scripts/438684/Pagetual.meta.js",
     "raw": "https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/scripts/pagetual.user.js",
     "match": [
       "*://*/*"
@@ -423,6 +443,8 @@
     "upstream": "https://update.greasyfork.org/scripts/416338/redirect%20%E5%A4%96%E9%93%BE%E8%B7%B3%E8%BD%AC.meta.js",
     "upstream_install": "https://update.greasyfork.org/scripts/416338/redirect%20%E5%A4%96%E9%93%BE%E8%B7%B3%E8%BD%AC.user.js",
     "update_channel": "upstream",
+    "mirror": "",
+    "update_url": "https://update.greasyfork.org/scripts/416338/redirect%20%E5%A4%96%E9%93%BE%E8%B7%B3%E8%BD%AC.meta.js",
     "raw": "https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/scripts/redirect-external-link.user.js",
     "match": [
       "*://www.jianshu.com/go-wild*",
@@ -510,6 +532,8 @@
     "upstream": "https://update.greasyfork.org/scripts/446342/Telegram%20Media%20Downloader.meta.js",
     "upstream_install": "https://update.greasyfork.org/scripts/446342/Telegram%20Media%20Downloader.user.js",
     "update_channel": "upstream",
+    "mirror": "",
+    "update_url": "https://update.greasyfork.org/scripts/446342/Telegram%20Media%20Downloader.meta.js",
     "raw": "https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/scripts/telegram-media-downloader.user.js",
     "match": [
       "https://web.telegram.org/*",
@@ -528,6 +552,8 @@
     "upstream": "",
     "upstream_install": "",
     "update_channel": "repo",
+    "mirror": "jsdelivr",
+    "update_url": "https://cdn.jsdelivr.net/gh/Jimmy88666888/edge-userscripts@main/scripts/universal-post-to-markdown.user.js",
     "raw": "https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/scripts/universal-post-to-markdown.user.js",
     "match": [
       "*://x.com/*",
@@ -583,6 +609,8 @@
     "upstream": "",
     "upstream_install": "",
     "update_channel": "repo",
+    "mirror": "jsdelivr",
+    "update_url": "https://cdn.jsdelivr.net/gh/Jimmy88666888/edge-userscripts@main/scripts/video-episode-info.user.js",
     "raw": "https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/scripts/video-episode-info.user.js",
     "match": [
       "*://*/*"
@@ -599,6 +627,8 @@
     "upstream": "",
     "upstream_install": "",
     "update_channel": "repo",
+    "mirror": "jsdelivr",
+    "update_url": "https://cdn.jsdelivr.net/gh/Jimmy88666888/edge-userscripts@main/scripts/video-fullscreen-clock.user.js",
     "raw": "https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/scripts/video-fullscreen-clock.user.js",
     "match": [
       "*://*/*"
@@ -615,6 +645,8 @@
     "upstream": "https://update.greasyfork.org/scripts/537189/%E5%85%A8%E7%BD%91VIP%E8%A7%86%E9%A2%91%E5%85%8D%E8%B4%B9%E7%A0%B4%E8%A7%A3%E5%8E%BB%E5%B9%BF%E5%91%8A%E3%80%90%E6%9C%80%E6%96%B032%E3%80%91.meta.js",
     "upstream_install": "https://update.greasyfork.org/scripts/537189/%E5%85%A8%E7%BD%91VIP%E8%A7%86%E9%A2%91%E5%85%8D%E8%B4%B9%E7%A0%B4%E8%A7%A3%E5%8E%BB%E5%B9%BF%E5%91%8A%E3%80%90%E6%9C%80%E6%96%B032%E3%80%91.user.js",
     "update_channel": "upstream",
+    "mirror": "",
+    "update_url": "https://update.greasyfork.org/scripts/537189/%E5%85%A8%E7%BD%91VIP%E8%A7%86%E9%A2%91%E5%85%8D%E8%B4%B9%E7%A0%B4%E8%A7%A3%E5%8E%BB%E5%B9%BF%E5%91%8A%E3%80%90%E6%9C%80%E6%96%B032%E3%80%91.meta.js",
     "raw": "https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/scripts/vip-video-unlock.user.js",
     "match": []
   }
