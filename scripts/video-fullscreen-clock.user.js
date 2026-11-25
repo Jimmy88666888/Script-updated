@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         视频全屏显示时间（全站通用增强版）
-// @namespace    https://www.medfav.com/webnav/
+// @namespace    local.edge-userscripts/video-fullscreen-clock
 // @version      0.6.11
 // @description  0.6.10 手机端取消窄屏精简格式，与桌面端统一使用完整通用样式（日期/星期/农历等由设置开关控制）
 // @description  0.6.9 更换时钟风格脚本图标；设置菜单新增「显示日期 / 显示星期 / 显示农历 / 隐藏时区名称」开关，可按需精简多时区显示内容（隐藏城市名后只保留时间、日期等实际内容）

@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Markdown
-// @namespace    https://github.com/local/universal-post-md
+// @namespace    local.edge-userscripts/universal-post-to-markdown
 // @version      2.9.6
 // @description  X / Threads / Reddit / Instagram / Facebook / Pinterest / Dailymotion / TikTok / Telegram公开页 导出 MD+图片/视频；FB视频帖MD强化（Edge安卓）
 // @author       local
