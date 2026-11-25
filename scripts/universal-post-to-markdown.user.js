@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         Universal Post → Markdown (本地图片打包)
+// @name         Markdown
 // @namespace    https://github.com/local/universal-post-md
-// @version      2.9.4
+// @version      2.9.5
 // @description  X / Threads / Reddit / Instagram / Facebook / Pinterest / Dailymotion / TikTok / Telegram公开页 导出 MD+图片/视频；FB视频帖MD强化（Edge安卓）
 // @author       local
 // @icon         data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%230ea5e9'/%3E%3Cstop offset='100%25' stop-color='%236366f1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='32' cy='32' r='30' fill='url(%23g)'/%3E%3Cpath fill='%23fff' d='M18 16h10.5c5.2 0 8.5 2.8 8.5 7.2 0 3.2-1.7 5.5-4.4 6.6L38 48h-7.2l-4.6-16.2H24.5V48H18V16zm6.5 6.2v9.2h3.3c2.8 0 4.4-1.4 4.4-3.6s-1.6-3.6-4.4-3.6h-3.3z'/%3E%3Cpath fill='%23fff' opacity='.9' d='M42 28v8h-3.5l4.5 8 4.5-8H44v-8h-2z'/%3E%3C/svg%3E
@@ -50,6 +50,9 @@
 // @grant        GM_xmlhttpRequest
 // @grant        GM_setClipboard
 // @grant        GM_download
+// @grant        GM_getValue
+// @grant        GM_setValue
+// @grant        GM_registerMenuCommand
 // @connect      *
 // @run-at       document-idle
 // @license      MIT
@@ -72,7 +75,7 @@
     else if (/(^|\.)tiktok\.com$/i.test(host)) platform = "tiktok";
     else if (/^(t\.me|telegram\.me)$/i.test(host)) platform = "telegram";
 
-    console.log("[UPMD] v2.9.4 boot", { host, platform, href: location.href, JSZip: typeof JSZip });
+    console.log("[UPMD] v2.9.5 boot", { host, platform, href: location.href, JSZip: typeof JSZip });
 
     GM_addStyle(`
         .upmd-inline-btn, #upmd-fab {
@@ -179,6 +182,8 @@
         <button data-action="web-ytdlnis">📲 YTDLnis App 下载（通用）</button>
         <div style="padding:8px 12px 4px;font-size:11px;color:#94a3b8;user-select:none;border-top:1px solid #1e293b;margin-top:4px">网站（更稳 / 可出 ZIP）</div>
         ${webBtns[platform] || webBtns.generic}
+        <div style="padding:8px 12px 4px;font-size:11px;color:#94a3b8;user-select:none;border-top:1px solid #1e293b;margin-top:4px">设置</div>
+        <button data-action="toggle-fab">${(typeof isFabVisible === "function" ? isFabVisible() : true) ? "👁️ 关闭悬浮按钮" : "👁️ 开启悬浮按钮"}</button>
     `;
         menu.querySelectorAll("button").forEach(bindMenuButton);
     }
@@ -193,6 +198,39 @@
     fab.title = "导出当前页帖子";
     fab.textContent = "📄";
     document.body.appendChild(fab);
+
+    // 悬浮按钮开关（默认开启，写入 GM 存储）
+    const FAB_KEY = "upmd_fab_visible";
+    function isFabVisible() {
+        try {
+            if (typeof GM_getValue === "function") return GM_getValue(FAB_KEY, true) !== false;
+        } catch (_) {}
+        return true;
+    }
+    function setFabVisible(on) {
+        try {
+            if (typeof GM_setValue === "function") GM_setValue(FAB_KEY, !!on);
+        } catch (_) {}
+        fab.style.display = on ? "" : "none";
+        try { rebuildMenu(); } catch (_) {}
+    }
+    function applyFabVisibility() {
+        fab.style.display = isFabVisible() ? "" : "none";
+    }
+    applyFabVisibility();
+    // 函数已就绪，刷新菜单文案（开启/关闭悬浮）
+    rebuildMenu();
+
+    // Tampermonkey 菜单备用开关（悬浮关了也能重新打开）
+    try {
+        if (typeof GM_registerMenuCommand === "function") {
+            GM_registerMenuCommand("开启/关闭悬浮按钮", () => {
+                const next = !isFabVisible();
+                setFabVisible(next);
+                showToast(next ? "已开启悬浮按钮" : "已关闭悬浮按钮", 2500);
+            });
+        }
+    } catch (_) {}
 
     function showToast(msg, ms = 3000) {
         toast.textContent = msg;
@@ -1065,6 +1103,13 @@
         b.addEventListener("click", async () => {
             const action = b.dataset.action;
             menu.classList.remove("show");
+            // 设置类动作：不禁用按钮、不走解析流程
+            if (action === "toggle-fab") {
+                const next = !isFabVisible();
+                setFabVisible(next);
+                showToast(next ? "已开启悬浮按钮" : "已关闭悬浮按钮", 2500);
+                return;
+            }
             b.disabled = true;
             try {
                 // ---- external sites ----

@@ -1,6 +1,6 @@
 # Edge 用户脚本自更新仓库
 
-汇总本机 Edge（Tampermonkey）中在用的用户脚本，共 **13 个**，全部为从浏览器中提取的当前安装版本。仓库承担两件事：
+汇总本机 Edge（Tampermonkey）中在用的用户脚本，共 **16 个**，均为从浏览器导出或提取的实际安装版本。仓库承担两件事：
 
 1. 为**原本没有更新通道**的本地脚本提供 `@updateURL` / `@downloadURL`，让 Tampermonkey 能从这个仓库自动检查并安装新版本。
 2. 为**上游托管**的脚本提供镜像存档，并由 GitHub Actions 每日对比上游 `@version`，有更新时自动提交，保持仓库始终是最新可安装版本。
@@ -18,28 +18,41 @@
 | --- | --- | --- | --- |
 | [AC-baidu 重定向优化](scripts/ac-baidu-search.user.js) | 27.20 | 上游（GreasyFork） | update.greasyfork.org/scripts/14178 |
 | [AdGuard Extra](scripts/adguard-extra.user.js) | 1.1.41 | 上游（AdGuard） | userscripts.adtidy.org/release/adguard-extra |
+| [EdgeDL](scripts/edge-dl.user.js) | 2.3.3-local-float-toggle | 本仓库 | 本地修改版（原 github.com/Chumor/EdgeDL） |
 | [GitHub 中文化插件](scripts/github-chinese.user.js) | 1.9.2.4-2026-11-10 | 上游（GreasyFork） | update.greasyfork.org/scripts/435208 |
 | [GitHub 增强 - 高速下载](scripts/github-fast-download.user.js) | 2.6.41 | 上游（GreasyFork） | update.greasyfork.org/scripts/412245 |
 | [Google & baidu Switcher](scripts/google-baidu-switcher.user.js) | 2026.11.07.1 | 上游（GreasyFork） | update.greasyfork.org/scripts/12909 |
+| [HTML5 手机版](scripts/html5-video-mobile.user.js) | 72.09 | 本仓库 | 本地维护 |
 | [HTML5 视频播放工具（增强合并版）](scripts/html5-video-player-merged.user.js) | 2.2.6-merged | 本仓库 | 本地维护 |
 | [LinkSwift 网盘直链下载](scripts/linkswift.user.js) | 1.1.3 | 本仓库 | github.com/hmjz100/LinkSwift |
 | [Pagetual 自动翻页](scripts/pagetual.user.js) | 1.9.37.134 | 上游（GreasyFork） | update.greasyfork.org/scripts/438684 |
 | [redirect 外链跳转](scripts/redirect-external-link.user.js) | 1.67.0 | 上游（GreasyFork） | update.greasyfork.org/scripts/416338 |
 | [Telegram Media Downloader](scripts/telegram-media-downloader.user.js) | 2.01 | 上游（GreasyFork） | update.greasyfork.org/scripts/446342 |
-| [Universal Post → Markdown](scripts/universal-post-to-markdown.user.js) | 2.9.4 | 本仓库 | 本地维护 |
-| [视频全屏显示时间（全站通用增强版）](scripts/video-fullscreen-clock.user.js) | 0.6.10 | 本仓库 | 本地维护 |
+| [Markdown（原 Universal Post → Markdown）](scripts/universal-post-to-markdown.user.js) | 2.9.5 | 本仓库 | 本地维护 |
 | [视频剧集信息显示](scripts/video-episode-info.user.js) | 6.6 | 本仓库 | 本地维护 |
+| [视频全屏显示时间（全站通用增强版）](scripts/video-fullscreen-clock.user.js) | 0.6.10 | 本仓库 | 本地维护 |
+| [全网VIP视频免费破解去广告](scripts/vip-video-unlock.user.js) | 3.2.1 | 上游（GreasyFork） | update.greasyfork.org/scripts/537189 |
 
 ## 自更新机制
 
-- **本仓库托管更新（5 个）**：脚本头部新增两行
+- **本仓库托管更新（7 个）**：脚本头部带两行
   ```js
   // @updateURL    https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/scripts/<文件名>
   // @downloadURL  https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/scripts/<文件名>
   ```
   发布新版时只需改动脚本内的 `// @version`，Tampermonkey 下次检查即拉取；其余内容未改动。
-- **上游托管（8 个）**：保留原作者自己的 `@updateURL`，不抢更新通道；仓库只做镜像，避免让这些脚本失去上游真实更新。
+- **上游托管（9 个）**：保留原作者自己的 `@updateURL`，不抢更新通道；仓库只做镜像，避免让这些脚本失去上游真实更新。
 - **自动同步**：`.github/workflows/sync.yml` 每日 03:17（UTC）运行 `node tools/sync.mjs`，抓取上游 meta 比对 `@version`，发现新版就替换文件、更新 `updates.json` 并提交。也可在 Actions 页面手动 `workflow_dispatch`。
+- **旧版本归档**：被替换的历史版本放在 `archive/<脚本名>/<版本>.user.js`，便于回滚。
+
+## 2026-11-24 合并记录
+
+从 `tampermonkey_scripts.zip` 导出包并入：
+
+- 新增 3 个：EdgeDL `2.3.3-local-float-toggle`、HTML5 手机版 `72.09`、全网VIP视频免费破解去广告 `3.2.1`。
+- 升级 1 个：Universal Post → Markdown `2.9.4` → `Markdown 2.9.5`，旧版归档至 `archive/universal-post-to-markdown/2.9.4.user.js`。
+- 3 个脚本在导出包中版本更旧，保留仓库现有版本：AdGuard Extra（1.1.41 > 1.1.38）、GitHub 中文化插件（2026-11-10 > 2026-10）、Google & baidu Switcher（2026.11.07.1 > 2026.10.03.1）。
+- 其余 8 个脚本版本与内容一致，未改动。
 
 ## 本地维护
 

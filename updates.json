@@ -30,6 +30,22 @@
     ]
   },
   {
+    "file": "scripts/edge-dl.user.js",
+    "name": "EdgeDL",
+    "version": "2.3.3-local-float-toggle",
+    "author": "Chumor (local fix)",
+    "license": "Apache-2.0",
+    "namespace": "https://github.com/Chumor/EdgeDL",
+    "description": "让 Android Edge 支持调用外部下载器接管下载任务（标题/图片/VLC/YTDLnis + 敏感页排除 + 复制链接）+ 图片悬浮下载。本地修复版：可开关悬浮按钮，避免包裹搜索结果/favicon等小图标",
+    "upstream": "",
+    "upstream_install": "",
+    "update_channel": "repo",
+    "raw": "https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/scripts/edge-dl.user.js",
+    "match": [
+      "*://*/*"
+    ]
+  },
+  {
     "file": "scripts/github-chinese.user.js",
     "name": "GitHub 中文化插件",
     "version": "1.9.2.4-2026-11-10",
@@ -294,6 +310,23 @@
     ]
   },
   {
+    "file": "scripts/html5-video-mobile.user.js",
+    "name": "HTML5手机版",
+    "version": "72.09",
+    "author": "Gemini & 仙",
+    "license": "MIT",
+    "namespace": "http://tampermonkey.net/",
+    "description": "集多家之长的手机浏览器触摸手势插件（已合并画中画增强，收紧敏感页嗅探）",
+    "upstream": "",
+    "upstream_install": "",
+    "update_channel": "repo",
+    "raw": "https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/scripts/html5-video-mobile.user.js",
+    "match": [
+      "http://*/*",
+      "https://*/*"
+    ]
+  },
+  {
     "file": "scripts/html5-video-player-merged.user.js",
     "name": "HTML5视频播放工具（增强合并版）",
     "version": "2.2.6-merged",
@@ -317,8 +350,8 @@
     "license": "AGPL-3.0-or-later",
     "namespace": "github.com/hmjz100",
     "description": "(｡>ᴗ•)✧《也许同类型中最好用？》系列 - 一个基于 JavaScript 的网盘文件下载地址获取工具✨，基于【网盘直链下载助手】修改 | 支持 百度网盘 / 阿里云盘 / 中国移动云盘 / 天翼云盘 / 迅雷云盘 / 夸克网盘 / UC网盘 / 123云盘 八大网盘 | 开源・自用・去广 | 改界面・添功能・修Bug | 既超越原版，亦是同类中最好用版本！👋",
-    "upstream": "https://github.com/hmjz100/LinkSwift/raw/main/%EF%BC%88%E6%94%B9%EF%BC%89%E7%BD%91%E7%9B%98%E7%9B%B4%E9%93%BE%E4%B8%8B%E8%BD%BD%E5%8A%A9%E6%89%8B.user.js",
-    "upstream_install": "https://github.com/hmjz100/LinkSwift/raw/main/%EF%BC%88%E6%94%B9%EF%BC%89%E7%BD%91%E7%9B%98%E7%9B%B4%E9%93%BE%E4%B8%8B%E8%BD%BD%E5%8A%A9%E6%89%8B.user.js",
+    "upstream": "",
+    "upstream_install": "",
     "update_channel": "repo",
     "raw": "https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/scripts/linkswift.user.js",
     "match": [
@@ -486,8 +519,8 @@
   },
   {
     "file": "scripts/universal-post-to-markdown.user.js",
-    "name": "Universal Post → Markdown (本地图片打包)",
-    "version": "2.9.4",
+    "name": "Markdown",
+    "version": "2.9.5",
     "author": "local",
     "license": "MIT",
     "namespace": "https://github.com/local/universal-post-md",
@@ -570,5 +603,19 @@
     "match": [
       "*://*/*"
     ]
+  },
+  {
+    "file": "scripts/vip-video-unlock.user.js",
+    "name": "全网VIP视频免费破解去广告【最新3.2】",
+    "version": "3.2.1",
+    "author": "茉灵智库：https://blog.88lin.eu.org/article/46",
+    "license": "GPL-3.0 License",
+    "namespace": "http://tampermonkey.net/",
+    "description": "全网VIP视频免费破解去广告，适配PC+移动，全网VIP视频解析：爱奇艺、腾讯、优酷、bilibili等视频免费解析！🔥真4K高清🔥【脚本长期维护更新，完全免费，无广告，仅限学习交流！！】",
+    "upstream": "https://update.greasyfork.org/scripts/537189/%E5%85%A8%E7%BD%91VIP%E8%A7%86%E9%A2%91%E5%85%8D%E8%B4%B9%E7%A0%B4%E8%A7%A3%E5%8E%BB%E5%B9%BF%E5%91%8A%E3%80%90%E6%9C%80%E6%96%B032%E3%80%91.meta.js",
+    "upstream_install": "https://update.greasyfork.org/scripts/537189/%E5%85%A8%E7%BD%91VIP%E8%A7%86%E9%A2%91%E5%85%8D%E8%B4%B9%E7%A0%B4%E8%A7%A3%E5%8E%BB%E5%B9%BF%E5%91%8A%E3%80%90%E6%9C%80%E6%96%B032%E3%80%91.user.js",
+    "update_channel": "upstream",
+    "raw": "https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/scripts/vip-video-unlock.user.js",
+    "match": []
   }
 ]
