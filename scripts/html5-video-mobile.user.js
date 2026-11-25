@@ -5,7 +5,7 @@
 // @name:en      HTML5 Video Gestures
 // @name:ja      HTML5ビデオジェスチャー
 // @name:ko      HTML5 비디오 제스처
-// @namespace    http://tampermonkey.net/
+// @namespace    local.edge-userscripts/html5-video-mobile
 // @version      72.09
 // @description  集多家之长的手机浏览器触摸手势插件（已合并画中画增强，收紧敏感页嗅探）
 // @description:zh-CN 集多家之长的手机浏览器触摸手势插件（已合并画中画增强，收紧敏感页嗅探）

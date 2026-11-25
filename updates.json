@@ -327,7 +327,7 @@
     "version": "72.09",
     "author": "Gemini & 仙",
     "license": "MIT",
-    "namespace": "http://tampermonkey.net/",
+    "namespace": "local.edge-userscripts/html5-video-mobile",
     "description": "集多家之长的手机浏览器触摸手势插件（已合并画中画增强，收紧敏感页嗅探）",
     "upstream": "",
     "upstream_install": "",
