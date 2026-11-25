@@ -343,7 +343,7 @@
   {
     "file": "scripts/html5-video-player-merged.user.js",
     "name": "HTML5视频播放工具（增强合并版）",
-    "version": "2.2.6-merged",
+    "version": "2.2.7-merged",
     "author": "",
     "license": "MIT",
     "namespace": "local.edge-userscripts/html5-video-player-merged",
@@ -361,7 +361,7 @@
   {
     "file": "scripts/linkswift.user.js",
     "name": "LinkSwift",
-    "version": "1.1.3",
+    "version": "1.1.4",
     "author": "Hmjz100、油小猴",
     "license": "AGPL-3.0-or-later",
     "namespace": "github.com/hmjz100",
@@ -544,7 +544,7 @@
   {
     "file": "scripts/universal-post-to-markdown.user.js",
     "name": "Markdown",
-    "version": "2.9.5",
+    "version": "2.9.6",
     "author": "local",
     "license": "MIT",
     "namespace": "https://github.com/local/universal-post-md",
@@ -601,7 +601,7 @@
   {
     "file": "scripts/video-episode-info.user.js",
     "name": "视频剧集信息显示",
-    "version": "6.6",
+    "version": "6.6.1",
     "author": "You",
     "license": "",
     "namespace": "http://tampermonkey.net/",
@@ -619,7 +619,7 @@
   {
     "file": "scripts/video-fullscreen-clock.user.js",
     "name": "视频全屏显示时间（全站通用增强版）",
-    "version": "0.6.10",
+    "version": "0.6.11",
     "author": "medfav",
     "license": "GPLv3",
     "namespace": "https://www.medfav.com/webnav/",

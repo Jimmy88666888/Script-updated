@@ -24,14 +24,14 @@
 | [GitHub 增强 - 高速下载](scripts/github-fast-download.user.js) | 2.6.41 | 上游（GreasyFork） | update.greasyfork.org/scripts/412245 |
 | [Google & baidu Switcher](scripts/google-baidu-switcher.user.js) | 2026.11.07.1 | 上游（GreasyFork） | update.greasyfork.org/scripts/12909 |
 | [HTML5 手机版](scripts/html5-video-mobile.user.js) | 72.09 | 本仓库·raw（手机端默认） | 本地维护 |
-| [HTML5 视频播放工具（增强合并版）](scripts/html5-video-player-merged.user.js) | 2.2.6-merged | 本仓库·镜像（已本地化） | 本地维护 |
-| [LinkSwift 网盘直链下载](scripts/linkswift.user.js) | 1.1.3 | 本仓库·镜像 | github.com/hmjz100/LinkSwift |
+| [HTML5 视频播放工具（增强合并版）](scripts/html5-video-player-merged.user.js) | 2.2.7-merged | 本仓库·镜像（已本地化） | 本地维护 |
+| [LinkSwift 网盘直链下载](scripts/linkswift.user.js) | 1.1.4 | 本仓库·镜像 | github.com/hmjz100/LinkSwift |
 | [Pagetual 自动翻页](scripts/pagetual.user.js) | 1.9.37.134 | 上游（GreasyFork） | update.greasyfork.org/scripts/438684 |
 | [redirect 外链跳转](scripts/redirect-external-link.user.js) | 1.67.0 | 上游（GreasyFork） | update.greasyfork.org/scripts/416338 |
 | [Telegram Media Downloader](scripts/telegram-media-downloader.user.js) | 2.01 | 上游（GreasyFork） | update.greasyfork.org/scripts/446342 |
-| [Markdown（原 Universal Post → Markdown）](scripts/universal-post-to-markdown.user.js) | 2.9.5 | 本仓库·镜像 | 本地维护 |
-| [视频剧集信息显示](scripts/video-episode-info.user.js) | 6.6 | 本仓库·镜像 | 本地维护 |
-| [视频全屏显示时间（全站通用增强版）](scripts/video-fullscreen-clock.user.js) | 0.6.10 | 本仓库·镜像 | 本地维护 |
+| [Markdown（原 Universal Post → Markdown）](scripts/universal-post-to-markdown.user.js) | 2.9.6 | 本仓库·镜像 | 本地维护 |
+| [视频剧集信息显示](scripts/video-episode-info.user.js) | 6.6.1 | 本仓库·镜像 | 本地维护 |
+| [视频全屏显示时间（全站通用增强版）](scripts/video-fullscreen-clock.user.js) | 0.6.11 | 本仓库·镜像 | 本地维护 |
 | [全网VIP视频免费破解去广告](scripts/vip-video-unlock.user.js) | 3.2.1 | 上游（GreasyFork） | update.greasyfork.org/scripts/537189 |
 
 ## 自更新机制
@@ -55,6 +55,7 @@
 
 - 电脑端 5 个脚本（HTML5 增强合并版 / LinkSwift / Markdown / 视频剧集信息显示 / 视频全屏显示时间）的 `@updateURL`、`@downloadURL` 改为 jsDelivr 镜像，避开 raw 域名在部分网络不可达的问题。
 - 后加入的手机端 2 个脚本（EdgeDL / HTML5 手机版）保持 raw 默认通道，未改动。
+- 5 个电脑端脚本各 +1 补丁版本，便于已安装副本收到新通道：`2.2.6-merged → 2.2.7-merged`、`1.1.3 → 1.1.4`、`2.9.5 → 2.9.6`、`6.6 → 6.6.1`、`0.6.10 → 0.6.11`。
 - 电脑端 HTML5 增强合并版改为**本地脚本身份**：`@namespace` 由 `https://greasyfork.org/users/7036` 换成 `local.edge-userscripts/html5-video-player-merged`，与该脚本在作者侧的更新身份彻底断开；`@homepage` 保留作为来源说明。因 `@name + @namespace` 变化，Tampermonkey 会把它当成新脚本，需重新安装一次。
 
 ## 2026-11-24 合并记录
