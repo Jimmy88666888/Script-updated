@@ -18,8 +18,8 @@
 // @match        https://webk.telegram.org/*
 // @match        https://webz.telegram.org/*
 // @icon         https://img.icons8.com/color/452/telegram-app--v5.png
-// @downloadURL https://update.greasyfork.org/scripts/446342/Telegram%20Media%20Downloader.user.js
-// @updateURL https://update.greasyfork.org/scripts/446342/Telegram%20Media%20Downloader.meta.js
+// @downloadURL  https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/mobile/telegram-media-downloader.user.js
+// @updateURL    https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/mobile/telegram-media-downloader.user.js
 // ==/UserScript==
 
 

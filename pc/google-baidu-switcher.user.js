@@ -268,8 +268,8 @@
 // @license            GPL-3.0-only
 // @copyright          2015-2026, F9y4ng
 // @run-at             document-start
-// @downloadURL https://update.greasyfork.org/scripts/12909/%E4%BC%98%E9%9B%85%E7%9A%84%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E5%8A%A9%E6%89%8B.user.js
-// @updateURL https://update.greasyfork.org/scripts/12909/%E4%BC%98%E9%9B%85%E7%9A%84%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E5%8A%A9%E6%89%8B.meta.js
+// @downloadURL  https://cdn.jsdelivr.net/gh/Jimmy88666888/edge-userscripts@main/pc/google-baidu-switcher.user.js
+// @updateURL    https://cdn.jsdelivr.net/gh/Jimmy88666888/edge-userscripts@main/pc/google-baidu-switcher.user.js
 // ==/UserScript==
 
 /* jshint esversion: 11 */

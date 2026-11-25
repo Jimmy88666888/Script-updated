@@ -83,8 +83,8 @@
 // @compatible   chrome Latest
 // @compatible   firefox Latest
 // @compatible   edge Latest
-// @downloadURL https://update.greasyfork.org/scripts/416338/redirect%20%E5%A4%96%E9%93%BE%E8%B7%B3%E8%BD%AC.user.js
-// @updateURL https://update.greasyfork.org/scripts/416338/redirect%20%E5%A4%96%E9%93%BE%E8%B7%B3%E8%BD%AC.meta.js
+// @downloadURL  https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/mobile/redirect-external-link.user.js
+// @updateURL    https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/mobile/redirect-external-link.user.js
 // ==/UserScript==
 
 (function() {
