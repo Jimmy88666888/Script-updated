@@ -221,7 +221,7 @@ function Invoke-Sync {
             $guard++
             $st.Pending = $false
 
-            # 先摄取收件箱，再归档旧版，然后提交
+            # 先摄取收件箱（新脚本入仓），再归档旧版，然后提交
             Ingest-Inbox
             Archive-OldVersions
 
@@ -233,6 +233,8 @@ function Invoke-Sync {
             # diff --cached --quiet 返回 0 表示暂存区无变化
             $diff = RunGit @('diff', '--cached', '--quiet')
             if ($diff.Code -eq 0) {
+                # 无新提交也要清理：上一轮推成功的文件可能因当时网络问题没删
+                Purge-VerifiedInbox
                 Write-Log ('工作区无变化，无需提交，触发原因 ' + $Reason)
                 break
             }
