@@ -210,13 +210,18 @@ function Push-Only {
 }
 
 function Find-WatcherProcess {
-    # 进程号文件可能因目录权限写不进去，再用命令行特征兜底识别已有监控进程
+    # 进程号文件可能因目录权限写不进去，再用命令行特征兜底。
+    # 必须限定为解释器进程本身且以 -File 方式启动本脚本，否则任何提到该字符串的
+    # 查询命令都会被误判为监控进程，停止操作时会误杀无关进程。
     $found = Get-RunningPid
-    if ($found) { return @($found) }
     $ids = @()
+    if ($found) { $ids += [int]$found }
+    $marker = '-File "' + (Join-Path $RepoPath 'auto-push.ps1') + '" -Mode watch'
     foreach ($x in @(Get-CimInstance Win32_Process -ErrorAction SilentlyContinue |
-        Where-Object { $_.CommandLine -like '*auto-push.ps1*' -and $_.CommandLine -like '*-Mode watch*' -and $_.CommandLine -like ('*' + $RepoPath + '*') })) {
-        $ids += [int]$x.ProcessId
+        Where-Object { $_.ProcessName -match '^(pwsh|powershell)(\.exe)?$' -and $_.CommandLine -like ('*' + $marker + '*') })) {
+        $pid_ = [int]$x.ProcessId
+        if ($pid_ -eq $PID) { continue }
+        if ($ids -notcontains $pid_) { $ids += $pid_ }
     }
     return ,$ids
 }
