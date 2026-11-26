@@ -305,6 +305,8 @@ function Invoke-Sync {
     finally {
         $st.LastSync = [datetime]::Now
         $st.Syncing = $false
+        # 本轮结束统一核验清理：推送成功的原件被删，未推上的自动保留待下轮
+        Purge-VerifiedInbox
     }
 }
 
@@ -326,6 +328,7 @@ function Test-Repo {
         return $false
     }
     Ensure-Ignore
+    Ensure-Inbox
     $head = RunGit @('rev-parse', '--verify', 'HEAD')
     if ($head.Code -ne 0) {
         $null = RunGit @('commit', '--allow-empty', '-m', ('init: userscript repo ' + (Get-Date -Format 'yyyy-MM-dd HH:mm:ss')))
