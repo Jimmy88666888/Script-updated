@@ -39,7 +39,8 @@ $env:GCM_GUI_PROMPT = 'never'
 
 $RepoPath = (Resolve-Path -LiteralPath $RepoPath).Path
 $LogFile = Join-Path $RepoPath 'auto-push.log'
-$PidFile = Join-Path $RepoPath '.auto-push.pid'
+# 进程号文件放系统临时目录：不污染仓库，也不受仓库目录权限限制
+$PidFile = Join-Path $env:TEMP 'qwen-autopush-userscripts.pid'
 $TaskName = 'QwenAutoPushUserscripts'
 
 # 全局状态：跨 runspace 与事件回调用同一个同步哈希表
@@ -155,11 +156,24 @@ function Invoke-Sync {
     }
 }
 
+function Ensure-Ignore {
+    $gi = Join-Path $RepoPath '.gitignore'
+    $need = @('auto-push.log', '.auto-push.pid')
+    $have = @()
+    if (Test-Path -LiteralPath $gi) { $have = @(Get-Content -LiteralPath $gi -Encoding UTF8 -ErrorAction SilentlyContinue | ForEach-Object { [string]$_ }) }
+    $add = @($need | Where-Object { $have -notcontains $_ })
+    if ($add.Count -gt 0) {
+        $body = "`n# auto-push daemon`n" + ($add -join "`n") + "`n"
+        try { Add-Content -LiteralPath $gi -Value $body -Encoding UTF8 } catch { }
+    }
+}
+
 function Test-Repo {
     if (-not (Test-Path -LiteralPath (Join-Path $RepoPath '.git'))) {
         Write-Log ('目标目录不是 git 仓库：' + $RepoPath) 'ERROR'
         return $false
     }
+    Ensure-Ignore
     $head = RunGit @('rev-parse', '--verify', 'HEAD')
     if ($head.Code -ne 0) {
         $null = RunGit @('commit', '--allow-empty', '-m', ('init: userscript repo ' + (Get-Date -Format 'yyyy-MM-dd HH:mm:ss')))
@@ -249,14 +263,29 @@ switch ($Mode) {
         $self = $PSCommandPath
         $childArgs = '-NoProfile -ExecutionPolicy Bypass -File "' + $self + '" -Mode watch -RepoPath "' + $RepoPath + '" -Branch "' + $Branch + '" -RemoteName "' + $RemoteName + '" -DebounceSeconds ' + $DebounceSeconds
         if ($NoPush) { $childArgs = $childArgs + ' -NoPush' }
-        $proc = Start-Process -FilePath 'powershell.exe' -ArgumentList $childArgs -WindowStyle Hidden -PassThru
+        # 本机 PowerShell 5.1 在扫描脚本时会崩溃，优先用 PowerShell 7 常驻
+        $shell = 'powershell.exe'
+        $pwsh = Get-Command pwsh -ErrorAction SilentlyContinue
+        if ($pwsh) { $shell = $pwsh.Source }
+        $proc = Start-Process -FilePath $shell -ArgumentList $childArgs -WindowStyle Hidden -PassThru
         Set-Content -LiteralPath $PidFile -Value $proc.Id -Encoding ASCII
         Write-Host ('后台监控已启动，进程号 ' + $proc.Id)
     }
     'stop' {
         $existing = Get-RunningPid
         if (-not $existing) {
-            Write-Host '当前没有正在运行的监控'
+            # 进程号文件缺失时，按命令行特征兜底查找本目录的监控进程
+            $left = @(Get-CimInstance Win32_Process -ErrorAction SilentlyContinue |
+                Where-Object { $_.CommandLine -like '*auto-push.ps1*-Mode watch*' -and $_.CommandLine -like ('*' + $RepoPath + '*') })
+            if ($left.Count -eq 0) {
+                Write-Host '当前没有正在运行的监控'
+                break
+            }
+            foreach ($x in $left) {
+                Stop-Process -Id $x.ProcessId -Force -ErrorAction SilentlyContinue
+                Write-Host ('监控已停止，进程号 ' + $x.ProcessId)
+            }
+            Remove-Item -LiteralPath $PidFile -Force -ErrorAction SilentlyContinue
             break
         }
         Stop-Process -Id $existing -Force -ErrorAction SilentlyContinue
@@ -267,7 +296,10 @@ switch ($Mode) {
         if (-not (Test-Repo)) { break }
         $sch = Join-Path $env:SystemRoot 'System32\schtasks.exe'
         $self = $PSCommandPath
-        $inner = 'powershell.exe -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "' + $self + '" -Mode watch -RepoPath "' + $RepoPath + '" -Branch "' + $Branch + '" -RemoteName "' + $RemoteName + '" -DebounceSeconds ' + $DebounceSeconds
+        $shell = 'powershell.exe'
+        $pwsh = Get-Command pwsh -ErrorAction SilentlyContinue
+        if ($pwsh) { $shell = '"' + $pwsh.Source + '"' }
+        $inner = $shell + ' -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "' + $self + '" -Mode watch -RepoPath "' + $RepoPath + '" -Branch "' + $Branch + '" -RemoteName "' + $RemoteName + '" -DebounceSeconds ' + $DebounceSeconds
         $null = & $sch /Delete /TN $TaskName /F 2>&1
         $null = & $sch /Create /TN $TaskName /SC ONLOGON /RL LIMITED /TR ('"' + $inner + '"') /F 2>&1
         if ($LASTEXITCODE -eq 0) { Write-Host '已注册开机自动监控，登录后自动启动' }
