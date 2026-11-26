@@ -194,6 +194,18 @@ function Get-ShellPath {
     return 'powershell.exe'
 }
 
+function Find-WatcherProcess {
+    # 进程号文件可能因目录权限写不进去，再用命令行特征兜底识别已有监控进程
+    $found = Get-RunningPid
+    if ($found) { return @($found) }
+    $ids = @()
+    foreach ($x in @(Get-CimInstance Win32_Process -ErrorAction SilentlyContinue |
+        Where-Object { $_.CommandLine -like '*auto-push.ps1*' -and $_.CommandLine -like '*-Mode watch*' -and $_.CommandLine -like ('*' + $RepoPath + '*') })) {
+        $ids += [int]$x.ProcessId
+    }
+    return ,$ids
+}
+
 function Get-RunningPid {
     if (-not (Test-Path -LiteralPath $PidFile)) { return $null }
     $text = (Get-Content -LiteralPath $PidFile -ErrorAction SilentlyContinue | Select-Object -First 1)
@@ -269,10 +281,10 @@ switch ($Mode) {
         # 幂等保活：计划任务反复调用安全。
         # 监控没跑就拉起来；已在跑则顺手补一次同步（网络恢复后自动补齐漏推的提交）
         if (-not (Test-Repo)) { break }
-        $existing = Get-RunningPid
-        if ($existing) {
+        $running = Find-WatcherProcess
+        if ($running.Count -gt 0) {
             Invoke-Sync 'keepalive'
-            Write-Host ('监控运行中，已补做一次同步，进程号 ' + $existing)
+            Write-Host ('监控运行中，已补做一次同步，进程号 ' + ($running -join ','))
             break
         }
         $self = $PSCommandPath
@@ -296,47 +308,48 @@ switch ($Mode) {
         $self = $PSCommandPath
         $childArgs = '-NoProfile -ExecutionPolicy Bypass -File "' + $self + '" -Mode watch -RepoPath "' + $RepoPath + '" -Branch "' + $Branch + '" -RemoteName "' + $RemoteName + '" -DebounceSeconds ' + $DebounceSeconds
         if ($NoPush) { $childArgs = $childArgs + ' -NoPush' }
-        # 本机 PowerShell 5.1 在扫描脚本时会崩溃，优先用 PowerShell 7 常驻
-        $shell = 'powershell.exe'
-        $pwsh = Get-Command pwsh -ErrorAction SilentlyContinue
-        if ($pwsh) { $shell = $pwsh.Source }
-        $proc = Start-Process -FilePath $shell -ArgumentList $childArgs -WindowStyle Hidden -PassThru
+        $proc = Start-Process -FilePath (Get-ShellPath) -ArgumentList $childArgs -WindowStyle Hidden -PassThru
         Set-Content -LiteralPath $PidFile -Value $proc.Id -Encoding ASCII
         Write-Host ('后台监控已启动，进程号 ' + $proc.Id)
     }
     'stop' {
-        $existing = Get-RunningPid
-        if (-not $existing) {
-            # 进程号文件缺失时，按命令行特征兜底查找本目录的监控进程
-            $left = @(Get-CimInstance Win32_Process -ErrorAction SilentlyContinue |
-                Where-Object { $_.CommandLine -like '*auto-push.ps1*-Mode watch*' -and $_.CommandLine -like ('*' + $RepoPath + '*') })
-            if ($left.Count -eq 0) {
-                Write-Host '当前没有正在运行的监控'
-                break
-            }
-            foreach ($x in $left) {
-                Stop-Process -Id $x.ProcessId -Force -ErrorAction SilentlyContinue
-                Write-Host ('监控已停止，进程号 ' + $x.ProcessId)
-            }
-            Remove-Item -LiteralPath $PidFile -Force -ErrorAction SilentlyContinue
+        $left = Find-WatcherProcess
+        if ($left.Count -eq 0) {
+            Write-Host '当前没有正在运行的监控'
             break
         }
-        Stop-Process -Id $existing -Force -ErrorAction SilentlyContinue
+        foreach ($x in $left) {
+            Stop-Process -Id $x -Force -ErrorAction SilentlyContinue
+            Write-Host ('监控已停止，进程号 ' + $x)
+        }
         Remove-Item -LiteralPath $PidFile -Force -ErrorAction SilentlyContinue
-        Write-Host ('监控已停止，进程号 ' + $existing)
     }
     'autostart' {
         if (-not (Test-Repo)) { break }
         $sch = Join-Path $env:SystemRoot 'System32\schtasks.exe'
         $self = $PSCommandPath
-        $shell = 'powershell.exe'
-        $pwsh = Get-Command pwsh -ErrorAction SilentlyContinue
-        if ($pwsh) { $shell = '"' + $pwsh.Source + '"' }
-        $inner = $shell + ' -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "' + $self + '" -Mode watch -RepoPath "' + $RepoPath + '" -Branch "' + $Branch + '" -RemoteName "' + $RemoteName + '" -DebounceSeconds ' + $DebounceSeconds
+        $shell = Get-ShellPath
+        # 计划任务只负责“确保有监控在跑”，具体参数沿用脚本默认值，命令行更短更稳
+        $inner = '"' + $shell + '" -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "' + $self + '" -Mode ensure'
         $null = & $sch /Delete /TN $TaskName /F 2>&1
-        $null = & $sch /Create /TN $TaskName /SC ONLOGON /RL LIMITED /TR ('"' + $inner + '"') /F 2>&1
-        if ($LASTEXITCODE -eq 0) { Write-Host '已注册开机自动监控，登录后自动启动' }
-        else { Write-Host '注册计划任务失败，可改用 start 手动启动' }
+        $null = & $sch /Delete /TN ($TaskName + 'KeepAlive') /F 2>&1
+        # 触发器一：登录即启动监控
+        $null = & $sch /Create /TN $TaskName /SC ONLOGON /RL LIMITED /TR $inner /F 2>&1
+        $loginOk = ($LASTEXITCODE -eq 0)
+        # 触发器二：每 5 分钟保活一次，崩溃或断网后能自动恢复并补推
+        $null = & $sch /Create /TN ($TaskName + 'KeepAlive') /SC MINUTE /MO 5 /RL LIMITED /TR $inner /F 2>&1
+        $aliveOk = ($LASTEXITCODE -eq 0)
+        Write-Host ('启动解释器：' + $shell)
+        if ($loginOk) { Write-Host '已注册登录自启任务' } else { Write-Host '登录自启任务注册失败' }
+        if ($aliveOk) { Write-Host '已注册 5 分钟保活任务（可自动恢复并补推）' } else { Write-Host '保活任务注册失败' }
+    }
+    'unautostart' {
+        $sch = Join-Path $env:SystemRoot 'System32\schtasks.exe'
+        $a = (& $sch /Delete /TN $TaskName /F 2>&1); $codeA = $LASTEXITCODE
+        $b = (& $sch /Delete /TN ($TaskName + 'KeepAlive') /F 2>&1); $codeB = $LASTEXITCODE
+        if ($codeA -eq 0 -or $codeB -eq 0) { Write-Host '已移除开机自启与保活任务' }
+        else { Write-Host '未发现开机自启任务' }
+    }
     }
     'unautostart' {
         $sch = Join-Path $env:SystemRoot 'System32\schtasks.exe'
