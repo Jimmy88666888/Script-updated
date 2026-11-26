@@ -20,7 +20,7 @@
 #>
 [CmdletBinding()]
 param(
-    [ValidateSet('start', 'stop', 'status', 'sync', 'watch', 'autostart', 'unautostart')]
+    [ValidateSet('start', 'stop', 'status', 'sync', 'watch', 'ensure', 'autostart', 'unautostart')]
     [string]$Mode = 'status',
     [string]$RepoPath = 'D:\script',
     [string]$Branch = 'main',
@@ -182,6 +182,18 @@ function Test-Repo {
     return $true
 }
 
+function Get-ShellPath {
+    # 本机 PowerShell 5.1 在扫描脚本内容时会崩溃，必须优先用 PowerShell 7
+    $pwsh = Get-Command pwsh -ErrorAction SilentlyContinue
+    if ($pwsh) { return $pwsh.Source }
+    foreach ($c in @("$env:ProgramFiles\PowerShell\7\pwsh.exe",
+                     "$env:ProgramFiles\PowerShell\7-preview\pwsh.exe",
+                     "$env:LOCALAPPDATA\Programs\PowerShell\7\pwsh.exe")) {
+        if (Test-Path -LiteralPath $c) { return $c }
+    }
+    return 'powershell.exe'
+}
+
 function Get-RunningPid {
     if (-not (Test-Path -LiteralPath $PidFile)) { return $null }
     $text = (Get-Content -LiteralPath $PidFile -ErrorAction SilentlyContinue | Select-Object -First 1)
@@ -252,6 +264,27 @@ switch ($Mode) {
     }
     'watch' {
         if (Test-Repo) { Start-Watcher }
+    }
+    'ensure' {
+        # 幂等保活：计划任务反复调用安全。
+        # 监控没跑就拉起来；已在跑则顺手补一次同步（网络恢复后自动补齐漏推的提交）
+        if (-not (Test-Repo)) { break }
+        $existing = Get-RunningPid
+        if ($existing) {
+            Invoke-Sync 'keepalive'
+            Write-Host ('监控运行中，已补做一次同步，进程号 ' + $existing)
+            break
+        }
+        $self = $PSCommandPath
+        $childArgs = '-NoProfile -ExecutionPolicy Bypass -File "' + $self + '" -Mode watch -RepoPath "' + $RepoPath + '" -Branch "' + $Branch + '" -RemoteName "' + $RemoteName + '" -DebounceSeconds ' + $DebounceSeconds
+        if ($NoPush) { $childArgs = $childArgs + ' -NoPush' }
+        $proc = Start-Process -FilePath (Get-ShellPath) -ArgumentList $childArgs -WindowStyle Hidden -PassThru
+        if ($proc) {
+            Set-Content -LiteralPath $PidFile -Value $proc.Id -Encoding ASCII -ErrorAction SilentlyContinue
+            Write-Host ('监控已拉起，进程号 ' + $proc.Id)
+        } else {
+            Write-Host '监控拉起失败'
+        }
     }
     'start' {
         if (-not (Test-Repo)) { break }
