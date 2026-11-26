@@ -23,6 +23,7 @@ param(
     [ValidateSet('start', 'stop', 'status', 'sync', 'watch', 'ensure', 'autostart', 'unautostart')]
     [string]$Mode = 'status',
     [string]$RepoPath = 'D:\script',
+    [string]$InboxPath = 'D:\脚本收件箱',
     [string]$Branch = 'main',
     [string]$RemoteName = 'origin',
     [int]$DebounceSeconds = 8,
