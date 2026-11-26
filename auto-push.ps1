@@ -184,7 +184,9 @@ function Ingest-Inbox {
     }
 }
 
-# 清理：收件箱原件只有在“仓库副本 == 远端副本”字节级核验通过后才删除
+# 清理：收件箱原件只有在“远端已保存完全相同内容”时才删除。
+# 判据用收件箱文件自身的哈希对比远端 blob——若用户刚放入更新版而它还没推上去，
+# 两者不一致，绝不删除，杜绝“本地删了但新版没上传”的数据丢失。
 function Purge-VerifiedInbox {
     if (-not (Test-Path -LiteralPath $InboxPath)) { return }
     $ref = RunGit @('rev-parse', '--verify', ('refs/remotes/' + $RemoteName + '/' + $Branch))
@@ -192,14 +194,14 @@ function Purge-VerifiedInbox {
     foreach ($f in @(Get-ChildItem -LiteralPath $InboxPath -File -Force -ErrorAction SilentlyContinue)) {
         if ($f.Name -notlike '*.js') { continue }
         if (([datetime]::Now - $f.LastWriteTime).TotalSeconds -lt 5) { continue }
-        $remoteBlob = RunGit @('rev-parse', ($RemoteName + '/' + $Branch + ':' + $f.Name))
-        if ($remoteBlob.Code -ne 0) { continue }          # 远端没有这个文件：未上传，保留
-        $localBlob = RunGit @('hash-object', '--', ('.\' + $f.Name))
-        if ($localBlob.Code -ne 0) { continue }           # 仓库工作区没有：保留
-        if ($localBlob.Out[0].Trim() -ne $remoteBlob.Out[0].Trim()) { continue }  # 与远端不一致：保留
+        $remoteHash = RunGit @('rev-parse', ($RemoteName + '/' + $Branch + ':' + $f.Name))
+        if ($remoteHash.Code -ne 0) { continue }          # 远端没有这个文件：未上传，保留
+        $inboxBlob = RunGit @('hash-object', '--', $f.FullName)
+        if ($inboxBlob.Code -ne 0) { continue }
+        if ($inboxBlob.Out[0].Trim() -ne $remoteHash.Out[0].Trim()) { continue }  # 远端内容不同：保留
         try {
             Remove-Item -LiteralPath $f.FullName -Force
-            Write-Log ('上传核验通过，收件箱原件已删除：' + $f.Name)
+            Write-Log ('远端核验一致，收件箱原件已删除：' + $f.Name)
         } catch {
             Write-Log ('原件删除失败（不影响已推送内容）：' + $f.Name + ' ' + $_.Exception.Message) 'WARN'
         }
@@ -233,8 +235,6 @@ function Invoke-Sync {
             # diff --cached --quiet 返回 0 表示暂存区无变化
             $diff = RunGit @('diff', '--cached', '--quiet')
             if ($diff.Code -eq 0) {
-                # 无新提交也要清理：上一轮推成功的文件可能因当时网络问题没删
-                Purge-VerifiedInbox
                 Write-Log ('工作区无变化，无需提交，触发原因 ' + $Reason)
                 break
             }
@@ -339,6 +339,7 @@ function Push-Only {
     $push = RunGit @('push', $RemoteName, ('HEAD:' + $Branch))
     if ($push.Code -eq 0) {
         Write-Log '保活补推成功，漏推的提交已同步到 GitHub'
+        Purge-VerifiedInbox
     } else {
         Write-Log ('补推未成功（网络或远端变化）：' + (($push.Out | Select-Object -Last 1))) 'WARN'
     }
