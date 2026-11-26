@@ -194,6 +194,21 @@ function Get-ShellPath {
     return 'powershell.exe'
 }
 
+function Push-Only {
+    # 保活补推：只做 push，不碰工作区与暂存区，避免和监控进程争抢 git 索引锁
+    if ($NoPush) { return }
+    $url = RunGitOk @('remote', 'get-url', $RemoteName)
+    if (-not $url) { return }
+    $ahead = RunGit @('rev-list', '--count', ($RemoteName + '/' + $Branch + '..HEAD'))
+    if ($ahead.Code -eq 0 -and $ahead.Out[0] -eq '0') { return }
+    $push = RunGit @('push', $RemoteName, ('HEAD:' + $Branch))
+    if ($push.Code -eq 0) {
+        Write-Log '保活补推成功，漏推的提交已同步到 GitHub'
+    } else {
+        Write-Log ('补推未成功（网络或远端变化）：' + (($push.Out | Select-Object -Last 1))) 'WARN'
+    }
+}
+
 function Find-WatcherProcess {
     # 进程号文件可能因目录权限写不进去，再用命令行特征兜底识别已有监控进程
     $found = Get-RunningPid
@@ -283,8 +298,8 @@ switch ($Mode) {
         if (-not (Test-Repo)) { break }
         $running = Find-WatcherProcess
         if ($running.Count -gt 0) {
-            Invoke-Sync 'keepalive'
-            Write-Host ('监控运行中，已补做一次同步，进程号 ' + ($running -join ','))
+            Push-Only
+            Write-Host ('监控运行中，进程号 ' + ($running -join ','))
             break
         }
         $self = $PSCommandPath
