@@ -300,9 +300,9 @@ switch ($Mode) {
     }
     'start' {
         if (-not (Test-Repo)) { break }
-        $existing = Get-RunningPid
-        if ($existing) {
-            Write-Host ('监控已在运行，进程号 ' + $existing)
+        $existing = Find-WatcherProcess
+        if ($existing.Count -gt 0) {
+            Write-Host ('监控已在运行，进程号 ' + ($existing -join ','))
             break
         }
         $self = $PSCommandPath
@@ -350,16 +350,9 @@ switch ($Mode) {
         if ($codeA -eq 0 -or $codeB -eq 0) { Write-Host '已移除开机自启与保活任务' }
         else { Write-Host '未发现开机自启任务' }
     }
-    }
-    'unautostart' {
-        $sch = Join-Path $env:SystemRoot 'System32\schtasks.exe'
-        $null = & $sch /Delete /TN $TaskName /F 2>&1
-        if ($LASTEXITCODE -eq 0) { Write-Host '已移除开机自动监控任务' }
-        else { Write-Host '未发现开机自动监控任务' }
-    }
     'status' {
-        $running = Get-RunningPid
-        if ($running) { Write-Host ('监控状态：运行中，进程号 ' + $running) }
+        $running = Find-WatcherProcess
+        if ($running.Count -gt 0) { Write-Host ('监控状态：运行中，进程号 ' + ($running -join ',')) }
         else { Write-Host '监控状态：未运行' }
         Write-Host ('仓库目录：' + $RepoPath)
         if (Test-Path -LiteralPath (Join-Path $RepoPath '.git')) {
