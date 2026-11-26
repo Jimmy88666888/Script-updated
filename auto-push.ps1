@@ -334,6 +334,8 @@ function Push-Only {
     if ($NoPush) { return }
     $url = RunGitOk @('remote', 'get-url', $RemoteName)
     if (-not $url) { return }
+    # 无论有没有待推提交，都先清理此前推送成功但没删掉的收件箱原件
+    Purge-VerifiedInbox
     $ahead = RunGit @('rev-list', '--count', ($RemoteName + '/' + $Branch + '..HEAD'))
     if ($ahead.Code -eq 0 -and $ahead.Out[0] -eq '0') { return }
     $push = RunGit @('push', $RemoteName, ('HEAD:' + $Branch))
