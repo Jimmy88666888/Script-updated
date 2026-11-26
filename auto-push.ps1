@@ -168,21 +168,74 @@ function Ensure-Inbox {
     }
 }
 
+# LocalSend / 蓝牙 / 网盘在收到重名文件时会自动改名成 xxx (1).user.js、xxx-2.user.js、xxx-副本.user.js。
+# 这类文件往往是同一脚本的重复送达，直接摄取会在仓库里造出第二个“不同名”的脚本。
+# 这里把带尾缀的名字归一化回主名，供摄取环节做同内容去重。
+function Get-NormalizedInboxName {
+    param([string]$Name)
+    $stem = $Name -replace '\.user\.js$', ''
+    $changed = $true
+    while ($changed) {
+        $before = $stem
+        $stem = $stem -replace '\s*[（(]\s*(?:\d+|[一二三四五六七八九十]+)\s*[)）]\s*$', ''
+        $stem = $stem -replace '[-_ ](?:copy|副本|冲突文件|已接收|来自)\S*$', ''
+        $stem = $stem -replace '[-_ ]\d{1,3}$', ''
+        $changed = ($stem -ne $before)
+    }
+    if (-not $stem) { return $Name }
+    return ($stem + '.user.js')
+}
+
 function Ingest-Inbox {
     if (-not (Test-Path -LiteralPath $InboxPath)) {
         try { New-Item -ItemType Directory -Path $InboxPath -Force | Out-Null } catch { return }
     }
-    foreach ($f in @(Get-ChildItem -LiteralPath $InboxPath -File -Force -ErrorAction SilentlyContinue)) {
-        if ($f.Name -notlike '*.js') { 
+    # 先收集快照再处理，避免边遍历边删
+    $files = @(Get-ChildItem -LiteralPath $InboxPath -File -Force -ErrorAction SilentlyContinue |
+               Where-Object { ([datetime]::Now - $_.LastWriteTime).TotalSeconds -ge 5 })
+    foreach ($f in $files) {
+        if ($f.Name -notlike '*.js') {
             Write-Log ('收件箱内有非脚本文件，已跳过（保留原件）：' + $f.Name) 'WARN'
             continue
         }
+
+        # 归一化目标名：重名送达的副本合并到主名
+        $target = Get-NormalizedInboxName $f.Name
+        if ($target -ne $f.Name) {
+            $main = Join-Path $InboxPath $target
+            if (Test-Path -LiteralPath $main) {
+                # 收件箱里已有主名版本：谁新用谁，旧的一律当重复吃掉
+                $mainItem = Get-Item -LiteralPath $main
+                if ($f.LastWriteTime -le $mainItem.LastWriteTime) {
+                    Remove-Item -LiteralPath $f.FullName -Force -ErrorAction SilentlyContinue
+                    Write-Log ('重复送达已合并（较旧）：' + $f.Name + ' -> 保留 ' + $target)
+                } else {
+                    Move-Item -LiteralPath $f.FullName -Destination $main -Force
+                    Write-Log ('重复送达已合并（较新）：' + $f.Name + ' -> 替换 ' + $target)
+                }
+                continue
+            }
+            # 主名不在收件箱：可能已在仓库。同内容就静默吃掉；
+            # 不同内容则这是“改过名重新投递”的真实升版，改名后继续摄取。
+            $repoFile = Join-Path $RepoPath $target
+            if (Test-Path -LiteralPath $repoFile) {
+                $a = RunGit @('hash-object', '--', $f.FullName)
+                $b = RunGit @('hash-object', '--', $repoFile)
+                if ($a.Code -eq 0 -and $b.Code -eq 0 -and $a.Out[0] -eq $b.Out[0]) {
+                    Remove-Item -LiteralPath $f.FullName -Force -ErrorAction SilentlyContinue
+                    Write-Log ('与仓库现有内容相同的重复送达，已清理：' + $f.Name)
+                    continue
+                }
+            }
+            Move-Item -LiteralPath $f.FullName -Destination $repoFile -Force
+            Write-Log ('已按主名摄取：' + $f.Name + ' -> ' + $target)
+            continue
+        }
+
         if ($IngestBlacklist -contains $f.Name) {
             Write-Log ('收件箱文件与仓库关键文件同名，拒绝摄取：' + $f.Name) 'WARN'
             continue
         }
-        # 只摄取 5 秒内没有再变动的文件，避免复制写了一半的内容
-        if (([datetime]::Now - $f.LastWriteTime).TotalSeconds -lt 5) { continue }
 
         $dest = Join-Path $RepoPath $f.Name
         $same = $false
