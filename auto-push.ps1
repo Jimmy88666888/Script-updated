@@ -620,6 +620,21 @@ switch ($Mode) {
         if ($running.Count -gt 0) { Write-Host ('监控状态：运行中，进程号 ' + ($running -join ',')) }
         else { Write-Host '监控状态：未运行' }
         Write-Host ('仓库目录：' + $RepoPath)
+        Write-Host ('收件箱目录：' + $InboxPath)
+        if (Test-Path -LiteralPath $InboxPath) {
+            $inboxFiles = @(Get-ChildItem -LiteralPath $InboxPath -File -Force -ErrorAction SilentlyContinue)
+            $jsCount = @($inboxFiles | Where-Object { $_.Name -like '*.js' }).Count
+            $otherCount = $inboxFiles.Count - $jsCount
+            $state = '空闲'
+            if ($jsCount -gt 0) {
+                $state = '有 ' + $jsCount + ' 个脚本待处理'
+                if ($otherCount -gt 0) { $state = $state + '（另有 ' + $otherCount + ' 个非脚本文件被搁置）' }
+            } elseif ($otherCount -gt 0) { $state = '有 ' + $otherCount + ' 个非脚本文件被搁置' }
+            Write-Host ('收件箱：' + $state)
+            foreach ($q in @($inboxFiles | Where-Object { $_.Name -like '*.js' } | Select-Object -First 6)) {
+                Write-Host ('  待处理 - ' + $q.Name + '（' + $q.Length + ' B，' + $q.LastWriteTime.ToString('MM-dd HH:mm') + '）')
+            }
+        }
         if (Test-Path -LiteralPath (Join-Path $RepoPath '.git')) {
             $url = RunGitOk @('remote', 'get-url', $RemoteName)
             if ($url) { Write-Host ('远程仓库：' + $url.Out[0]) } else { Write-Host '远程仓库：未配置' }
