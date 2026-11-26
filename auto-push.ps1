@@ -353,21 +353,42 @@ switch ($Mode) {
         $inner = '"' + $shell + '" -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "' + $self + '" -Mode ensure'
         $null = & $sch /Delete /TN $TaskName /F 2>&1
         $null = & $sch /Delete /TN ($TaskName + 'KeepAlive') /F 2>&1
-        # 触发器一：登录即启动监控
+        # 触发器一：登录即启动监控（登录型任务在某些权限配置下会被拒绝）
         $null = & $sch /Create /TN $TaskName /SC ONLOGON /RL LIMITED /TR $inner /F 2>&1
         $loginOk = ($LASTEXITCODE -eq 0)
         # 触发器二：每 5 分钟保活一次，崩溃或断网后能自动恢复并补推
         $null = & $sch /Create /TN ($TaskName + 'KeepAlive') /SC MINUTE /MO 5 /RL LIMITED /TR $inner /F 2>&1
         $aliveOk = ($LASTEXITCODE -eq 0)
         Write-Host ('启动解释器：' + $shell)
-        if ($loginOk) { Write-Host '已注册登录自启任务' } else { Write-Host '登录自启任务注册失败' }
-        if ($aliveOk) { Write-Host '已注册 5 分钟保活任务（可自动恢复并补推）' } else { Write-Host '保活任务注册失败' }
+        if ($loginOk) { Write-Host '已注册登录即启动任务' }
+        else { Write-Host '登录即启动任务被系统拒绝，改用启动文件夹兜底' }
+        if ($aliveOk) { Write-Host '已注册 5 分钟保活任务（自动恢复并补推）' }
+        else { Write-Host '保活任务注册失败' }
+
+        # 启动文件夹：不需要管理员权限，登录后立即拉起，和保活任务互为备份
+        $startupDir = [Environment]::GetFolderPath('Startup')
+        $vbs = Join-Path $startupDir 'QwenAutoPushUserscripts.vbs'
+        $cmdLine = '"' + $shell + '" -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "' + $self + '" -Mode ensure'
+        $vbsQuoted = '"' + ($cmdLine -replace '"', '""') + '"'
+        $vbsBody = "Set sh = CreateObject(`"WScript.Shell`")`r`n" + "sh.Run " + $vbsQuoted + ", 0, False`r`n"
+        try {
+            Set-Content -LiteralPath $vbs -Value $vbsBody -Encoding ASCII
+            Write-Host ('已写入登录启动项：' + $vbs)
+        } catch {
+            Write-Host ('写入启动项失败：' + $_.Exception.Message)
+        }
     }
     'unautostart' {
         $sch = Join-Path $env:SystemRoot 'System32\schtasks.exe'
         $a = (& $sch /Delete /TN $TaskName /F 2>&1); $codeA = $LASTEXITCODE
         $b = (& $sch /Delete /TN ($TaskName + 'KeepAlive') /F 2>&1); $codeB = $LASTEXITCODE
-        if ($codeA -eq 0 -or $codeB -eq 0) { Write-Host '已移除开机自启与保活任务' }
+        $vbs = Join-Path ([Environment]::GetFolderPath('Startup')) 'QwenAutoPushUserscripts.vbs'
+        $removedVbs = $false
+        if (Test-Path -LiteralPath $vbs) {
+            Remove-Item -LiteralPath $vbs -Force -ErrorAction SilentlyContinue
+            $removedVbs = -not (Test-Path -LiteralPath $vbs)
+        }
+        if ($codeA -eq 0 -or $codeB -eq 0 -or $removedVbs) { Write-Host '已移除开机自启与保活任务' }
         else { Write-Host '未发现开机自启任务' }
     }
     'status' {
