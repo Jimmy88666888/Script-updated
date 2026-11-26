@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              LinkSwift 手机版
 // @namespace         github.com/Jimmy88666888/LinkSwift-Mobile
-// @version           1.1.4-mobile
+// @version           1.1.5-mobile
 // @updateURL         https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/LinkSwift-Mobile/LinkSwift.user.js
 // @downloadURL       https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/LinkSwift-Mobile/LinkSwift.user.js
 // @author            Hmjz100、油小猴
