@@ -1,13 +1,13 @@
 # Edge 用户脚本自更新仓库
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Install page](https://img.shields.io/badge/install-page-2ea44f)](https://jimmy88666888.github.io/edge-userscripts/)
+[![Install page](https://img.shields.io/badge/install-page-2ea44f)](https://jimmy88666888.github.io/Script-updated/)
 
 16 个用户脚本，每个脚本拆成 **电脑端 / 手机端两份独立文件**：`pc/` 走 jsDelivr 镜像，`mobile/` 走 raw 默认，共 32 个脚本文件。两份互不影响，各自按本平台通道检查更新。
 
 ## 快速安装
 
-**方式一：在线安装页（推荐分享给他人）** → <https://jimmy88666888.github.io/edge-userscripts/>
+**方式一：在线安装页（推荐分享给他人）** → <https://jimmy88666888.github.io/Script-updated/>
 
 每张卡片都有「电脑端安装」和「手机端安装」两个按钮，按设备点对应那个即可。
 
@@ -15,31 +15,31 @@
 
 **方式三：从文件导入** —— 打开 `pc/` 或 `mobile/` 目录，点进 `.user.js` → 右上 **Raw** → 另存为 `.user.js`，再到 Tampermonkey 管理面板「实用工具 → 从文件导入」。
 
-- 仓库地址：https://github.com/Jimmy88666888/edge-userscripts
-- 电脑端镜像基址：`https://cdn.jsdelivr.net/gh/Jimmy88666888/edge-userscripts@main/pc/<文件名>`
-- 手机端 raw 基址：`https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/mobile/<文件名>`
+- 仓库地址：https://github.com/Jimmy88666888/Script-updated/tree/main/edge-userscripts
+- 电脑端镜像基址：`https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/edge-userscripts/pc/<文件名>`
+- 手机端 raw 基址：`https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/<文件名>`
 - 机器可读清单：[`updates.json`](updates.json)（32 条记录，含平台、通道、原始来源）
 
 ## 脚本清单
 
 | 脚本 | 版本 | 类型 | 电脑端安装 | 手机端安装 | 原始来源 |
 | --- | --- | --- | --- | --- | --- |
-| [AC-baidu-重定向优化百度搜狗谷歌必应搜索_favicon_双列](pc/ac-baidu-search.user.js) | 27.20 | 上游镜像 | [电脑端](https://cdn.jsdelivr.net/gh/Jimmy88666888/edge-userscripts@main/pc/ac-baidu-search.user.js) | [手机端](https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/mobile/ac-baidu-search.user.js) | update.greasyfork.org/scripts/14178/AC-baidu-%E9%87%8D%E5%AE%9A%E5%90%91%E4%BC%98%E5%8C%96%E7%99%BE%E5%BA%A6%E6%90%9C%E7%8B%97%E8%B0%B7%E6%AD%8C%E5%BF%85%E5%BA%94%E6%90%9C%E7%B4%A2_favicon_%E5%8F%8C%E5%88%97.meta.js |
-| [AdGuard Extra](pc/adguard-extra.user.js) | 1.1.41 | 上游镜像 | [电脑端](https://cdn.jsdelivr.net/gh/Jimmy88666888/edge-userscripts@main/pc/adguard-extra.user.js) | [手机端](https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/mobile/adguard-extra.user.js) | userscripts.adtidy.org/release/adguard-extra/1.0/adguard-extra.meta.js |
-| [EdgeDL](pc/edge-dl.user.js) | 2.3.3-local-float-toggle | 本地·本地化 | [电脑端](https://cdn.jsdelivr.net/gh/Jimmy88666888/edge-userscripts@main/pc/edge-dl.user.js) | [手机端](https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/mobile/edge-dl.user.js) | 本地维护 |
-| [Github Enhancement - High Speed Download](pc/github-fast-download.user.js) | 2.6.41 | 上游镜像 | [电脑端](https://cdn.jsdelivr.net/gh/Jimmy88666888/edge-userscripts@main/pc/github-fast-download.user.js) | [手机端](https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/mobile/github-fast-download.user.js) | update.greasyfork.org/scripts/412245/Github%20%E5%A2%9E%E5%BC%BA%20-%20%E9%AB%98%E9%80%9F%E4%B8%8B%E8%BD%BD.meta.js |
-| [GitHub 中文化插件](pc/github-chinese.user.js) | 1.9.2.4-2026-11-10 | 上游镜像 | [电脑端](https://cdn.jsdelivr.net/gh/Jimmy88666888/edge-userscripts@main/pc/github-chinese.user.js) | [手机端](https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/mobile/github-chinese.user.js) | update.greasyfork.org/scripts/435208/GitHub%20%E4%B8%AD%E6%96%87%E5%8C%96%E6%8F%92%E4%BB%B6.meta.js |
-| [Google & baidu Switcher (ALL in One)](pc/google-baidu-switcher.user.js) | 2026.11.07.1 | 上游镜像 | [电脑端](https://cdn.jsdelivr.net/gh/Jimmy88666888/edge-userscripts@main/pc/google-baidu-switcher.user.js) | [手机端](https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/mobile/google-baidu-switcher.user.js) | update.greasyfork.org/scripts/12909/%E4%BC%98%E9%9B%85%E7%9A%84%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E5%8A%A9%E6%89%8B.meta.js |
-| [HTML5手机版](pc/html5-video-mobile.user.js) | 72.09 | 本地·本地化 | [电脑端](https://cdn.jsdelivr.net/gh/Jimmy88666888/edge-userscripts@main/pc/html5-video-mobile.user.js) | [手机端](https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/mobile/html5-video-mobile.user.js) | 本地维护 |
-| [HTML5视频播放工具（增强合并版）](pc/html5-video-player-merged.user.js) | 2.2.7-merged | 本地·本地化 | [电脑端](https://cdn.jsdelivr.net/gh/Jimmy88666888/edge-userscripts@main/pc/html5-video-player-merged.user.js) | [手机端](https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/mobile/html5-video-player-merged.user.js) | 本地维护 |
-| [LinkSwift](pc/linkswift.user.js) | 1.1.4 | 本地 | [电脑端](https://cdn.jsdelivr.net/gh/Jimmy88666888/edge-userscripts@main/pc/linkswift.user.js) | [手机端](https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/mobile/linkswift.user.js) | 本地维护 |
-| [Markdown](pc/universal-post-to-markdown.user.js) | 2.9.6 | 本地·本地化 | [电脑端](https://cdn.jsdelivr.net/gh/Jimmy88666888/edge-userscripts@main/pc/universal-post-to-markdown.user.js) | [手机端](https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/mobile/universal-post-to-markdown.user.js) | 本地维护 |
-| [Pagetual](pc/pagetual.user.js) | 1.9.37.134 | 上游镜像 | [电脑端](https://cdn.jsdelivr.net/gh/Jimmy88666888/edge-userscripts@main/pc/pagetual.user.js) | [手机端](https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/mobile/pagetual.user.js) | update.greasyfork.org/scripts/438684/Pagetual.meta.js |
-| [redirect 外链跳转](pc/redirect-external-link.user.js) | 1.67.0 | 上游镜像 | [电脑端](https://cdn.jsdelivr.net/gh/Jimmy88666888/edge-userscripts@main/pc/redirect-external-link.user.js) | [手机端](https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/mobile/redirect-external-link.user.js) | update.greasyfork.org/scripts/416338/redirect%20%E5%A4%96%E9%93%BE%E8%B7%B3%E8%BD%AC.meta.js |
-| [Telegram Media Downloader](pc/telegram-media-downloader.user.js) | 2.01 | 上游镜像 | [电脑端](https://cdn.jsdelivr.net/gh/Jimmy88666888/edge-userscripts@main/pc/telegram-media-downloader.user.js) | [手机端](https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/mobile/telegram-media-downloader.user.js) | update.greasyfork.org/scripts/446342/Telegram%20Media%20Downloader.meta.js |
-| [全网VIP视频免费破解去广告【最新3.2】](pc/vip-video-unlock.user.js) | 3.2.1 | 上游镜像 | [电脑端](https://cdn.jsdelivr.net/gh/Jimmy88666888/edge-userscripts@main/pc/vip-video-unlock.user.js) | [手机端](https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/mobile/vip-video-unlock.user.js) | update.greasyfork.org/scripts/537189/%E5%85%A8%E7%BD%91VIP%E8%A7%86%E9%A2%91%E5%85%8D%E8%B4%B9%E7%A0%B4%E8%A7%A3%E5%8E%BB%E5%B9%BF%E5%91%8A%E3%80%90%E6%9C%80%E6%96%B032%E3%80%91.meta.js |
-| [视频全屏显示时间（全站通用增强版）](pc/video-fullscreen-clock.user.js) | 0.6.11 | 本地·本地化 | [电脑端](https://cdn.jsdelivr.net/gh/Jimmy88666888/edge-userscripts@main/pc/video-fullscreen-clock.user.js) | [手机端](https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/mobile/video-fullscreen-clock.user.js) | 本地维护 |
-| [视频剧集信息显示](pc/video-episode-info.user.js) | 6.6.1 | 本地·本地化 | [电脑端](https://cdn.jsdelivr.net/gh/Jimmy88666888/edge-userscripts@main/pc/video-episode-info.user.js) | [手机端](https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/mobile/video-episode-info.user.js) | 本地维护 |
+| [AC-baidu-重定向优化百度搜狗谷歌必应搜索_favicon_双列](pc/ac-baidu-search.user.js) | 27.20 | 上游镜像 | [电脑端](https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/edge-userscripts/pc/ac-baidu-search.user.js) | [手机端](https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/ac-baidu-search.user.js) | update.greasyfork.org/scripts/14178/AC-baidu-%E9%87%8D%E5%AE%9A%E5%90%91%E4%BC%98%E5%8C%96%E7%99%BE%E5%BA%A6%E6%90%9C%E7%8B%97%E8%B0%B7%E6%AD%8C%E5%BF%85%E5%BA%94%E6%90%9C%E7%B4%A2_favicon_%E5%8F%8C%E5%88%97.meta.js |
+| [AdGuard Extra](pc/adguard-extra.user.js) | 1.1.41 | 上游镜像 | [电脑端](https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/edge-userscripts/pc/adguard-extra.user.js) | [手机端](https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/adguard-extra.user.js) | userscripts.adtidy.org/release/adguard-extra/1.0/adguard-extra.meta.js |
+| [EdgeDL](pc/edge-dl.user.js) | 2.3.3-local-float-toggle | 本地·本地化 | [电脑端](https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/edge-userscripts/pc/edge-dl.user.js) | [手机端](https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/edge-dl.user.js) | 本地维护 |
+| [Github Enhancement - High Speed Download](pc/github-fast-download.user.js) | 2.6.41 | 上游镜像 | [电脑端](https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/edge-userscripts/pc/github-fast-download.user.js) | [手机端](https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/github-fast-download.user.js) | update.greasyfork.org/scripts/412245/Github%20%E5%A2%9E%E5%BC%BA%20-%20%E9%AB%98%E9%80%9F%E4%B8%8B%E8%BD%BD.meta.js |
+| [GitHub 中文化插件](pc/github-chinese.user.js) | 1.9.2.4-2026-11-10 | 上游镜像 | [电脑端](https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/edge-userscripts/pc/github-chinese.user.js) | [手机端](https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/github-chinese.user.js) | update.greasyfork.org/scripts/435208/GitHub%20%E4%B8%AD%E6%96%87%E5%8C%96%E6%8F%92%E4%BB%B6.meta.js |
+| [Google & baidu Switcher (ALL in One)](pc/google-baidu-switcher.user.js) | 2026.11.07.1 | 上游镜像 | [电脑端](https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/edge-userscripts/pc/google-baidu-switcher.user.js) | [手机端](https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/google-baidu-switcher.user.js) | update.greasyfork.org/scripts/12909/%E4%BC%98%E9%9B%85%E7%9A%84%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E5%8A%A9%E6%89%8B.meta.js |
+| [HTML5手机版](pc/html5-video-mobile.user.js) | 72.09 | 本地·本地化 | [电脑端](https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/edge-userscripts/pc/html5-video-mobile.user.js) | [手机端](https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/html5-video-mobile.user.js) | 本地维护 |
+| [HTML5视频播放工具（增强合并版）](pc/html5-video-player-merged.user.js) | 2.2.7-merged | 本地·本地化 | [电脑端](https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/edge-userscripts/pc/html5-video-player-merged.user.js) | [手机端](https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/html5-video-player-merged.user.js) | 本地维护 |
+| [LinkSwift](pc/linkswift.user.js) | 1.1.4 | 本地 | [电脑端](https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/edge-userscripts/pc/linkswift.user.js) | [手机端](https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/linkswift.user.js) | 本地维护 |
+| [Markdown](pc/universal-post-to-markdown.user.js) | 2.9.6 | 本地·本地化 | [电脑端](https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/edge-userscripts/pc/universal-post-to-markdown.user.js) | [手机端](https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/universal-post-to-markdown.user.js) | 本地维护 |
+| [Pagetual](pc/pagetual.user.js) | 1.9.37.134 | 上游镜像 | [电脑端](https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/edge-userscripts/pc/pagetual.user.js) | [手机端](https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/pagetual.user.js) | update.greasyfork.org/scripts/438684/Pagetual.meta.js |
+| [redirect 外链跳转](pc/redirect-external-link.user.js) | 1.67.0 | 上游镜像 | [电脑端](https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/edge-userscripts/pc/redirect-external-link.user.js) | [手机端](https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/redirect-external-link.user.js) | update.greasyfork.org/scripts/416338/redirect%20%E5%A4%96%E9%93%BE%E8%B7%B3%E8%BD%AC.meta.js |
+| [Telegram Media Downloader](pc/telegram-media-downloader.user.js) | 2.01 | 上游镜像 | [电脑端](https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/edge-userscripts/pc/telegram-media-downloader.user.js) | [手机端](https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/telegram-media-downloader.user.js) | update.greasyfork.org/scripts/446342/Telegram%20Media%20Downloader.meta.js |
+| [全网VIP视频免费破解去广告【最新3.2】](pc/vip-video-unlock.user.js) | 3.2.1 | 上游镜像 | [电脑端](https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/edge-userscripts/pc/vip-video-unlock.user.js) | [手机端](https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/vip-video-unlock.user.js) | update.greasyfork.org/scripts/537189/%E5%85%A8%E7%BD%91VIP%E8%A7%86%E9%A2%91%E5%85%8D%E8%B4%B9%E7%A0%B4%E8%A7%A3%E5%8E%BB%E5%B9%BF%E5%91%8A%E3%80%90%E6%9C%80%E6%96%B032%E3%80%91.meta.js |
+| [视频全屏显示时间（全站通用增强版）](pc/video-fullscreen-clock.user.js) | 0.6.11 | 本地·本地化 | [电脑端](https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/edge-userscripts/pc/video-fullscreen-clock.user.js) | [手机端](https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/video-fullscreen-clock.user.js) | 本地维护 |
+| [视频剧集信息显示](pc/video-episode-info.user.js) | 6.6.1 | 本地·本地化 | [电脑端](https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/edge-userscripts/pc/video-episode-info.user.js) | [手机端](https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/video-episode-info.user.js) | 本地维护 |
 
 ## 目录结构
 
@@ -54,8 +54,8 @@ tools/    # sync.mjs 上游同步工具
 ## 自更新机制
 
 - **两份副本，两套通道**：`pc/<文件名>.user.js` 的更新地址指向
-  `https://cdn.jsdelivr.net/gh/Jimmy88666888/edge-userscripts@main/pc/<文件名>`；`mobile/<文件名>.user.js` 指向
-  `https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/mobile/<文件名>`。同一脚本的两份内容一致，只有这两行元数据不同。
+  `https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/edge-userscripts/pc/<文件名>`；`mobile/<文件名>.user.js` 指向
+  `https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/<文件名>`。同一脚本的两份内容一致，只有这两行元数据不同。
 - **上游脚本（9 个）**：仓库保留各自上游地址作为数据来源，由 GitHub Actions 每日比对上游 `@version` 同步；但**更新通道已改为本仓库**，这样在没有 raw / greasyfork 直连的网络里也能检查更新。如果想让某个脚本恢复作者直连，把它在 `pc/`、`mobile/` 两份里的 `@updateURL`/`@downloadURL` 改回原作者地址即可。
 - **本地脚本（7 个，其中 6 个已本地化）**：`@namespace` 为 `local.edge-userscripts/<文件名>` 的只由本仓库驱动；发新版时把两份文件里的 `// @version` 一起改掉并推送。
 - **自动同步**：`.github/workflows/sync.yml` 每日 03:17（UTC）运行 `node tools/sync.mjs`，一次更新某脚本的 pc 与 mobile 两份文件。

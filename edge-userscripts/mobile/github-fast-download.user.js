@@ -26,8 +26,8 @@
 // @namespace    https://greasyfork.org/scripts/412245
 // @supportURL   https://github.com/XIU2/UserScript
 // @homepageURL  https://github.com/XIU2/UserScript
-// @downloadURL  https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/mobile/github-fast-download.user.js
-// @updateURL    https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/mobile/github-fast-download.user.js
+// @downloadURL  https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/github-fast-download.user.js
+// @updateURL    https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/github-fast-download.user.js
 // ==/UserScript==
 
 (function() {

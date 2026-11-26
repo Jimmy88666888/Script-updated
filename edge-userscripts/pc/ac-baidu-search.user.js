@@ -144,8 +144,8 @@
 // @grant    GM_addValueChangeListener
 // @grant    unsafeWindow
 // @namespace 1353464539@qq.com
-// @downloadURL  https://cdn.jsdelivr.net/gh/Jimmy88666888/edge-userscripts@main/pc/ac-baidu-search.user.js
-// @updateURL    https://cdn.jsdelivr.net/gh/Jimmy88666888/edge-userscripts@main/pc/ac-baidu-search.user.js
+// @downloadURL  https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/edge-userscripts/pc/ac-baidu-search.user.js
+// @updateURL    https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/edge-userscripts/pc/ac-baidu-search.user.js
 // ==/UserScript==
 ~(async () => {
   Object.defineProperty(console, 'mylog', {

@@ -24,8 +24,8 @@
 // @resource     icon_fdm       https://cdn.jsdelivr.net/gh/Chumor/EdgeDL@main/assets/icons/fdm.svg
 // @resource     icon_edge      https://cdn.jsdelivr.net/gh/Chumor/EdgeDL@main/assets/icons/edge.svg
 // @early-start
-// @updateURL    https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/mobile/edge-dl.user.js
-// @downloadURL  https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/mobile/edge-dl.user.js
+// @updateURL    https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/edge-dl.user.js
+// @downloadURL  https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/edge-dl.user.js
 // ==/UserScript==
 
 

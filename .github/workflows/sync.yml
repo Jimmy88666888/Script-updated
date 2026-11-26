@@ -25,7 +25,9 @@ jobs:
           node-version: '20'
 
       - name: Sync scripts from upstream
-        run: node tools/sync.mjs
+        # 四个仓库并入 Script-updated 后，脚本与同步器都在 edge-userscripts/ 子目录下，
+        # 工作流从仓库根运行，必须写全路径。
+        run: node edge-userscripts/tools/sync.mjs
 
       - name: Commit and push when changed
         run: |

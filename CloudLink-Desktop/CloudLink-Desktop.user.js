@@ -6,7 +6,7 @@
 // @description:zh-CN 国际网盘电脑直链助手：Google Drive / OneDrive / Dropbox。支持复制直链、IDM(.ef2)、Mister Download Manager(MDM)、Aria2 RPC、curl/aria2c。
 // @author            CloudLink Desktop
 // @license           MIT
-// @icon              https://raw.githubusercontent.com/Jimmy88666888/CloudLink-Desktop/main/icon.svg
+// @icon              https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/CloudLink-Desktop/icon.svg
 // @match             *://drive.google.com/*
 // @match             *://drive.usercontent.google.com/*
 // @match             *://docs.google.com/*
@@ -29,10 +29,10 @@
 // @connect           localhost
 // @connect           *
 // @run-at            document-idle
-// @updateURL         https://raw.githubusercontent.com/Jimmy88666888/CloudLink-Desktop/main/CloudLink-Desktop.user.js
-// @downloadURL       https://raw.githubusercontent.com/Jimmy88666888/CloudLink-Desktop/main/CloudLink-Desktop.user.js
-// @homepageURL       https://github.com/Jimmy88666888/CloudLink-Desktop
-// @supportURL        https://github.com/Jimmy88666888/CloudLink-Desktop/issues
+// @updateURL         https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/CloudLink-Desktop/CloudLink-Desktop.user.js
+// @downloadURL       https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/CloudLink-Desktop/CloudLink-Desktop.user.js
+// @homepageURL       https://github.com/Jimmy88666888/Script-updated/tree/main/CloudLink-Desktop
+// @supportURL        https://github.com/Jimmy88666888/Script-updated/issues
 // ==/UserScript==
 
 (function () {

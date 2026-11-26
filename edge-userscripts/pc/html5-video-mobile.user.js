@@ -49,8 +49,8 @@
 // @grant        GM_setValue
 // @grant        GM_getValue
 // @run-at       document-start
-// @updateURL    https://cdn.jsdelivr.net/gh/Jimmy88666888/edge-userscripts@main/pc/html5-video-mobile.user.js
-// @downloadURL  https://cdn.jsdelivr.net/gh/Jimmy88666888/edge-userscripts@main/pc/html5-video-mobile.user.js
+// @updateURL    https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/edge-userscripts/pc/html5-video-mobile.user.js
+// @downloadURL  https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/edge-userscripts/pc/html5-video-mobile.user.js
 // ==/UserScript==
 
 (function() {

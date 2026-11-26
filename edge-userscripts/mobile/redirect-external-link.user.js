@@ -83,8 +83,8 @@
 // @compatible   chrome Latest
 // @compatible   firefox Latest
 // @compatible   edge Latest
-// @downloadURL  https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/mobile/redirect-external-link.user.js
-// @updateURL    https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/mobile/redirect-external-link.user.js
+// @downloadURL  https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/redirect-external-link.user.js
+// @updateURL    https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/redirect-external-link.user.js
 // ==/UserScript==
 
 (function() {

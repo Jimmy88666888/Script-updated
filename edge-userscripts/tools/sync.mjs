@@ -19,10 +19,13 @@ const MANIFEST = path.join(ROOT, 'updates.json');
 const DRY = process.argv.includes('--dry-run');
 
 const OWNER = 'Jimmy88666888';
-const REPO = 'edge-userscripts';
+const REPO = 'Script-updated';
+// 并入 Script-updated 后，脚本位于仓库的 edge-userscripts/ 子目录下，
+// 安装与更新地址必须带上这段前缀，否则同步器会把旧的裸地址写回去。
+const SUBDIR = 'edge-userscripts';
 const CHANNEL = {
-  pc: (slug) => `https://cdn.jsdelivr.net/gh/${OWNER}/${REPO}@main/pc/${slug}.user.js`,
-  mobile: (slug) => `https://raw.githubusercontent.com/${OWNER}/${REPO}/main/mobile/${slug}.user.js`,
+  pc: (slug) => `https://cdn.jsdelivr.net/gh/${OWNER}/${REPO}@main/${SUBDIR}/pc/${slug}.user.js`,
+  mobile: (slug) => `https://raw.githubusercontent.com/${OWNER}/${REPO}/main/${SUBDIR}/mobile/${slug}.user.js`,
 };
 
 const VERSION_RE = /^\/\/\s*@version\s+(\S+)\s*$/m;

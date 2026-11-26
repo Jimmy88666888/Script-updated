@@ -24,8 +24,8 @@
 // @grant      GM_registerMenuCommand
 // @grant      GM_setValue
 // @grant      GM_getValue
-// @updateURL    https://cdn.jsdelivr.net/gh/Jimmy88666888/edge-userscripts@main/pc/html5-video-player-merged.user.js
-// @downloadURL  https://cdn.jsdelivr.net/gh/Jimmy88666888/edge-userscripts@main/pc/html5-video-player-merged.user.js
+// @updateURL    https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/edge-userscripts/pc/html5-video-player-merged.user.js
+// @downloadURL  https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/edge-userscripts/pc/html5-video-player-merged.user.js
 // ==/UserScript==
 
 'use strict';

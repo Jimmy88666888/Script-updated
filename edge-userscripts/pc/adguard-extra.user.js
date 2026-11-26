@@ -83,8 +83,8 @@
 // @description:zh-HK AdGuard Extra 可以解決一般封鎖規則不足以處理廣告的問題。
 // @description:zh-TW 當常規的廣告封鎖規則不夠時，AdGuard Extra 旨在解決複雜的情況。
 // @description:zh AdGuard Extra 旨在解决常规的广告拦截规则无能为力的复杂情况。
-// @downloadURL  https://cdn.jsdelivr.net/gh/Jimmy88666888/edge-userscripts@main/pc/adguard-extra.user.js
-// @updateURL    https://cdn.jsdelivr.net/gh/Jimmy88666888/edge-userscripts@main/pc/adguard-extra.user.js
+// @downloadURL  https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/edge-userscripts/pc/adguard-extra.user.js
+// @updateURL    https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/edge-userscripts/pc/adguard-extra.user.js
 // @homepageURL  https://adguard.com/
 // @supportURL   https://github.com/AdguardTeam/AdGuardExtra/issues/
 // @author       AdGuard

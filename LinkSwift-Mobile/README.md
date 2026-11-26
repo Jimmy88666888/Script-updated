@@ -14,7 +14,7 @@
 
 点击安装：
 
-**https://raw.githubusercontent.com/Jimmy88666888/LinkSwift-Mobile/main/LinkSwift.user.js**
+**https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/LinkSwift-Mobile/LinkSwift.user.js**
 
 或在支持油猴的手机浏览器中打开上述地址安装。
 
@@ -27,8 +27,8 @@
 脚本头已配置：
 
 ```
-@updateURL   https://raw.githubusercontent.com/Jimmy88666888/LinkSwift-Mobile/main/LinkSwift.user.js
-@downloadURL https://raw.githubusercontent.com/Jimmy88666888/LinkSwift-Mobile/main/LinkSwift.user.js
+@updateURL   https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/LinkSwift-Mobile/LinkSwift.user.js
+@downloadURL https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/LinkSwift-Mobile/LinkSwift.user.js
 ```
 
 在油猴中开启「检查更新」后，会从本仓库拉取新版本。

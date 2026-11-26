@@ -46,12 +46,23 @@ for R in SOURCES:
             lambda m, R=R: 'https://github.com/' + OWNER + '/' + TARGET + '/' + m.group(1) + '/main/' + R + '/' + m.group(2)),
 
         ('pages', re.compile(
-            r'https://' + OWNER.lower() + r'\.github\.io/' + R + r'[^\s"\'<>)]*'),
-            lambda m: 'https://' + OWNER.lower() + '.github.io/' + TARGET + '/'),
+            r'https://' + OWNER.lower() + r'\.github\.io/' + R + r'([^\s"\'<>)]*)'),
+            lambda m, R=R: 'https://' + OWNER.lower() + '.github.io/' + TARGET + m.group(1)),
+
+        # 纯尾斜杠形式：github.com/{R}/  （后面紧跟定界符，排除 /blob/ /issues/ 等）
+        ('rootslash', re.compile(
+            r'https://github\.com/' + OWNER + '/' + R + r'/(?=["\'\s)\]>,;]|$)'),
+            lambda m, R=R: 'https://github.com/' + OWNER + '/' + TARGET + '/tree/main/' + R + '/'),
 
         ('root', re.compile(
             r'https://github\.com/' + OWNER + '/' + R + r'(?![\w/.-])'),
             lambda m, R=R: 'https://github.com/' + OWNER + '/' + TARGET + '/tree/main/' + R),
+
+        # github.com/{R}/issues|releases|pulls|actions 等子页面 -> 新仓库同名子页面
+        ('subpage', re.compile(
+            r'https://github\.com/' + OWNER + '/' + R + r'/(issues|releases|pulls|actions|discussions|stars|forks|network)(\S*?)'
+            r'(?=["\'\s)\]>,;]|$)'),
+            lambda m: 'https://github.com/' + OWNER + '/' + TARGET + '/' + m.group(1) + m.group(2)),
     ]
 
 files = [f for f in subprocess.run(['git', 'ls-files'], capture_output=True, text=True,
@@ -59,6 +70,7 @@ files = [f for f in subprocess.run(['git', 'ls-files'], capture_output=True, tex
 
 report = {}
 total = 0
+after = {}   # 文件名 -> 替换后的文本（dry-run 也在内存里得到结果，残留检查据此判定）
 for f in files:
     if f.endswith(('.png', '.ico', '.jpg', '.gif', '.woff', '.woff2', '.zip')):
         continue
@@ -73,6 +85,7 @@ for f in files:
         text, n = rx.subn(rep, text)
         if n:
             cnt[name] = cnt.get(name, 0) + n
+    after[f] = text
     if text != orig:
         s = sum(cnt.values())
         total += s
@@ -92,20 +105,23 @@ print()
 for f, (s, cnt) in sorted(report.items(), key=lambda x: -x[1][0])[:12]:
     print('  %4d  %s' % (s, f))
 
-# 残留检查：还有多少绝对地址指向四个源仓库
+# 残留检查：只看“仍指向旧仓库”的 URL。
+# 注意不能简单匹配仓库名，因为新地址里 edge-userscripts/ 是合法子目录名。
 print()
-print('=== 残留检查（仍指向旧仓库的绝对 URL）===')
+print('=== 残留检查（替换后仍指向旧仓库的绝对 URL）===')
+OLD_URL = re.compile(
+    r'https?://(?:'
+    r'(?:raw\.githubusercontent\.com|cdn\.jsdelivr\.net/gh|github\.com)/' + OWNER + r'/'
+    r'|(?:[a-z0-9-]+)\.github\.io/'
+    r')(?:' + '|'.join(re.escape(r) for r in SOURCES) + r')(?![\w-])',
+    re.I)
 leftover = []
-for f in files:
-    if f.endswith(('.png', '.ico', '.jpg', '.gif', '.woff', '.woff2', '.zip')):
-        continue
-    try:
-        with open(f, 'r', encoding='utf-8') as fh:
-            text = fh.read()
-    except Exception:
-        continue
-    for m in re.finditer(r'https?://\S*(?:' + '|'.join(re.escape(r) for r in SOURCES) + r')\S*', text):
-        leftover.append((f, m.group(0)[:120]))
+for f, text in after.items():
+    for m in OLD_URL.finditer(text):
+        end = m.start()
+        while end < len(text) and text[end] not in '"\'<> )]\r\n,;':
+            end += 1
+        leftover.append((f, text[m.start():end][:150]))
 print('残留 URL 数: %d' % len(leftover))
-for f, u in leftover[:15]:
+for f, u in leftover[:20]:
     print('  %s  %s' % (f, u))

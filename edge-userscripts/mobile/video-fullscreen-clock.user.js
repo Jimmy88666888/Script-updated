@@ -34,8 +34,8 @@
 // @connect      api.open-meteo.com
 // @run-at       document-end
 // @license      GPLv3
-// @updateURL    https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/mobile/video-fullscreen-clock.user.js
-// @downloadURL  https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/mobile/video-fullscreen-clock.user.js
+// @updateURL    https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/video-fullscreen-clock.user.js
+// @downloadURL  https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/video-fullscreen-clock.user.js
 // ==/UserScript==
 
 (function() {

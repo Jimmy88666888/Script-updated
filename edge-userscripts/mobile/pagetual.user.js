@@ -98,8 +98,8 @@
 // @connect      *
 // @contributionURL      https://ko-fi.com/hoothin
 // @contributionAmount   1
-// @downloadURL  https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/mobile/pagetual.user.js
-// @updateURL    https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/mobile/pagetual.user.js
+// @downloadURL  https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/pagetual.user.js
+// @updateURL    https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/pagetual.user.js
 // ==/UserScript==
 
 (function() {

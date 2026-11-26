@@ -268,8 +268,8 @@
 // @license            GPL-3.0-only
 // @copyright          2015-2026, F9y4ng
 // @run-at             document-start
-// @downloadURL  https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/mobile/google-baidu-switcher.user.js
-// @updateURL    https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/mobile/google-baidu-switcher.user.js
+// @downloadURL  https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/google-baidu-switcher.user.js
+// @updateURL    https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/google-baidu-switcher.user.js
 // ==/UserScript==
 
 /* jshint esversion: 11 */

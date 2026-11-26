@@ -24,8 +24,8 @@
 // @resource     icon_fdm       https://cdn.jsdelivr.net/gh/Chumor/EdgeDL@main/assets/icons/fdm.svg
 // @resource     icon_edge      https://cdn.jsdelivr.net/gh/Chumor/EdgeDL@main/assets/icons/edge.svg
 // @early-start
-// @updateURL    https://cdn.jsdelivr.net/gh/Jimmy88666888/edge-userscripts@main/pc/edge-dl.user.js
-// @downloadURL  https://cdn.jsdelivr.net/gh/Jimmy88666888/edge-userscripts@main/pc/edge-dl.user.js
+// @updateURL    https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/edge-userscripts/pc/edge-dl.user.js
+// @downloadURL  https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/edge-userscripts/pc/edge-dl.user.js
 // ==/UserScript==
 
 

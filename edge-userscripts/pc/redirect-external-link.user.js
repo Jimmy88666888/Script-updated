@@ -83,8 +83,8 @@
 // @compatible   chrome Latest
 // @compatible   firefox Latest
 // @compatible   edge Latest
-// @downloadURL  https://cdn.jsdelivr.net/gh/Jimmy88666888/edge-userscripts@main/pc/redirect-external-link.user.js
-// @updateURL    https://cdn.jsdelivr.net/gh/Jimmy88666888/edge-userscripts@main/pc/redirect-external-link.user.js
+// @downloadURL  https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/edge-userscripts/pc/redirect-external-link.user.js
+// @updateURL    https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/edge-userscripts/pc/redirect-external-link.user.js
 // ==/UserScript==
 
 (function() {

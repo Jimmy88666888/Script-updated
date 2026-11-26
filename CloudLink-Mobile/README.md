@@ -12,7 +12,7 @@
 
 ## 安装
 
-https://raw.githubusercontent.com/Jimmy88666888/CloudLink-Mobile/main/CloudLink-Mobile.user.js
+https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/CloudLink-Mobile/CloudLink-Mobile.user.js
 
 ## 使用
 
@@ -26,4 +26,4 @@ https://raw.githubusercontent.com/Jimmy88666888/CloudLink-Mobile/main/CloudLink-
 
 ## 相关
 
-- 国内网盘手机版：[LinkSwift-Mobile](https://github.com/Jimmy88666888/LinkSwift-Mobile)
+- 国内网盘手机版：[LinkSwift-Mobile](https://github.com/Jimmy88666888/Script-updated/tree/main/LinkSwift-Mobile)

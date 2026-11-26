@@ -27,10 +27,10 @@
 
 ## 安装
 
-https://raw.githubusercontent.com/Jimmy88666888/CloudLink-Desktop/main/CloudLink-Desktop.user.js
+https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/CloudLink-Desktop/CloudLink-Desktop.user.js
 
 ## 相关
 
-- 手机版：[CloudLink-Mobile](https://github.com/Jimmy88666888/CloudLink-Mobile)
-- 国内网盘手机版：[LinkSwift-Mobile](https://github.com/Jimmy88666888/LinkSwift-Mobile)
+- 手机版：[CloudLink-Mobile](https://github.com/Jimmy88666888/Script-updated/tree/main/CloudLink-Mobile)
+- 国内网盘手机版：[LinkSwift-Mobile](https://github.com/Jimmy88666888/Script-updated/tree/main/LinkSwift-Mobile)
 - MDM 官网：https://misterdownloadmanager.com/
