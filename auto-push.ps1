@@ -151,6 +151,23 @@ function Archive-OldVersions {
 # 收件箱摄取：把 D:\脚本收件箱 里写完的脚本复制进仓库根
 $IngestBlacklist = @('auto-push.ps1', '.gitignore', 'LICENSE', 'auto-push.log', '.auto-push.pid')
 
+# 收件箱内容签名：文件名|大小|修改时间 拼串，用于低成本判断是否有新增或替换
+function Get-InboxSignature {
+    if (-not (Test-Path -LiteralPath $InboxPath)) { return '' }
+    $parts = @()
+    foreach ($f in @(Get-ChildItem -LiteralPath $InboxPath -File -Force -ErrorAction SilentlyContinue)) {
+        if ($f.Name -notlike '*.js') { continue }
+        $parts += ($f.Name + '|' + $f.Length + '|' + $f.LastWriteTime.Ticks)
+    }
+    return ($parts -join ';')
+}
+
+function Ensure-Inbox {
+    if (-not (Test-Path -LiteralPath $InboxPath)) {
+        try { New-Item -ItemType Directory -Path $InboxPath -Force | Out-Null } catch { }
+    }
+}
+
 function Ingest-Inbox {
     if (-not (Test-Path -LiteralPath $InboxPath)) {
         try { New-Item -ItemType Directory -Path $InboxPath -Force | Out-Null } catch { return }
@@ -408,10 +425,23 @@ function Start-Watcher {
     }
     $watcher.EnableRaisingEvents = $true
     Write-Log ('监控已启动：' + $RepoPath + '，防抖 ' + $DebounceSeconds + ' 秒，分支 ' + $Branch)
+    if ($InboxPath) { Write-Log ('收件箱已启用：' + $InboxPath + '（上传核验后自动删除原件）') }
 
+    $lastInboxScan = [datetime]::MinValue
+    $lastInboxSig = ''
     try {
         while ($true) {
             Start-Sleep -Milliseconds 500
+            # 收件箱在仓库外，仓库 watcher 感知不到；这里每 2 秒轮询其签名（文件名+大小+时间）
+            # 一旦有新增/替换文件就让本轮变为脏，走防抖后统一摄取提交推送
+            if ($InboxPath -and (([datetime]::Now) - $lastInboxScan).TotalSeconds -ge 2) {
+                $lastInboxScan = [datetime]::Now
+                $sig = Get-InboxSignature
+                if ($sig -ne $lastInboxSig) {
+                    $lastInboxSig = $sig
+                    if ($sig) { $st.Dirty = $true; $st.LastEvent = [datetime]::Now }
+                }
+            }
             if ($st.Dirty) {
                 if ((([datetime]::Now) - $st.LastEvent).TotalSeconds -ge $DebounceSeconds) {
                     Invoke-Sync 'file-change'
