@@ -446,7 +446,7 @@
     "file": "mobile/redirect-external-link.user.js",
     "platform": "mobile",
     "name": "redirect 外链跳转",
-    "version": "1.67.0",
+    "version": "1.67.1",
     "author": "sakura-flutter",
     "license": "MIT",
     "namespace": "https://github.com/sakura-flutter/tampermonkey-scripts",
@@ -530,7 +530,8 @@
     "update_channel": "repo-raw",
     "mirror": "raw",
     "update_url": "https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/mobile/redirect-external-link.user.js",
-    "raw": "https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/mobile/redirect-external-link.user.js"
+    "raw": "https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/mobile/redirect-external-link.user.js",
+    "synced_at": "2026-11-26"
   },
   {
     "file": "mobile/telegram-media-downloader.user.js",
@@ -653,7 +654,7 @@
     "file": "mobile/vip-video-unlock.user.js",
     "platform": "mobile",
     "name": "全网VIP视频免费破解去广告【最新3.2】",
-    "version": "3.2.1",
+    "version": "3.2.10",
     "author": "茉灵智库：https://blog.88lin.eu.org/article/46",
     "license": "GPL-3.0 License",
     "namespace": "http://tampermonkey.net/",
@@ -664,7 +665,8 @@
     "update_channel": "repo-raw",
     "mirror": "raw",
     "update_url": "https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/mobile/vip-video-unlock.user.js",
-    "raw": "https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/mobile/vip-video-unlock.user.js"
+    "raw": "https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/mobile/vip-video-unlock.user.js",
+    "synced_at": "2026-11-26"
   },
   {
     "file": "pc/ac-baidu-search.user.js",
@@ -1113,7 +1115,7 @@
     "file": "pc/redirect-external-link.user.js",
     "platform": "pc",
     "name": "redirect 外链跳转",
-    "version": "1.67.0",
+    "version": "1.67.1",
     "author": "sakura-flutter",
     "license": "MIT",
     "namespace": "https://github.com/sakura-flutter/tampermonkey-scripts",
@@ -1197,7 +1199,8 @@
     "update_channel": "repo-mirror",
     "mirror": "jsdelivr",
     "update_url": "https://cdn.jsdelivr.net/gh/Jimmy88666888/edge-userscripts@main/pc/redirect-external-link.user.js",
-    "raw": "https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/pc/redirect-external-link.user.js"
+    "raw": "https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/pc/redirect-external-link.user.js",
+    "synced_at": "2026-11-26"
   },
   {
     "file": "pc/telegram-media-downloader.user.js",
@@ -1320,7 +1323,7 @@
     "file": "pc/vip-video-unlock.user.js",
     "platform": "pc",
     "name": "全网VIP视频免费破解去广告【最新3.2】",
-    "version": "3.2.1",
+    "version": "3.2.10",
     "author": "茉灵智库：https://blog.88lin.eu.org/article/46",
     "license": "GPL-3.0 License",
     "namespace": "http://tampermonkey.net/",
@@ -1331,6 +1334,7 @@
     "update_channel": "repo-mirror",
     "mirror": "jsdelivr",
     "update_url": "https://cdn.jsdelivr.net/gh/Jimmy88666888/edge-userscripts@main/pc/vip-video-unlock.user.js",
-    "raw": "https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/pc/vip-video-unlock.user.js"
+    "raw": "https://raw.githubusercontent.com/Jimmy88666888/edge-userscripts/main/pc/vip-video-unlock.user.js",
+    "synced_at": "2026-11-26"
   }
 ]
