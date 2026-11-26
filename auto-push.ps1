@@ -148,6 +148,64 @@ function Archive-OldVersions {
     }
 }
 
+# 收件箱摄取：把 D:\脚本收件箱 里写完的脚本复制进仓库根
+$IngestBlacklist = @('auto-push.ps1', '.gitignore', 'LICENSE', 'auto-push.log', '.auto-push.pid')
+
+function Ingest-Inbox {
+    if (-not (Test-Path -LiteralPath $InboxPath)) {
+        try { New-Item -ItemType Directory -Path $InboxPath -Force | Out-Null } catch { return }
+    }
+    foreach ($f in @(Get-ChildItem -LiteralPath $InboxPath -File -Force -ErrorAction SilentlyContinue)) {
+        if ($f.Name -notlike '*.js') { 
+            Write-Log ('收件箱内有非脚本文件，已跳过（保留原件）：' + $f.Name) 'WARN'
+            continue
+        }
+        if ($IngestBlacklist -contains $f.Name) {
+            Write-Log ('收件箱文件与仓库关键文件同名，拒绝摄取：' + $f.Name) 'WARN'
+            continue
+        }
+        # 只摄取 5 秒内没有再变动的文件，避免复制写了一半的内容
+        if (([datetime]::Now - $f.LastWriteTime).TotalSeconds -lt 5) { continue }
+
+        $dest = Join-Path $RepoPath $f.Name
+        $same = $false
+        if (Test-Path -LiteralPath $dest) {
+            $a = RunGit @('hash-object', '--', $f.FullName)
+            $b = RunGit @('hash-object', '--', ('.\' + $f.Name))
+            if ($a.Code -eq 0 -and $b.Code -eq 0 -and $a.Out[0] -eq $b.Out[0]) { $same = $true }
+        }
+        if ($same) { continue }   # 内容一致，等推送核验阶段处理
+        try {
+            Copy-Item -LiteralPath $f.FullName -Destination $dest -Force
+            Write-Log ('已摄取进仓库：' + $f.Name + '（' + $f.Length + ' B）')
+        } catch {
+            Write-Log ('摄取失败：' + $f.Name + ' ' + $_.Exception.Message) 'ERROR'
+        }
+    }
+}
+
+# 清理：收件箱原件只有在“仓库副本 == 远端副本”字节级核验通过后才删除
+function Purge-VerifiedInbox {
+    if (-not (Test-Path -LiteralPath $InboxPath)) { return }
+    $ref = RunGit @('rev-parse', '--verify', ('refs/remotes/' + $RemoteName + '/' + $Branch))
+    if ($ref.Code -ne 0) { return }   # 还没有远端跟踪引用，不删任何东西
+    foreach ($f in @(Get-ChildItem -LiteralPath $InboxPath -File -Force -ErrorAction SilentlyContinue)) {
+        if ($f.Name -notlike '*.js') { continue }
+        if (([datetime]::Now - $f.LastWriteTime).TotalSeconds -lt 5) { continue }
+        $remoteBlob = RunGit @('rev-parse', ($RemoteName + '/' + $Branch + ':' + $f.Name))
+        if ($remoteBlob.Code -ne 0) { continue }          # 远端没有这个文件：未上传，保留
+        $localBlob = RunGit @('hash-object', '--', ('.\' + $f.Name))
+        if ($localBlob.Code -ne 0) { continue }           # 仓库工作区没有：保留
+        if ($localBlob.Out[0].Trim() -ne $remoteBlob.Out[0].Trim()) { continue }  # 与远端不一致：保留
+        try {
+            Remove-Item -LiteralPath $f.FullName -Force
+            Write-Log ('上传核验通过，收件箱原件已删除：' + $f.Name)
+        } catch {
+            Write-Log ('原件删除失败（不影响已推送内容）：' + $f.Name + ' ' + $_.Exception.Message) 'WARN'
+        }
+    }
+}
+
 function Invoke-Sync {
     param([string]$Reason)
 
@@ -163,7 +221,8 @@ function Invoke-Sync {
             $guard++
             $st.Pending = $false
 
-            # 提交前先归档：同名脚本被改版本号覆盖时，旧版另存进同名子目录
+            # 先摄取收件箱，再归档旧版，然后提交
+            Ingest-Inbox
             Archive-OldVersions
 
             if (-not (RunGitOk @('add', '-A', '--', '.'))) {
