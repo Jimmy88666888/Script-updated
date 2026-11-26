@@ -13,6 +13,7 @@
 
   参数：
     -RepoPath         仓库目录，默认 D:\script
+    -InboxPath        收件箱目录，默认 D:\脚本收件箱（丢入的脚本推送核验后自动删除原件）
     -Branch           推送分支，默认 main
     -RemoteName       远程名，默认 origin
     -DebounceSeconds  文件停止变动后等待几秒再提交，默认 8
