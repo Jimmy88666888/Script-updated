@@ -77,6 +77,75 @@ function RunGitOk {
     return $null
 }
 
+function Get-ScriptVersion {
+    param([string]$Text)
+    $m = [regex]::Match($Text, '(?m)^\s*//\s*@version\s+(\S+)')
+    if ($m.Success) { return $m.Groups[1].Value }
+    return $null
+}
+
+function Archive-OldVersions {
+    # 同名 .user.js 被新版本覆盖时：先把 HEAD 里的旧版内容写到同级目录下
+    # 与脚本同名的子目录中（如 LinkSwift.user.js v1.0.0 -> LinkSwift/1.0.0.user.js），
+    # 新版继续占用主路径，新旧两个版本都进仓库。
+    # 排除 CI 管理的 edge-userscripts/pc|mobile|archive|tools 与根 docs，避免与每日同步互相覆盖；
+    # 归档目录内的文件本身不再二次归档。
+    $status = RunGit @('-c', 'core.quotepath=false', 'status', '--porcelain', '-uall')
+    if ($status.Code -ne 0) { return }
+    $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
+
+    foreach ($line in $status.Out) {
+        if (-not $line -or $line.Length -lt 4) { continue }
+        $xy = $line.Substring(0, 2)
+        if ($xy.Trim() -eq 'D') { continue }
+        $rel = $line.Substring(3)
+        if ($rel -match '^(.:)?(.+ )?-> (.+)$') { $rel = $Matches[3] }
+        $rel = ($rel -replace '\\', '/')
+        if (-not $rel.EndsWith('.user.js')) { continue }
+        if ($rel -match '^edge-userscripts/(pc|mobile|archive|tools)/') { continue }
+        if ($rel -match '^docs/') { continue }
+
+        $leaf = $rel -replace '^.*/', ''
+        $stem = $leaf -replace '\.user\.js$', ''
+        $slash = $rel.LastIndexOf('/')
+        $dirRel = if ($slash -ge 0) { $rel.Substring(0, $slash) } else { '' }
+        # 已在归档目录内（父目录名 == 脚本主干名）则跳过
+        if ($dirRel -and (($dirRel -replace '^.*/', '') -eq $stem)) { continue }
+
+        $full = Join-Path $RepoPath ($rel -replace '/', [System.IO.Path]::DirectorySeparatorChar)
+        if (-not (Test-Path -LiteralPath $full)) { continue }
+        $newText = [System.IO.File]::ReadAllText($full, [System.Text.Encoding]::UTF8)
+        $newVer = Get-ScriptVersion $newText
+        if (-not $newVer) {
+            Write-Log ('跳过归档：' + $rel + ' 未找到 @version 注释') 'WARN'
+            continue
+        }
+
+        $old = RunGit @('show', ('HEAD:' + $rel))
+        if ($old.Code -ne 0) { continue }   # 仓库里原本没有这个脚本，全新文件无需归档
+        $oldText = ($old.Out -join "`n")
+        if (-not $oldText.EndsWith("`n")) { $oldText = $oldText + "`n" }
+        $oldVer = Get-ScriptVersion $oldText
+        if (-not $oldVer -or $oldVer -eq $newVer) { continue }   # 版本没变：视为就地修改，走普通提交
+
+        $parent = if ($dirRel) { Join-Path $RepoPath ($dirRel -replace '/', [System.IO.Path]::DirectorySeparatorChar) } else { $RepoPath }
+        $archDir = Join-Path $parent $stem
+        $archFile = Join-Path $archDir ($oldVer + '.user.js')
+        $archRel = if ($dirRel) { $dirRel + '/' + $stem + '/' + $oldVer + '.user.js' } else { $stem + '/' + $oldVer + '.user.js' }
+
+        if (Test-Path -LiteralPath $archFile) {
+            $cur = [System.IO.File]::ReadAllText($archFile, [System.Text.Encoding]::UTF8)
+            if ($cur -ne $oldText) {
+                Write-Log ('归档目标已存在且内容不同，保留现有归档：' + $archRel) 'WARN'
+            }
+            continue
+        }
+        New-Item -ItemType Directory -Path $archDir -Force | Out-Null
+        [System.IO.File]::WriteAllText($archFile, $oldText, $utf8NoBom)
+        Write-Log ('已归档旧版：' + $rel + ' v' + $oldVer + ' -> ' + $archRel)
+    }
+}
+
 function Invoke-Sync {
     param([string]$Reason)
 
@@ -91,6 +160,9 @@ function Invoke-Sync {
         while ($guard -lt 20) {
             $guard++
             $st.Pending = $false
+
+            # 提交前先归档：同名脚本被改版本号覆盖时，旧版另存进同名子目录
+            Archive-OldVersions
 
             if (-not (RunGitOk @('add', '-A', '--', '.'))) {
                 Write-Log ('git add 失败，本轮跳过，触发原因 ' + $Reason) 'WARN'
