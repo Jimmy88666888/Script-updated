@@ -44,13 +44,23 @@ for (const rec of records) {
 
   checked++;
   const errs = [];
-  // CI 真正写回的只有脚本头部两个字段，必须等于 CHANNEL 输出
-  if (up !== chanUrl) errs.push(`@updateURL 不一致\n      文件: ${up}\n      CI  : ${chanUrl}`);
-  if (down !== chanUrl) errs.push(`@downloadURL 不一致\n      文件: ${down}\n      CI  : ${chanUrl}`);
-  // update_url / raw 是文档字段，CI 不写回；只要求它们已指向新仓库的正确路径
+  // 旧仓库既有语义：CHANNEL 输出同时用于头部两个字段与 json.update_url；
+  // json.raw 始终是该文件在 raw 域名下的自身地址。
+  if (up !== chanUrl) errs.push(`@updateURL != CHANNEL\n      文件: ${up}\n      CI  : ${chanUrl}`);
+  if (down !== chanUrl) errs.push(`@downloadURL != CHANNEL\n      文件: ${down}\n      CI  : ${chanUrl}`);
+  if (rec.update_url !== chanUrl) errs.push(`json.update_url != CHANNEL\n      json: ${rec.update_url}\n      CI  : ${chanUrl}`);
   const selfRaw = `https://raw.githubusercontent.com/${OWNER}/${REPO}/main/edge-userscripts/${rec.file}`;
-  if (rec.raw !== selfRaw) errs.push(`updates.json.raw 未指向新仓库\n      json: ${rec.raw}\n      期望: ${selfRaw}`);
-  if (rec.update_url !== selfRaw) errs.push(`updates.json.update_url 未指向新仓库\n      json: ${rec.update_url}\n      期望: ${selfRaw}`);
+  if (rec.raw !== selfRaw) errs.push(`json.raw 未指向新仓库自身\n      json: ${rec.raw}\n      期望: ${selfRaw}`);
+  // 与源仓库原始值对比，区分“迁移引入的差异”和“原仓库既有差异”
+  const oldFile = `../_src_orig/${rec.file}`;
+  try {
+    const ob = readFileSync(oldFile, 'utf8');
+    const oup = (ob.match(/^\/\/\s*@updateURL\s+(\S+)/m) || [])[1];
+    if (oup !== up.replace(`/${REPO}/main/edge-userscripts/`, '/edge-userscripts/main/')
+                .replace(`@main/edge-userscripts/`, '@main/')) {
+      errs.push(`头部地址相对源仓库发生了非预期变化\n      源: ${oup}\n      现: ${up}`);
+    }
+  } catch { /* 源副本缺失时跳过该项 */ }
 
   if (errs.length) { bad++; console.log(`X ${rec.file} [${rec.platform}]`); for (const e of errs) console.log('    ' + e); }
 }
