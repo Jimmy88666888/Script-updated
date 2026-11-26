@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         Markdown
 // @namespace    local.edge-userscripts/universal-post-to-markdown
-// @version      2.9.9
-// @description  X / Threads / Reddit / Instagram / Facebook / Pinterest / Dailymotion / TikTok / Telegram公开页 导出 MD+图片/视频；X视频直链识别优化；去重防重复下载；减少多余TXT；X视频直链加速；FB视频帖MD强化（Edge安卓）
+// @version      3.0.2
+// @description  X/Threads/Reddit/IG/FB/Pinterest/DM/TikTok/TG + 微博/小红书/CSDN/知乎 导出 MD+图片/视频（每条旁悬浮按钮）
 // @author       local
 // @icon         data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%230ea5e9'/%3E%3Cstop offset='100%25' stop-color='%236366f1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='32' cy='32' r='30' fill='url(%23g)'/%3E%3Cpath fill='%23fff' d='M18 16h10.5c5.2 0 8.5 2.8 8.5 7.2 0 3.2-1.7 5.5-4.4 6.6L38 48h-7.2l-4.6-16.2H24.5V48H18V16zm6.5 6.2v9.2h3.3c2.8 0 4.4-1.4 4.4-3.6s-1.6-3.6-4.4-3.6h-3.3z'/%3E%3Cpath fill='%23fff' opacity='.9' d='M42 28v8h-3.5l4.5 8 4.5-8H44v-8h-2z'/%3E%3C/svg%3E
 // @match        *://x.com/*
@@ -45,6 +45,33 @@
 // @match        *://vt.tiktok.com/*
 // @match        *://t.me/*
 // @match        *://telegram.me/*
+// @match        *://weibo.com/*
+// @match        *://*.weibo.com/*
+// @match        *://m.weibo.cn/*
+// @match        *://weibo.cn/*
+// @match        *://*.weibo.cn/*
+// @match        *://s.weibo.com/*
+// @match        *://media.weibo.cn/*
+// @match        *://xiaohongshu.com/*
+// @match        *://*.xiaohongshu.com/*
+// @match        *://www.xiaohongshu.com/*
+// @match        *://m.xiaohongshu.com/*
+// @match        *://xhslink.com/*
+// @match        *://*.xhslink.com/*
+// @match        *://csdn.net/*
+// @match        *://*.csdn.net/*
+// @match        *://blog.csdn.net/*
+// @match        *://m.csdn.net/*
+// @match        *://www.csdn.net/*
+// @match        *://zhihu.com/*
+// @match        *://*.zhihu.com/*
+// @match        *://www.zhihu.com/*
+// @match        *://m.zhihu.com/*
+// @match        *://zhuanlan.zhihu.com/*
+// @match        *://m.reddit.com/*
+// @match        *://old.reddit.com/*
+// @match        *://m.tiktok.com/*
+// @match        *://m.instagram.com/*
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js
 // @grant        GM_addStyle
 // @grant        GM_xmlhttpRequest
@@ -74,8 +101,12 @@
     else if (/(^|\.)dailymotion\.com$|^dai\.ly$/i.test(host)) platform = "dailymotion";
     else if (/(^|\.)tiktok\.com$/i.test(host)) platform = "tiktok";
     else if (/^(t\.me|telegram\.me)$/i.test(host)) platform = "telegram";
+    else if (/(^|\.)weibo\.com$|(^|\.)weibo\.cn$|^s\.weibo\.com$/i.test(host)) platform = "weibo";
+    else if (/(^|\.)xiaohongshu\.com$|(^|\.)xhslink\.com$/i.test(host)) platform = "xiaohongshu";
+    else if (/(^|\.)csdn\.net$/i.test(host)) platform = "csdn";
+    else if (/(^|\.)zhihu\.com$/i.test(host)) platform = "zhihu";
 
-    console.log("[UPMD] v2.9.9 boot", { host, platform, href: location.href, JSZip: typeof JSZip });
+    console.log("[UPMD] v3.0.2 boot", { host, platform, href: location.href, JSZip: typeof JSZip });
 
     GM_addStyle(`
         .upmd-inline-btn, #upmd-fab {
@@ -167,6 +198,14 @@
         <button data-action="web-anypost">🌐 AnyPost → Markdown</button>`,
             telegram: `
         <button data-action="web-anypost">🌐 AnyPost（公开帖）</button>`,
+            weibo: `
+        <button data-action="web-anypost">🌐 AnyPost → Markdown</button>`,
+            xiaohongshu: `
+        <button data-action="web-anypost">🌐 AnyPost → Markdown</button>`,
+            csdn: `
+        <button data-action="web-anypost">🌐 AnyPost → Markdown</button>`,
+            zhihu: `
+        <button data-action="web-anypost">🌐 AnyPost → Markdown</button>`,
             generic: `
         <button data-action="web-anypost">🌐 AnyPost → Markdown</button>`
         };
@@ -377,6 +416,37 @@
         if (platform === "telegram") {
             return document.querySelector('.tgme_page') ||
                 document.querySelector('.tgme_widget_message') ||
+                document.querySelector('main') ||
+                document.body;
+        }
+        if (platform === "weibo") {
+            return document.querySelector('.Feed_body') ||
+                document.querySelector('[class*="Feed_body"]') ||
+                document.querySelector('.woo-panel-main') ||
+                document.querySelector('article') ||
+                document.querySelector('.main-page') ||
+                document.body;
+        }
+        if (platform === "xiaohongshu") {
+            return document.querySelector('#detail-desc') ||
+                document.querySelector('.note-container') ||
+                document.querySelector('[class*="note-detail"]') ||
+                document.querySelector('article') ||
+                document.querySelector('main') ||
+                document.body;
+        }
+        if (platform === "csdn") {
+            return document.querySelector('#content_views') ||
+                document.querySelector('.blog-content-box') ||
+                document.querySelector('article') ||
+                document.querySelector('main') ||
+                document.body;
+        }
+        if (platform === "zhihu") {
+            return document.querySelector('.Post-RichTextContainer') ||
+                document.querySelector('.RichContent') ||
+                document.querySelector('.QuestionAnswer-content') ||
+                document.querySelector('article') ||
                 document.querySelector('main') ||
                 document.body;
         }
@@ -608,70 +678,4 @@
             try { r = n.getBoundingClientRect(); } catch (_) { return; }
             const minH = mobile ? 70 : 90;
             const minW = mobile ? 140 : 200;
-            if (r.height < minH || r.width < minW) return;
-            // skip ultra-tall page shells
-            if (r.height > window.innerHeight * 4) return;
-            cards.add(n);
-        }
-
-        // Desktop-ish
-        document.querySelectorAll('[role="article"]').forEach(addCard);
-        document.querySelectorAll('[data-pagelet*="FeedUnit"], [data-pagelet*="Feed"]').forEach(addCard);
-        document.querySelectorAll('[aria-posinset]').forEach(addCard);
-        document.querySelectorAll('[role="feed"] > div').forEach(div => {
-            const art = div.querySelector('[role="article"]');
-            addCard(art || div);
-        });
-        document.querySelectorAll('[role="dialog"]').forEach(dlg => {
-            const art = dlg.querySelector('[role="article"]');
-            if (art) addCard(art);
-            else addCard(dlg);
-        });
-
-        // Mobile / m.facebook / mbasic markers
-        document.querySelectorAll("article").forEach(addCard);
-        document.querySelectorAll("[data-ft]").forEach(n => {
-            // data-ft often on story root on m.facebook
-            if (n.querySelector && (n.querySelector("img") || n.querySelector("video"))) addCard(n);
-        });
-        document.querySelectorAll(
-            '#m_news_feed_stream > div, #root [data-tracking-duration-id], section > article, div[id^="u_0_"] > div'
-        ).forEach(addCard);
-        // story containers with action bar text
-        document.querySelectorAll("div, section, article").forEach(n => {
-            if (cards.has(n)) return;
-            const t = (n.innerText || "").slice(0, 200);
-            if (!t) return;
-            if (!/(赞|Like|讚|Comment|评论|留言|Share|分享)/.test(t)) return;
-            if (!n.querySelector("img, image, video")) return;
-            const r = n.getBoundingClientRect();
-            if (r.height < (mobile ? 100 : 140) || r.height > 2500) return;
-            if (r.width < (mobile ? 140 : 200)) return;
-            // prefer mid-level nodes: not whole feed
-            if (n.querySelectorAll('[role="article"], article, [data-ft]').length > 3) return;
-            addCard(n);
-        });
-
-        // Walk up from avatars (img + svg image)
-        document.querySelectorAll(
-            'a img, a image, svg image, img[src*="scontent"], img[src*="fbcdn"]'
-        ).forEach(img => {
-            let br;
-            try { br = img.getBoundingClientRect(); } catch (_) { return; }
-            // mobile avatars often 36–48px
-            if (br.width < 18 || br.width > 96 || br.height > 96) return;
-            if (br.bottom < -80 || br.top > window.innerHeight + 80) return;
-            let p = img.parentElement;
-            for (let i = 0; i < 16 && p; i++) {
-                const pr = p.getBoundingClientRect();
-                if (pr.height > (mobile ? 100 : 160) && pr.width > (mobile ? 140 : 260) &&
-                    pr.height < window.innerHeight * 3.5) {
-                    addCard(p);
-                    break;
-                }
-                p = p.parentElement;
-            }
-        });
-
-        cards.forEach(card => {
-            if 
+            if (r.height < minH || r.widt
