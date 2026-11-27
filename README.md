@@ -27,8 +27,10 @@ Local/                     # 自建与本地改写
   edge-dl-pc/archive/1.0.0-pc.user.js
   edge-dl/edge-dl.user.js + edge-dl-mobile.user.js
   video-episode-info/…       universal-post-to-markdown/…
+  html5-video-mobile/…       html5-video-player-merged/…
+  video-fullscreen-clock/…
   视频竖排剧集名-全站通用版/…
-Author/                    # 第三方脚本收录（13 个，多数为电脑版 + 手机版两份）
+Author/                    # 第三方脚本收录（10 个，多数为电脑版 + 手机版两份）
   pagetual/pagetual.user.js + pagetual-mobile.user.js
   …
 docs/index.html            # GitHub Pages 安装页
@@ -50,7 +52,7 @@ LICENSE
 
 ## 脚本清单
 
-### Local（8 个，自建与本地改写）
+### Local（11 个，自建与本地改写）
 
 | 脚本 | 版本 | 安装 | 位置 |
 | --- | --- | --- | --- |
@@ -63,7 +65,10 @@ LICENSE
 | [Markdown](Local/universal-post-to-markdown/universal-post-to-markdown.user.js) | 3.0.2 | [电脑端]( https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Local/universal-post-to-markdown/universal-post-to-markdown.user.js ) · [手机端]( https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/universal-post-to-markdown/universal-post-to-markdown-mobile.user.js ) | `Local/universal-post-to-markdown/` |
 | [视频播放页竖排剧集名 - 终极版](Local/%E8%A7%86%E9%A2%91%E7%AB%96%E6%8E%92%E5%89%A7%E9%9B%86%E5%90%8D-%E5%85%A8%E7%AB%99%E9%80%9A%E7%94%A8%E7%89%88/%E8%A7%86%E9%A2%91%E7%AB%96%E6%8E%92%E5%89%A7%E9%9B%86%E5%90%8D-%E5%85%A8%E7%AB%99%E9%80%9A%E7%94%A8%E7%89%88.user.js) | 6.0 | [安装]( https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/%E8%A7%86%E9%A2%91%E7%AB%96%E6%8E%92%E5%89%A7%E9%9B%86%E5%90%8D-%E5%85%A8%E7%AB%99%E9%80%9A%E7%94%A8%E7%89%88/%E8%A7%86%E9%A2%91%E7%AB%96%E6%8E%92%E5%89%A7%E9%9B%86%E5%90%8D-%E5%85%A8%E7%AB%99%E9%80%9A%E7%94%A8%E7%89%88.user.js ) | `Local/视频竖排剧集名-全站通用版/` |
 
-### Author（13 个，第三方收录）
+| [HTML5手机版](Local/html5-video-mobile/html5-video-mobile.user.js) | 72.09 | [电脑端]( https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Local/html5-video-mobile/html5-video-mobile.user.js ) · [手机端]( https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/html5-video-mobile/html5-video-mobile-mobile.user.js ) | `Local/html5-video-mobile/` |
+| [HTML5视频播放工具（增强合并版）](Local/html5-video-player-merged/html5-video-player-merged.user.js) | 2.2.7-merged | [电脑端]( https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Local/html5-video-player-merged/html5-video-player-merged.user.js ) · [手机端]( https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/html5-video-player-merged/html5-video-player-merged-mobile.user.js ) | `Local/html5-video-player-merged/` |
+| [视频全屏显示时间（全站通用增强版）](Local/video-fullscreen-clock/video-fullscreen-clock.user.js) | 0.6.11 | [电脑端]( https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Local/video-fullscreen-clock/video-fullscreen-clock.user.js ) · [手机端]( https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/video-fullscreen-clock/video-fullscreen-clock-mobile.user.js ) | `Local/video-fullscreen-clock/` |
+### Author（10 个，第三方收录）
 
 | 脚本 | 版本 | 电脑端 | 手机端 | 原始来源 |
 | --- | --- | --- | --- | --- |
@@ -72,13 +77,10 @@ LICENSE
 | [GitHub 中文化插件](Author/github-chinese/github-chinese.user.js) | 1.9.2.4-2026-11-10 | [电脑端]( https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Author/github-chinese/github-chinese.user.js ) | [手机端]( https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/github-chinese/github-chinese-mobile.user.js ) | update.greasyfork.org/scripts/435208/GitHub%20%E4%B8%AD%E6%9 |
 | [Github Enhancement - High Speed Download](Author/github-fast-download/github-fast-download.user.js) | 2.6.41 | [电脑端]( https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Author/github-fast-download/github-fast-download.user.js ) | [手机端]( https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/github-fast-download/github-fast-download-mobile.user.js ) | update.greasyfork.org/scripts/412245/Github%20%E5%A2%9E%E5%B |
 | [Google & baidu Switcher (ALL in One)](Author/google-baidu-switcher/google-baidu-switcher.user.js) | 2026.11.07.1 | [电脑端]( https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Author/google-baidu-switcher/google-baidu-switcher.user.js ) | [手机端]( https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/google-baidu-switcher/google-baidu-switcher-mobile.user.js ) | update.greasyfork.org/scripts/12909/%E4%BC%98%E9%9B%85%E7%9A |
-| [HTML5手机版](Author/html5-video-mobile/html5-video-mobile.user.js) | 72.09 | [电脑端]( https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Author/html5-video-mobile/html5-video-mobile.user.js ) | [手机端]( https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/html5-video-mobile/html5-video-mobile-mobile.user.js ) | 第三方收录 |
-| [HTML5视频播放工具（增强合并版）](Author/html5-video-player-merged/html5-video-player-merged.user.js) | 2.2.7-merged | [电脑端]( https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Author/html5-video-player-merged/html5-video-player-merged.user.js ) | [手机端]( https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/html5-video-player-merged/html5-video-player-merged-mobile.user.js ) | 第三方收录 |
 | [LinkSwift](Author/linkswift/linkswift.user.js) | 1.1.4 | [电脑端]( https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Author/linkswift/linkswift.user.js ) | [手机端]( https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/linkswift/linkswift-mobile.user.js ) | 第三方收录 |
 | [Pagetual](Author/pagetual/pagetual.user.js) | 1.9.37.134 | [电脑端]( https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Author/pagetual/pagetual.user.js ) | [手机端]( https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/pagetual/pagetual-mobile.user.js ) | update.greasyfork.org/scripts/438684/Pagetual.user.js |
 | [redirect 外链跳转](Author/redirect-external-link/redirect-external-link.user.js) | 1.67.1 | [电脑端]( https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Author/redirect-external-link/redirect-external-link.user.js ) | [手机端]( https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/redirect-external-link/redirect-external-link-mobile.user.js ) | update.greasyfork.org/scripts/416338/redirect%20%E5%A4%96%E9 |
 | [Telegram Media Downloader](Author/telegram-media-downloader/telegram-media-downloader.user.js) | 2.01 | [电脑端]( https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Author/telegram-media-downloader/telegram-media-downloader.user.js ) | [手机端]( https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/telegram-media-downloader/telegram-media-downloader-mobile.user.js ) | update.greasyfork.org/scripts/446342/Telegram%20Media%20Down |
-| [视频全屏显示时间（全站通用增强版）](Author/video-fullscreen-clock/video-fullscreen-clock.user.js) | 0.6.11 | [电脑端]( https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Author/video-fullscreen-clock/video-fullscreen-clock.user.js ) | [手机端]( https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/video-fullscreen-clock/video-fullscreen-clock-mobile.user.js ) | 第三方收录 |
 | [全网VIP视频免费破解去广告【最新3.2】](Author/vip-video-unlock/vip-video-unlock.user.js) | 3.2.10 | [电脑端]( https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Author/vip-video-unlock/vip-video-unlock.user.js ) | [手机端]( https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/vip-video-unlock/vip-video-unlock-mobile.user.js ) | update.greasyfork.org/scripts/537189/%E5%85%A8%E7%BD%91VIP%E |
 
 ## 自更新机制
@@ -89,6 +91,13 @@ LICENSE
 - **缓存**：jsDelivr 对 `@main` 引用约有 12 小时缓存，电脑端会略滞后；急用可把 `@main` 换成具体提交 SHA。
 
 ## 变更记录
+
+### 2026-11-27 HTML5 与视频全屏脚本迁入 Local
+
+- 三个脚本（`html5-video-mobile`、`html5-video-player-merged`、`video-fullscreen-clock`）的 `@namespace` 早已是 `local.*` 本地身份，这次把目录整体从 `Author/` 移到 `Local/`，目录名与文件名不变：Local 由 8 个增至 11 个，Author 由 13 个减至 10 个。
+- `updates.json` 六条记录（三脚本 × 电脑/手机）的 `file` / `group` / `raw` / `update_url` 一并改到 `Local/`；`docs/index.html` 安装页与 README 清单同步换组。
+- **新增文件落位规则**写入 `auto-push.ps1`：新增脚本先找同名目录，命中就放进去；文件名带版本号（如 `link1.0`、`link1.1`）按主干名归入 `link/`；没有可用目录就自动新建同名目录再放入。
+- 因更新地址变化，这三份脚本需按新链接重装一次，之后恢复自动更新。
 
 ### 2026-11-26 目录重构为 Local / Author
 

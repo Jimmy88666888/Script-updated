@@ -192,7 +192,19 @@ function Get-NormalizedInboxName {
     return ($stem + '.user.js')
 }
 
-# 脚本落位规则：仓库里已有同名脚本就替换它原来的文件，否则视为本地脚本放入 Local/<脚本名>/。
+# 文件名主干：把结尾的版本号（link1.0 / link-1.1 / link v2.0.0）剥掉，归入主干名目录。
+# 只认带小数点的版本号，避免把 html5、video-episode-info 这类正常名字截断。
+function Get-ScriptBaseStem {
+    param([string]$Stem)
+    $base = $Stem -replace '[-_ .]?v?\d+(?:\.\d+)+$', ''
+    if (-not $base -or $base -eq $Stem) { return $Stem }
+    return $base
+}
+
+# 脚本落位规则：
+#   1) 仓库里已有同名脚本 -> 原地替换它原来的文件（Local/ 或 Author/ 下同名目录）
+#   2) 文件名带版本号（如 link1.0、link1.1）-> 归入主干名目录 link/；目录已存在就放进去，没有就新建
+#   3) 其余视为新脚本 -> Local/<脚本名>/，同名目录已存在则直接放进去，不存在自动新建
 function Resolve-ScriptPath {
     param([string]$FileName)
     $stem = $FileName -replace '\.user\.js$', ''
@@ -200,7 +212,15 @@ function Resolve-ScriptPath {
         $cand = Join-Path $RepoPath (Join-Path (Join-Path $root $stem) $FileName)
         if (Test-Path -LiteralPath $cand) { return $cand }
     }
-    return (Join-Path $RepoPath (Join-Path 'Local' (Join-Path $stem $FileName)))
+    $base = Get-ScriptBaseStem $stem
+    foreach ($root in @('Local', 'Author')) {
+        $dir = Join-Path $RepoPath (Join-Path $root $base)
+        if (-not (Test-Path -LiteralPath $dir)) { continue }
+        # 同名目录里已有脚本文件：这是同一脚本的又一个版本，并进这个目录
+        $existing = @(Get-ChildItem -LiteralPath $dir -Filter '*.user.js' -File -ErrorAction SilentlyContinue)
+        if ($existing.Count -gt 0) { return (Join-Path $dir $FileName) }
+    }
+    return (Join-Path $RepoPath (Join-Path 'Local' (Join-Path $base $FileName)))
 }
 
 function Ingest-Inbox {

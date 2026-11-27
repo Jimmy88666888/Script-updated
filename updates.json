@@ -334,7 +334,7 @@
     "group": "Author"
   },
   {
-    "file": "Author/html5-video-mobile/html5-video-mobile-mobile.user.js",
+    "file": "Local/html5-video-mobile/html5-video-mobile-mobile.user.js",
     "platform": "mobile",
     "name": "HTML5手机版",
     "version": "72.09",
@@ -350,12 +350,12 @@
     ],
     "update_channel": "repo-raw",
     "mirror": "raw",
-    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/html5-video-mobile/html5-video-mobile-mobile.user.js",
-    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/html5-video-mobile/html5-video-mobile-mobile.user.js",
-    "group": "Author"
+    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/html5-video-mobile/html5-video-mobile-mobile.user.js",
+    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/html5-video-mobile/html5-video-mobile-mobile.user.js",
+    "group": "Local"
   },
   {
-    "file": "Author/html5-video-player-merged/html5-video-player-merged-mobile.user.js",
+    "file": "Local/html5-video-player-merged/html5-video-player-merged-mobile.user.js",
     "platform": "mobile",
     "name": "HTML5视频播放工具（增强合并版）",
     "version": "2.2.7-merged",
@@ -370,9 +370,9 @@
     ],
     "update_channel": "repo-raw",
     "mirror": "raw",
-    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/html5-video-player-merged/html5-video-player-merged-mobile.user.js",
-    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/html5-video-player-merged/html5-video-player-merged-mobile.user.js",
-    "group": "Author"
+    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/html5-video-player-merged/html5-video-player-merged-mobile.user.js",
+    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/html5-video-player-merged/html5-video-player-merged-mobile.user.js",
+    "group": "Local"
   },
   {
     "file": "Author/linkswift/linkswift-mobile.user.js",
@@ -646,7 +646,7 @@
     "group": "Local"
   },
   {
-    "file": "Author/video-fullscreen-clock/video-fullscreen-clock-mobile.user.js",
+    "file": "Local/video-fullscreen-clock/video-fullscreen-clock-mobile.user.js",
     "platform": "mobile",
     "name": "视频全屏显示时间（全站通用增强版）",
     "version": "0.6.11",
@@ -661,9 +661,9 @@
     ],
     "update_channel": "repo-raw",
     "mirror": "raw",
-    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/video-fullscreen-clock/video-fullscreen-clock-mobile.user.js",
-    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/video-fullscreen-clock/video-fullscreen-clock-mobile.user.js",
-    "group": "Author"
+    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/video-fullscreen-clock/video-fullscreen-clock-mobile.user.js",
+    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/video-fullscreen-clock/video-fullscreen-clock-mobile.user.js",
+    "group": "Local"
   },
   {
     "file": "Author/vip-video-unlock/vip-video-unlock-mobile.user.js",
@@ -1019,7 +1019,7 @@
     "group": "Author"
   },
   {
-    "file": "Author/html5-video-mobile/html5-video-mobile.user.js",
+    "file": "Local/html5-video-mobile/html5-video-mobile.user.js",
     "platform": "pc",
     "name": "HTML5手机版",
     "version": "72.09",
@@ -1035,12 +1035,12 @@
     ],
     "update_channel": "repo-mirror",
     "mirror": "jsdelivr",
-    "update_url": "https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Author/html5-video-mobile/html5-video-mobile.user.js",
-    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/html5-video-mobile/html5-video-mobile.user.js",
-    "group": "Author"
+    "update_url": "https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Local/html5-video-mobile/html5-video-mobile.user.js",
+    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/html5-video-mobile/html5-video-mobile.user.js",
+    "group": "Local"
   },
   {
-    "file": "Author/html5-video-player-merged/html5-video-player-merged.user.js",
+    "file": "Local/html5-video-player-merged/html5-video-player-merged.user.js",
     "platform": "pc",
     "name": "HTML5视频播放工具（增强合并版）",
     "version": "2.2.7-merged",
@@ -1055,9 +1055,9 @@
     ],
     "update_channel": "repo-mirror",
     "mirror": "jsdelivr",
-    "update_url": "https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Author/html5-video-player-merged/html5-video-player-merged.user.js",
-    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/html5-video-player-merged/html5-video-player-merged.user.js",
-    "group": "Author"
+    "update_url": "https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Local/html5-video-player-merged/html5-video-player-merged.user.js",
+    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/html5-video-player-merged/html5-video-player-merged.user.js",
+    "group": "Local"
   },
   {
     "file": "Author/linkswift/linkswift.user.js",
@@ -1331,7 +1331,7 @@
     "group": "Local"
   },
   {
-    "file": "Author/video-fullscreen-clock/video-fullscreen-clock.user.js",
+    "file": "Local/video-fullscreen-clock/video-fullscreen-clock.user.js",
     "platform": "pc",
     "name": "视频全屏显示时间（全站通用增强版）",
     "version": "0.6.11",
@@ -1346,9 +1346,9 @@
     ],
     "update_channel": "repo-mirror",
     "mirror": "jsdelivr",
-    "update_url": "https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Author/video-fullscreen-clock/video-fullscreen-clock.user.js",
-    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/video-fullscreen-clock/video-fullscreen-clock.user.js",
-    "group": "Author"
+    "update_url": "https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Local/video-fullscreen-clock/video-fullscreen-clock.user.js",
+    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/video-fullscreen-clock/video-fullscreen-clock.user.js",
+    "group": "Local"
   },
   {
     "file": "Author/vip-video-unlock/vip-video-unlock.user.js",
