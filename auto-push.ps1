@@ -197,15 +197,8 @@ function Resolve-ScriptPath {
     param([string]$FileName)
     $stem = $FileName -replace '\.user\.js$', ''
     foreach ($root in @('Local', 'Author')) {
-        $dir = Join-Path $RepoPath (Join-Path $root $stem)
-        if (Test-Path -LiteralPath $dir) {
-            $hit = Get-ChildItem -LiteralPath $dir -File -Filter '*.user.js' -ErrorAction SilentlyContinue |
-                Where-Object { $_.Name -notmatch '-mobile\.user\.js$' } | Select-Object -First 1
-            if (-not $hit) {
-                $hit = Get-ChildItem -LiteralPath $dir -File -Filter '*.user.js' -ErrorAction SilentlyContinue | Select-Object -First 1
-            }
-            if ($hit) { return $hit.FullName }
-        }
+        $cand = Join-Path $RepoPath (Join-Path (Join-Path $root $stem) $FileName)
+        if (Test-Path -LiteralPath $cand) { return $cand }
     }
     return (Join-Path $RepoPath (Join-Path 'Local' (Join-Path $stem $FileName)))
 }
