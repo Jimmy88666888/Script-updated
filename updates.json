@@ -1244,10 +1244,10 @@
       "*://t.me/*",
       "*://telegram.me/*"
     ],
-    "update_channel": "repo-mirror",
-    "mirror": "jsdelivr",
+    "update_channel": "repo-raw",
+    "mirror": "raw",
     "universal": true,
-    "update_url": "https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Local/universal-post-to-markdown/universal-post-to-markdown.user.js",
+    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/universal-post-to-markdown/universal-post-to-markdown.user.js",
     "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/universal-post-to-markdown/universal-post-to-markdown.user.js",
     "group": "Local"
   },
@@ -1265,10 +1265,10 @@
     "match": [
       "*://*/*"
     ],
-    "update_channel": "repo-mirror",
-    "mirror": "jsdelivr",
+    "update_channel": "repo-raw",
+    "mirror": "raw",
     "universal": true,
-    "update_url": "https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Local/video-episode-info/video-episode-info.user.js",
+    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/video-episode-info/video-episode-info.user.js",
     "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/video-episode-info/video-episode-info.user.js",
     "group": "Local"
   },
@@ -1286,10 +1286,10 @@
     "match": [
       "*://*/*"
     ],
-    "update_channel": "repo-mirror",
-    "mirror": "jsdelivr",
+    "update_channel": "repo-raw",
+    "mirror": "raw",
     "universal": true,
-    "update_url": "https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Local/video-fullscreen-clock/video-fullscreen-clock.user.js",
+    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/video-fullscreen-clock/video-fullscreen-clock.user.js",
     "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/video-fullscreen-clock/video-fullscreen-clock.user.js",
     "group": "Local"
   },
@@ -1345,7 +1345,8 @@
   },
   {
     "file": "Local/CloudLink-Mobile/CloudLink-Mobile.user.js",
-    "platform": "pc",
+    "platform": "mobile",
+    "platform_override": "mobile",
     "name": "CloudLink Mobile",
     "version": "1.0.1",
     "author": "CloudLink Mobile",
@@ -1367,10 +1368,10 @@
       "*://dropbox.com/*",
       "*://www.dropboxusercontent.com/*"
     ],
-    "update_channel": "repo-mirror",
-    "mirror": "jsdelivr",
+    "update_channel": "repo-raw",
+    "mirror": "raw",
     "universal": false,
-    "update_url": "https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Local/CloudLink-Mobile/CloudLink-Mobile.user.js",
+    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/CloudLink-Mobile/CloudLink-Mobile.user.js",
     "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/CloudLink-Mobile/CloudLink-Mobile.user.js",
     "group": "Local"
   },
@@ -1397,7 +1398,8 @@
   },
   {
     "file": "Local/LinkSwift-Mobile/LinkSwift-Mobile.user.js",
-    "platform": "pc",
+    "platform": "mobile",
+    "platform_override": "mobile",
     "name": "LinkSwift 手机版",
     "version": "1.1.3-mobile",
     "author": "Hmjz100、油小猴",
@@ -1445,10 +1447,10 @@
       "*://*.123952.com/*",
       "*://*.123912.com/*"
     ],
-    "update_channel": "repo-mirror",
-    "mirror": "jsdelivr",
+    "update_channel": "repo-raw",
+    "mirror": "raw",
     "universal": false,
-    "update_url": "https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Local/LinkSwift-Mobile/LinkSwift-Mobile.user.js",
+    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/LinkSwift-Mobile/LinkSwift-Mobile.user.js",
     "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/LinkSwift-Mobile/LinkSwift-Mobile.user.js",
     "group": "Local"
   },
@@ -1475,7 +1477,8 @@
   },
   {
     "file": "Local/edge-dl-mobile/edge-dl-mobile.user.js",
-    "platform": "pc",
+    "platform": "mobile",
+    "platform_override": "mobile",
     "name": "EdgeDL 手机版",
     "version": "2.3.3-local-float-toggle",
     "author": "Chumor (local fix)",
@@ -1487,10 +1490,10 @@
     "match": [
       "*://*/*"
     ],
-    "update_channel": "repo-mirror",
-    "mirror": "jsdelivr",
+    "update_channel": "repo-raw",
+    "mirror": "raw",
     "universal": false,
-    "update_url": "https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Local/edge-dl-mobile/edge-dl-mobile.user.js",
+    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/edge-dl-mobile/edge-dl-mobile.user.js",
     "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/edge-dl-mobile/edge-dl-mobile.user.js",
     "group": "Local"
   }

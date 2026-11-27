@@ -43,13 +43,8 @@ const cdn = (f) => `https://cdn.jsdelivr.net/gh/${OWNER}/${REPO}@main/${f}`;
 const raw = (f) => `https://raw.githubusercontent.com/${OWNER}/${REPO}/main/${f}`;
 const blob = (f) => `https://github.com/${OWNER}/${REPO}/blob/main/${f}`;
 
-/** 脚本头部更新地址的规范值：电脑版走 jsDelivr、手机版走 raw，路径统一按 encodeURI 转义 */
-function expectedHeaderUrl(relPath) {
-  const folder = relPath.split('/')[1];
-  const stem = path.basename(relPath, '.user.js');
-  const platform = stem === `${folder}-mobile` ? 'mobile' : 'pc';
-  return { platform, url: encodeURI((platform === 'pc' ? cdn : raw)(relPath)) };
-}
+/** 脚本头部更新地址的规范值：跟随该记录的更新通道（mirror=jsdelivr 走镜像，否则 raw 默认） */
+const headerUrl = (rec) => encodeURI((rec.mirror === 'jsdelivr' ? cdn : raw)(rec.file));
 
 const decodeUrl = (u) => {
   try {
@@ -128,13 +123,16 @@ async function scanScripts() {
 /** 更新地址归一化：脚本头部 @updateURL / @downloadURL 必须指向该文件当前的仓库路径。
  * 目录搬迁、改名、电脑版误用 raw 时自动改正；archive/ 里的旧版副本不动。
  * 返回改动过的文件清单（--check / --dry-run 只报告、不写盘）。*/
-async function normalizeHeaders() {
+async function normalizeHeaders(records) {
   const changed = [];
   const line = (key, url) => `// ${key}  ${url}`;
+  const byFile = new Map(records.map((r) => [r.file, r]));
   for (const item of await scanScripts()) {
     const abs = path.join(ROOT, item.file);
+    const rec = byFile.get(item.file);
+    if (!rec) continue;
     const text = await readFile(abs, 'utf8');
-    const { url } = expectedHeaderUrl(item.file);
+    const url = headerUrl(rec);
     let out = text;
 
     for (const key of ['@updateURL', '@downloadURL']) {
@@ -175,13 +173,20 @@ async function buildRecords() {
     const stem = path.basename(item.file, '.user.js');
     // 手机版判定只认「<目录名>-mobile.user.js」：像 html5-video-mobile.user.js 这种
     // 名字里本来就带 mobile 的电脑版脚本，不能被误判成手机版。
-    const platform = stem === `${item.folder}-mobile` ? 'mobile' : 'pc';
+    // 手机专用脚本的名字可能不带 -mobile 后缀（CloudLink-Mobile 等），靠清单里的
+    // platform_override 标注，避免被当成电脑版而走镜像
+    const derived = stem === `${item.folder}-mobile` ? 'mobile' : 'pc';
+    const platform = prev?.platform_override === 'mobile' ? 'mobile' : derived;
+    const universal = prev?.universal === true;
+    // 通道：手机脚本与本地通用脚本一律 raw 默认（不走镜像）；只有电脑版非通用脚本走 jsDelivr
+    const useMirror = platform === 'pc' && !universal;
     const pick = (key, fallback) =>
       prev && prev[key] !== undefined && prev[key] !== '' ? prev[key] : fallback;
 
     records.push({
       file: item.file,
       platform,
+      ...(prev?.platform_override ? { platform_override: prev.platform_override } : {}),
       name: pick('name', h.nameZh || h.name || stem),
       version: h.version || pick('version', '0.0.0'),
       author: prev && prev.author !== undefined ? prev.author : h.author || '',
@@ -193,11 +198,11 @@ async function buildRecords() {
       // match 属于参考信息：清单里已有（哪怕是空数组）就沿用，避免每次生成把上百条
       // @match 重新灌进来；只有全新脚本才从头部取。
       match: prev ? prev.match || [] : h.match,
-      update_channel: platform === 'pc' ? 'repo-mirror' : 'repo-raw',
-      mirror: platform === 'pc' ? 'jsdelivr' : 'raw',
+      update_channel: useMirror ? 'repo-mirror' : 'repo-raw',
+      mirror: useMirror ? 'jsdelivr' : 'raw',
       // universal：电脑版与手机版内容一致的脚本，页面上只给一个「默认安装」入口
-      universal: prev?.universal === true,
-      update_url: (platform === 'pc' ? cdn : raw)(item.file),
+      universal,
+      update_url: (useMirror ? cdn : raw)(item.file),
       raw: raw(item.file),
       group: item.group,
     });
@@ -259,7 +264,7 @@ function readmeLocalTable(scripts) {
     const href = encodeURI(main.file);
     // 通用脚本（两份内容一致）只给一个默认入口，避免同内容装两遍
     const install = main.universal
-      ? `[默认安装]( ${cdn(main.file)} )（通用）`
+      ? `[默认安装]( ${raw(main.file)} )（通用）`
       : s.pc && s.mobile
         ? `[电脑端]( ${cdn(s.pc.file)} ) · [手机端]( ${raw(s.mobile.file)} )`
         : `[安装]( ${raw(main.file)} )`;
@@ -308,7 +313,7 @@ function pageCards(scripts) {
       : `v${esc(main.version)}`;
     const buttons = [];
     if (main.universal) {
-      buttons.push(`<a class="btn primary" href="${cdn(main.file)}">默认安装</a>`);
+      buttons.push(`<a class="btn primary" href="${raw(main.file)}">默认安装</a>`);
     } else if (s.pc && s.mobile) {
       buttons.push(`<a class="btn primary" href="${cdn(s.pc.file)}">电脑端安装</a>`);
       buttons.push(`<a class="btn primary" href="${raw(s.mobile.file)}">手机端安装</a>`);
@@ -397,8 +402,8 @@ function renderPage(html, scripts) {
 }
 
 async function main() {
-  const scriptChanges = await normalizeHeaders();
   const records = await buildRecords();
+  const scriptChanges = await normalizeHeaders(records);
   const scripts = groupByScript(records);
   const total = scripts.length;
   const local = scripts.filter((s) => s.group === 'Local').length;
