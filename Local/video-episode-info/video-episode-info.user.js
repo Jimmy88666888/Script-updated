@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         视频剧集信息显示
 // @namespace    local.edge-userscripts/video-episode-info
-// @version      6.7.0
-// @description  竖排/横排显示剧集名+集数，带完整设置面板、主题、快捷键、全屏适配、按站配置、移动端触摸适配。v4.1 修复爱奇艺等站点全屏不显示；v4.2 剧名优先读播放器 DOM 与选集高亮项，切集不滞后；v4.3 识别失败自动降级；v4.4 切集重播入场动画、小屏字号自适应、竖排长标题溢出保护、可选沉浸淡出、面板位置记忆与 Esc 关闭；v4.5 新增电脑/手机/极简一键预设；v4.6 按真实播放页 DOM 重写识别层（CSS Module 哈希类名、8 位期号、播放器标题区取集数、避开热搜榜等数字干扰）；v4.6.2 修集数位于标题开头时剧名被污染、剧名尾随时长未剥离；v4.7 修竖排换行实为换列、固定单列宽度+overflow:hidden 把集数列整列裁掉（“看不到集数”的真凶）；v4.8 竖排数字/字母改为逐字直立（text-orientation: upright），不再横躺，可在面板切回；v4.9 集数支持独立字号（默认自动取剧名70%），两列高度更协调；v5.0 新增列间距滑杆（竖排下用 line-height 拉开两列，间距仍带背景不断裂）；v5.1 一键预设纳入集数字号与列间距，电脑/手机/极简三档整套观感一起切换；v6.0 全站注入（检测到 video 才启用，iframe 内不运行）、设置入口改为头像按钮（默认仅全屏显示，可自定义图片地址或上传）、面板新增保存选项、未知站点走通用识别兜底（标题区 / JSON-LD / 选集高亮），爱奇艺专属逻辑保持不变；v6.1 默认头像改为「剧」字；优化 YouTube 标题/集数识别（专属选择器、剥离 - YouTube 尾巴、支持 Episode/Ep/SxxExx 英文集数格式）；v6.1.1 为 Tampermonkey 脚本列表添加「剧」字 @icon；v6.2 实测主流站修复：B站 mediaTitle、腾讯 player-play-title、剥离 15:18 时长尾巴、强化腾讯/B站标题噪音与英文集数清理；v6.3 增强非主流站：MacCMS 系（trvod/szctv）、爱壹帆 iyf.tv、OnDemandChina 标题/URL 集数识别与站点尾巴清理；v6.4 手机端油猴菜单新增：打开设置、切换显示、手机预设、头像常驻；v6.5 配置改存油猴自身存储（GM_setValue）并双写 localStorage 兜底，修复关闭「按站配置」后一保存就丢的问题，重启浏览器后不再回到默认；v6.6 新增「仅全屏时显示标题」选项（与「全屏时隐藏标题」互斥）；v6.7 侧边默认只显示「剧名+数字集数」单列（红日第一集 → 红日1），长剧名自动折成多列，面板可关闭合并
+// @version      6.7.1
+// @description  竖排/横排显示剧集名+集数，带完整设置面板、主题、快捷键、全屏适配、按站配置、移动端触摸适配。v4.1 修复爱奇艺等站点全屏不显示；v4.2 剧名优先读播放器 DOM 与选集高亮项，切集不滞后；v4.3 识别失败自动降级；v4.4 切集重播入场动画、小屏字号自适应、竖排长标题溢出保护、可选沉浸淡出、面板位置记忆与 Esc 关闭；v4.5 新增电脑/手机/极简一键预设；v4.6 按真实播放页 DOM 重写识别层（CSS Module 哈希类名、8 位期号、播放器标题区取集数、避开热搜榜等数字干扰）；v4.6.2 修集数位于标题开头时剧名被污染、剧名尾随时长未剥离；v4.7 修竖排换行实为换列、固定单列宽度+overflow:hidden 把集数列整列裁掉（“看不到集数”的真凶）；v4.8 竖排数字/字母改为逐字直立（text-orientation: upright），不再横躺，可在面板切回；v4.9 集数支持独立字号（默认自动取剧名70%），两列高度更协调；v5.0 新增列间距滑杆（竖排下用 line-height 拉开两列，间距仍带背景不断裂）；v5.1 一键预设纳入集数字号与列间距，电脑/手机/极简三档整套观感一起切换；v6.0 全站注入（检测到 video 才启用，iframe 内不运行）、设置入口改为头像按钮（默认仅全屏显示，可自定义图片地址或上传）、面板新增保存选项、未知站点走通用识别兜底（标题区 / JSON-LD / 选集高亮），爱奇艺专属逻辑保持不变；v6.1 默认头像改为「剧」字；优化 YouTube 标题/集数识别（专属选择器、剥离 - YouTube 尾巴、支持 Episode/Ep/SxxExx 英文集数格式）；v6.1.1 为 Tampermonkey 脚本列表添加「剧」字 @icon；v6.2 实测主流站修复：B站 mediaTitle、腾讯 player-play-title、剥离 15:18 时长尾巴、强化腾讯/B站标题噪音与英文集数清理；v6.3 增强非主流站：MacCMS 系（trvod/szctv）、爱壹帆 iyf.tv、OnDemandChina 标题/URL 集数识别与站点尾巴清理；v6.4 手机端油猴菜单新增：打开设置、切换显示、手机预设、头像常驻；v6.5 配置改存油猴自身存储（GM_setValue）并双写 localStorage 兜底，修复关闭「按站配置」后一保存就丢的问题，重启浏览器后不再回到默认；v6.6 新增「仅全屏时显示标题」选项（与「全屏时隐藏标题」互斥）；v6.7 侧边默认只显示「剧名+数字集数」单列（红日第一集 → 红日1），长剧名自动折成多列，面板可关闭合并；v6.7.1 集数一律归一为纯数字（EP01/S01E02/01 → 1/1/2），剧名自带同集号不重复，长剧名优先折列而不再压字号
 // @author       Jackson Smith
 // @icon         data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%2232%22%20r%3D%2232%22%20fill%3D%22%231a1a1a%22%2F%3E%3Ctext%20x%3D%2232%22%20y%3D%2243%22%20text-anchor%3D%22middle%22%20font-size%3D%2236%22%20font-weight%3D%22700%22%20fill%3D%22%23f5f5f5%22%20font-family%3D%22system-ui%2Csans-serif%22%3E%E5%89%A7%3C%2Ftext%3E%3C%2Fsvg%3E
 // @match        *://*/*
@@ -897,10 +897,20 @@
             const raw = String(titleEl.textContent || '');
             const avail = window.innerHeight * 0.9 - 44;
             if (config.compactEp !== false) {
-                // v6.7 合并显示：单段文字靠 max-height 自动折成多列，不再按整段长度压字号
-                // （旧算法对 20 字以上的整段会一直压到 14px 仍溢出）；只在超长时轻微缩小一次。
+                // v6.7.1 合并显示：优先让长剧名折成多列，而不是把字号压到很小。
+                // 每列可容纳 perCol 个字（列宽 = 字号 + 列间距），最多铺 3 列且总宽不超过 78vw；
+                // 只有连 3 列都放不下时才按平方根比例收缩一次，最小 16px。
                 const len = raw.replace(/\s+/g, '').length;
-                if (len > 40) fs = Math.max(16, Math.round(fs * Math.min(1, 40 / len)));
+                if (len > 0) {
+                    const gap = Math.max(0, Number(config.columnGap) || 0);
+                    const perCol = Math.max(1, Math.floor(avail / (fs + gap)));
+                    const widthCols = Math.max(1, Math.min(3, Math.floor((window.innerWidth * 0.78) / (fs + gap))));
+                    const need = Math.ceil(len / perCol);
+                    if (need > widthCols) {
+                        const factor = Math.max(0.7, Math.sqrt(widthCols / need));
+                        fs = Math.max(16, Math.round(fs * factor));
+                    }
+                }
             } else {
                 const longest = raw.split('\n').reduce((m, line) => Math.max(m, line.trim().length), 0) || 1;
                 if (longest * (fs + 6) > avail) fs = Math.max(14, Math.floor(avail / longest - 6));
@@ -919,9 +929,19 @@
         return Math.max(12, Math.round(fs * 0.7));
     }
 
-    // v6.7：集数只取数字部分，「第1集 / 第2期 / 第3话」统一成 1 / 2 / 3
+    // v6.7.1：集数一律归一为纯数字。第1集 / EP01 / S01E02 / 01 -> 1 / 1 / 2 / 1；
+    // 没有任何阿拉伯数字时（如「上」「下」「预告」）原样返回，不硬造数字。
     function episodeNumberText(ep) {
-        return String(ep || '').replace(/^第\s*/, '').replace(/\s*(集|话|期|章)$/, '').replace(/^0+(?=\d)/, '').trim();
+        const raw = String(ep || '').trim();
+        if (!raw) return '';
+        const digits = raw.match(/\d+/g);
+        if (digits && digits.length) {
+            // 取最后一组数字：S01E02 取 02、EP01 取 01、第1集 取 1
+            return digits[digits.length - 1].replace(/^0+(?=\d)/, '');
+        }
+        const cn = { 一: '1', 二: '2', 三: '3', 四: '4', 五: '5', 六: '6', 七: '7', 八: '8', 九: '9', 十: '10' };
+        const plain = raw.replace(/^第\s*/, '').replace(/\s*(集|话|期|章)\s*$/, '').trim();
+        return cn[plain] || plain;
     }
 
     // 最终显示的文本：合并模式是「剧名+数字」（红日第一集 → 红日1），否则仍是「剧名 集数」
@@ -929,8 +949,14 @@
         const t = config.displayMode !== 'episode' && title ? String(title).trim() : '';
         const e = config.displayMode !== 'title' && episode ? String(episode).trim() : '';
         if (config.compactEp !== false) {
-            if (t && e) return t + episodeNumberText(e);
-            return t || episodeNumberText(e) || '';
+            const num = episodeNumberText(e);
+            if (t && num) {
+                // v6.7.1：剧名末尾已经是同一个集号（「红日1」+「1」）就不再追加，避免 红日11
+                const tail = t.match(/(\d+)\s*$/);
+                if (tail && tail[1].replace(/^0+(?=\d)/, '') === num) return t;
+                return t + num;
+            }
+            return t || num || '';
         }
         return [t, e].filter(Boolean).join('\n');
     }
