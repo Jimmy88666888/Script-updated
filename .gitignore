@@ -26,3 +26,9 @@ replay_pid*
 # auto-push daemon
 .auto-push.pid
 auto-push.log
+
+# 合并自 edge-userscripts/.gitignore
+node_modules/
+.DS_Store
+Thumbs.db
+*.bak-*

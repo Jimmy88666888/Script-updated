@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2026 Jackson
+Copyright (c) 2026 Jimmy88666888
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,3 +19,9 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+---
+
+注：本许可适用于本仓库自身的工具、文档与安装页（tools/、docs/、README.md、
+.github/）。scripts/ 与 archive/ 目录下的用户脚本版权归各自作者，适用其文件头
+中的原始许可（GPL-3.0、AGPL-3.0、MPL-2.0、MIT 等），不在此 MIT 授权范围内。
