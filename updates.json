@@ -1247,7 +1247,7 @@
     "update_channel": "repo-raw",
     "mirror": "raw",
     "universal": true,
-    "update_url": "https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Local/universal-post-to-markdown/universal-post-to-markdown.user.js",
+    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/universal-post-to-markdown/universal-post-to-markdown.user.js",
     "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/universal-post-to-markdown/universal-post-to-markdown.user.js",
     "group": "Local"
   },
@@ -1268,7 +1268,7 @@
     "update_channel": "repo-raw",
     "mirror": "raw",
     "universal": true,
-    "update_url": "https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Local/video-episode-info/video-episode-info.user.js",
+    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/video-episode-info/video-episode-info.user.js",
     "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/video-episode-info/video-episode-info.user.js",
     "group": "Local"
   },
@@ -1289,7 +1289,7 @@
     "update_channel": "repo-raw",
     "mirror": "raw",
     "universal": true,
-    "update_url": "https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Local/video-fullscreen-clock/video-fullscreen-clock.user.js",
+    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/video-fullscreen-clock/video-fullscreen-clock.user.js",
     "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/video-fullscreen-clock/video-fullscreen-clock.user.js",
     "group": "Local"
   },
@@ -1471,8 +1471,8 @@
     "update_channel": "repo-mirror",
     "mirror": "jsdelivr",
     "universal": false,
-    "update_url": "https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Local/%E8%A7%86%E9%A2%91%E7%AB%96%E6%8E%92%E5%89%A7%E9%9B%86%E5%90%8D-%E5%85%A8%E7%AB%99%E9%80%9A%E7%94%A8%E7%89%88/%E8%A7%86%E9%A2%91%E7%AB%96%E6%8E%92%E5%89%A7%E9%9B%86%E5%90%8D-%E5%85%A8%E7%AB%99%E9%80%9A%E7%94%A8%E7%89%88.user.js",
-    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/%E8%A7%86%E9%A2%91%E7%AB%96%E6%8E%92%E5%89%A7%E9%9B%86%E5%90%8D-%E5%85%A8%E7%AB%99%E9%80%9A%E7%94%A8%E7%89%88/%E8%A7%86%E9%A2%91%E7%AB%96%E6%8E%92%E5%89%A7%E9%9B%86%E5%90%8D-%E5%85%A8%E7%AB%99%E9%80%9A%E7%94%A8%E7%89%88.user.js",
+    "update_url": "https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Local/视频竖排剧集名-全站通用版/视频竖排剧集名-全站通用版.user.js",
+    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/视频竖排剧集名-全站通用版/视频竖排剧集名-全站通用版.user.js",
     "group": "Local"
   },
   {
