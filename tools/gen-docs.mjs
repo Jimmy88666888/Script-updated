@@ -121,8 +121,10 @@ async function buildRecords() {
     const text = await readFile(path.join(ROOT, item.file), 'utf8');
     const h = parseHeader(text);
     const prev = prevByFile.get(item.file);
-    const platform = item.file.endsWith('-mobile.user.js') ? 'mobile' : 'pc';
     const stem = path.basename(item.file, '.user.js');
+    // 手机版判定只认「<目录名>-mobile.user.js」：像 html5-video-mobile.user.js 这种
+    // 名字里本来就带 mobile 的电脑版脚本，不能被误判成手机版。
+    const platform = stem === `${item.folder}-mobile` ? 'mobile' : 'pc';
     const pick = (key, fallback) =>
       prev && prev[key] !== undefined && prev[key] !== '' ? prev[key] : fallback;
 
@@ -137,9 +139,11 @@ async function buildRecords() {
       description: normText(pick('description', h.description || '')),
       upstream: prev?.upstream || '',
       upstream_install: prev?.upstream_install || '',
-      match: prev?.match?.length ? prev.match : h.match,
-      update_channel: 'repo-raw',
-      mirror: 'raw',
+      // match 属于参考信息：清单里已有（哪怕是空数组）就沿用，避免每次生成把上百条
+      // @match 重新灌进来；只有全新脚本才从头部取。
+      match: prev ? prev.match || [] : h.match,
+      update_channel: platform === 'pc' ? 'repo-mirror' : 'repo-raw',
+      mirror: platform === 'pc' ? 'jsdelivr' : 'raw',
       update_url: (platform === 'pc' ? cdn : raw)(item.file),
       raw: raw(item.file),
       group: item.group,
@@ -153,13 +157,13 @@ async function buildRecords() {
     }
   }
 
+  // 清单保持既有记录顺序，新记录按文件名排在末尾：避免每次生成都把整份 JSON 重排，
+  // 让 git diff 只体现真正的内容变化（展示顺序由 groupByScript 另行排序）。
+  const oldIndex = new Map(previous.map((r, i) => [r.file, i]));
+  const indexOf = (r) => (oldIndex.has(r.file) ? oldIndex.get(r.file) : Number.MAX_SAFE_INTEGER);
   records.sort((a, b) => {
-    const ga = GROUPS.indexOf(a.group) - GROUPS.indexOf(b.group);
-    if (ga) return ga;
-    const fa = a.file.split('/')[1];
-    const fb = b.file.split('/')[1];
-    if (fa !== fb) return fa.localeCompare(fb, 'zh-Hans-CN');
-    return a.platform === b.platform ? 0 : a.platform === 'pc' ? -1 : 1;
+    const d = indexOf(a) - indexOf(b);
+    return d !== 0 ? d : a.file.localeCompare(b.file, 'en');
   });
 
   return records;
@@ -175,7 +179,12 @@ function groupByScript(records) {
     if (r.platform === 'mobile') entry.mobile = r;
     else entry.pc = r;
   }
-  return [...map.values()];
+  // 展示顺序固定：Local 在前、Author 在后，组内按脚本目录名升序（CJK 排在 ASCII 之后）
+  return [...map.values()].sort((a, b) => {
+    const g = GROUPS.indexOf(a.group) - GROUPS.indexOf(b.group);
+    if (g) return g;
+    return a.dir.split('/')[1].localeCompare(b.dir.split('/')[1], 'en');
+  });
 }
 
 const esc = (s) =>
