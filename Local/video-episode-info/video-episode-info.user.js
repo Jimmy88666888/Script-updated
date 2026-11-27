@@ -902,8 +902,7 @@
                 const len = raw.replace(/\s+/g, '').length;
                 if (len > 40) fs = Math.max(16, Math.round(fs * Math.min(1, 40 / len)));
             } else {
-                const longest = raw.split('
-').reduce((m, line) => Math.max(m, line.trim().length), 0) || 1;
+                const longest = raw.split('\n').reduce((m, line) => Math.max(m, line.trim().length), 0) || 1;
                 if (longest * (fs + 6) > avail) fs = Math.max(14, Math.floor(avail / longest - 6));
             }
         }
@@ -922,11 +921,10 @@
 
     // v6.7：集数只取数字部分，「第1集 / 第2期 / 第3话」统一成 1 / 2 / 3
     function episodeNumberText(ep) {
-        return String(ep || '').replace(/^第\s*/, '').replace(/\s*(集|话|期|章)$/, '').trim();
+        return String(ep || '').replace(/^第\s*/, '').replace(/\s*(集|话|期|章)$/, '').replace(/^0+(?=\d)/, '').trim();
     }
 
-    // 最终显示的文本：合并模式是「剧名+数字」（红日第一集 → 红日1），否则仍是「剧名 
- 集数」
+    // 最终显示的文本：合并模式是「剧名+数字」（红日第一集 → 红日1），否则仍是「剧名 集数」
     function displayText(title, episode) {
         const t = config.displayMode !== 'episode' && title ? String(title).trim() : '';
         const e = config.displayMode !== 'title' && episode ? String(episode).trim() : '';
@@ -934,8 +932,7 @@
             if (t && e) return t + episodeNumberText(e);
             return t || episodeNumberText(e) || '';
         }
-        return [t, e].filter(Boolean).join('
-');
+        return [t, e].filter(Boolean).join('\n');
     }
 
     // 渲染：合并模式下整块只有一个 span（单列；超长剧名由 max-height 自动折成多列）；
@@ -962,8 +959,7 @@
             t.textContent = title;
             titleEl.appendChild(t);
         }
-        if (showTitle && showEp) titleEl.appendChild(document.createTextNode('
-'));
+        if (showTitle && showEp) titleEl.appendChild(document.createTextNode('\n'));
         if (showEp) {
             const e = document.createElement('span');
             e.className = 'evt-episode';
