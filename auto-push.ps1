@@ -414,17 +414,75 @@ function Test-Repo {
 }
 
 function Get-ShellPath {
-    # 本机 PowerShell 5.1 在扫描脚本内容时会崩溃，必须优先用 PowerShell 7
+    # 本机 PowerShell 5.1 在扫描脚本内容时会崩溃，必须优先用 PowerShell 7。
+    # 优先取 AppX 包内的真实 pwsh.exe：WindowsApps 下的别名 stub 每次激活都会闪一下窗口。
+    try {
+        $pkg = Get-ChildItem -LiteralPath (Join-Path $env:LOCALAPPDATA 'Microsoft\WindowsApps') -Directory -Filter 'Microsoft.PowerShell_*' -ErrorAction Stop |
+            Sort-Object Name -Descending | Select-Object -First 1
+        if ($pkg) {
+            $real = Join-Path $pkg.FullName 'pwsh.exe'
+            if (Test-Path -LiteralPath $real) { return $real }
+        }
+    } catch { }
     $pwsh = Get-Command pwsh -ErrorAction SilentlyContinue
-    if ($pwsh) { return $pwsh.Source }
+    if ($pwsh -and $pwsh.Source -and ($pwsh.Source -notmatch '\\WindowsApps\\pwsh\.exe$')) { return $pwsh.Source }
     foreach ($c in @("$env:ProgramFiles\PowerShell\7\pwsh.exe",
                      "$env:ProgramFiles\PowerShell\7-preview\pwsh.exe",
                      "$env:LOCALAPPDATA\Programs\PowerShell\7\pwsh.exe")) {
         if (Test-Path -LiteralPath $c) { return $c }
     }
+    if ($pwsh) { return $pwsh.Source }
     return 'powershell.exe'
 }
 
+function Get-HiddenLauncherPath {
+    $dir = Join-Path $env:LOCALAPPDATA 'QwenAutoPush'
+    if (-not (Test-Path -LiteralPath $dir)) { New-Item -ItemType Directory -Path $dir -Force | Out-Null }
+    return (Join-Path $dir 'auto-push-hidden.vbs')
+}
+
+function Write-HiddenLauncher {
+    # 静默启动载体：wscript 是 GUI 宿主，本身没有控制台；脚本里再用窗口样式 0 运行 pwsh，
+    # 这样登录、保活、手动 start 都不会闪黑框。
+    $vbs = Get-HiddenLauncherPath
+    $shell = Get-ShellPath
+    $self = $PSCommandPath
+    $cmd = '"' + $shell + '" -NoProfile -ExecutionPolicy Bypass -File "' + $self + '"' +
+        ' -Mode MODE -RepoPath "' + $RepoPath + '" -InboxPath "' + $InboxPath +
+        '" -Branch "' + $Branch + '" -RemoteName "' + $RemoteName + '" -DebounceSeconds ' + $DebounceSeconds
+    if ($NoPush) { $cmd = $cmd + ' -NoPush' }
+    $cmdEsc = $cmd -replace '"', '""'
+    $body = @(
+        'Set sh = CreateObject("WScript.Shell")',
+        'mode = "ensure"',
+        'If WScript.Arguments.Count > 0 Then',
+        '  If LCase(WScript.Arguments(0)) = "watch" Then mode = "watch"',
+        'End If',
+        ('cmd = "' + $cmdEsc + '"'),
+        'cmd = Replace(cmd, "-Mode MODE", "-Mode " & mode)',
+        'sh.Run cmd, 0, False'
+    ) -join "`r`n"
+    $tmp = $vbs + '.tmp'
+    Set-Content -LiteralPath $tmp -Value $body -Encoding Unicode
+    Move-Item -LiteralPath $tmp -Destination $vbs -Force
+    return $vbs
+}
+
+function Start-HiddenWatcher {
+    $vbs = Write-HiddenLauncher
+    $wscript = Join-Path $env:SystemRoot 'System32\wscript.exe'
+    Start-Process -FilePath $wscript -ArgumentList @('//B', '//Nologo', ('"' + $vbs + '"'), 'watch') -WindowStyle Hidden | Out-Null
+    $deadline = [datetime]::Now.AddSeconds(8)
+    do {
+        Start-Sleep -Milliseconds 400
+        $p = Find-WatcherProcess
+        if ($p.Count -gt 0) {
+            Set-Content -LiteralPath $PidFile -Value ($p[0]) -Encoding ASCII -ErrorAction SilentlyContinue
+            return $p[0]
+        }
+    } while ([datetime]::Now -lt $deadline)
+    return $null
+}
 function Push-Only {
     # 保活补推：只做 push，不碰工作区与暂存区，避免和监控进程争抢 git 索引锁
     if ($NoPush) { return }
@@ -557,10 +615,9 @@ switch ($Mode) {
         $self = $PSCommandPath
         $childArgs = '-NoProfile -ExecutionPolicy Bypass -File "' + $self + '" -Mode watch -RepoPath "' + $RepoPath + '" -InboxPath "' + $InboxPath + '" -Branch "' + $Branch + '" -RemoteName "' + $RemoteName + '" -DebounceSeconds ' + $DebounceSeconds
         if ($NoPush) { $childArgs = $childArgs + ' -NoPush' }
-        $proc = Start-Process -FilePath (Get-ShellPath) -ArgumentList $childArgs -WindowStyle Hidden -PassThru
-        if ($proc) {
-            Set-Content -LiteralPath $PidFile -Value $proc.Id -Encoding ASCII -ErrorAction SilentlyContinue
-            Write-Host ('监控已拉起，进程号 ' + $proc.Id)
+        $newPid = Start-HiddenWatcher
+        if ($newPid) {
+            Write-Host ('监控已拉起，进程号 ' + $newPid)
         } else {
             Write-Host '监控拉起失败'
         }
@@ -575,9 +632,9 @@ switch ($Mode) {
         $self = $PSCommandPath
         $childArgs = '-NoProfile -ExecutionPolicy Bypass -File "' + $self + '" -Mode watch -RepoPath "' + $RepoPath + '" -InboxPath "' + $InboxPath + '" -Branch "' + $Branch + '" -RemoteName "' + $RemoteName + '" -DebounceSeconds ' + $DebounceSeconds
         if ($NoPush) { $childArgs = $childArgs + ' -NoPush' }
-        $proc = Start-Process -FilePath (Get-ShellPath) -ArgumentList $childArgs -WindowStyle Hidden -PassThru
-        Set-Content -LiteralPath $PidFile -Value $proc.Id -Encoding ASCII
-        Write-Host ('后台监控已启动，进程号 ' + $proc.Id)
+        $newPid = Start-HiddenWatcher
+        if ($newPid) { Write-Host ('后台监控已启动，进程号 ' + $newPid) }
+        else { Write-Host '后台监控启动失败' }
     }
     'stop' {
         $left = Find-WatcherProcess
@@ -597,7 +654,9 @@ switch ($Mode) {
         $self = $PSCommandPath
         $shell = Get-ShellPath
         # 计划任务只负责“确保有监控在跑”，具体参数沿用脚本默认值，命令行更短更稳
-        $inner = '"' + $shell + '" -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "' + $self + '" -Mode ensure'
+        $vbsPath = Write-HiddenLauncher
+        $wscript = Join-Path $env:SystemRoot 'System32\wscript.exe'
+        $inner = '"' + $wscript + '" //B //Nologo "' + $vbsPath + '"'
         $null = & $sch /Delete /TN $TaskName /F 2>&1
         $null = & $sch /Delete /TN ($TaskName + 'KeepAlive') /F 2>&1
         # 触发器一：登录即启动监控（登录型任务在某些权限配置下会被拒绝）
@@ -615,11 +674,11 @@ switch ($Mode) {
         # 启动文件夹：不需要管理员权限，登录后立即拉起，和保活任务互为备份
         $startupDir = [Environment]::GetFolderPath('Startup')
         $vbs = Join-Path $startupDir 'QwenAutoPushUserscripts.vbs'
-        $cmdLine = '"' + $shell + '" -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "' + $self + '" -Mode ensure'
-        $vbsQuoted = '"' + ($cmdLine -replace '"', '""') + '"'
-        $vbsBody = "Set sh = CreateObject(`"WScript.Shell`")`r`n" + "sh.Run " + $vbsQuoted + ", 0, False`r`n"
+        # 登录启动项同样只调用隐藏启动器，登录时不会闪黑框
+        $innerLaunch = '"' + $wscript + '" //B //Nologo "' + $vbsPath + '"'
+        $vbsBody = "Set sh = CreateObject(""WScript.Shell"")" + "`r`n" + "sh.Run " + ('"' + ($innerLaunch -replace '"', '""') + '"') + ", 0, False" + "`r`n"
         try {
-            Set-Content -LiteralPath $vbs -Value $vbsBody -Encoding ASCII
+            Set-Content -LiteralPath $vbs -Value $vbsBody -Encoding Unicode
             Write-Host ('已写入登录启动项：' + $vbs)
         } catch {
             Write-Host ('写入启动项失败：' + $_.Exception.Message)
@@ -635,6 +694,8 @@ switch ($Mode) {
             Remove-Item -LiteralPath $vbs -Force -ErrorAction SilentlyContinue
             $removedVbs = -not (Test-Path -LiteralPath $vbs)
         }
+        $hidden = Get-HiddenLauncherPath
+        if (Test-Path -LiteralPath $hidden) { Remove-Item -LiteralPath $hidden -Force -ErrorAction SilentlyContinue }
         if ($codeA -eq 0 -or $codeB -eq 0 -or $removedVbs) { Write-Host '已移除开机自启与保活任务' }
         else { Write-Host '未发现开机自启任务' }
     }
