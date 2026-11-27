@@ -1,6 +1,6 @@
 [
   {
-    "file": "mobile/ac-baidu-search.user.js",
+    "file": "Author/ac-baidu-search/ac-baidu-search-mobile.user.js",
     "platform": "mobile",
     "name": "AC-baidu-重定向优化百度搜狗谷歌必应搜索_favicon_双列",
     "version": "27.20",
@@ -13,11 +13,12 @@
     "match": [],
     "update_channel": "repo-raw",
     "mirror": "raw",
-    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/ac-baidu-search.user.js",
-    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/ac-baidu-search.user.js"
+    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/ac-baidu-search/ac-baidu-search-mobile.user.js",
+    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/ac-baidu-search/ac-baidu-search-mobile.user.js",
+    "group": "Author"
   },
   {
-    "file": "mobile/adguard-extra.user.js",
+    "file": "Author/adguard-extra/adguard-extra-mobile.user.js",
     "platform": "mobile",
     "name": "AdGuard Extra",
     "version": "1.1.41",
@@ -32,11 +33,12 @@
     ],
     "update_channel": "repo-raw",
     "mirror": "raw",
-    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/adguard-extra.user.js",
-    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/adguard-extra.user.js"
+    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/adguard-extra/adguard-extra-mobile.user.js",
+    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/adguard-extra/adguard-extra-mobile.user.js",
+    "group": "Author"
   },
   {
-    "file": "mobile/edge-dl.user.js",
+    "file": "Local/edge-dl/edge-dl-mobile.user.js",
     "platform": "mobile",
     "name": "EdgeDL",
     "version": "2.3.3-local-float-toggle",
@@ -51,11 +53,12 @@
     ],
     "update_channel": "repo-raw",
     "mirror": "raw",
-    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/edge-dl.user.js",
-    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/edge-dl.user.js"
+    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/edge-dl/edge-dl-mobile.user.js",
+    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/edge-dl/edge-dl-mobile.user.js",
+    "group": "Local"
   },
   {
-    "file": "mobile/github-chinese.user.js",
+    "file": "Author/github-chinese/github-chinese-mobile.user.js",
     "platform": "mobile",
     "name": "GitHub 中文化插件",
     "version": "1.9.2.4-2026-11-10",
@@ -73,11 +76,12 @@
     ],
     "update_channel": "repo-raw",
     "mirror": "raw",
-    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/github-chinese.user.js",
-    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/github-chinese.user.js"
+    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/github-chinese/github-chinese-mobile.user.js",
+    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/github-chinese/github-chinese-mobile.user.js",
+    "group": "Author"
   },
   {
-    "file": "mobile/github-fast-download.user.js",
+    "file": "Author/github-fast-download/github-fast-download-mobile.user.js",
     "platform": "mobile",
     "name": "Github Enhancement - High Speed Download",
     "version": "2.6.41",
@@ -93,11 +97,12 @@
     ],
     "update_channel": "repo-raw",
     "mirror": "raw",
-    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/github-fast-download.user.js",
-    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/github-fast-download.user.js"
+    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/github-fast-download/github-fast-download-mobile.user.js",
+    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/github-fast-download/github-fast-download-mobile.user.js",
+    "group": "Author"
   },
   {
-    "file": "mobile/google-baidu-switcher.user.js",
+    "file": "Author/google-baidu-switcher/google-baidu-switcher-mobile.user.js",
     "platform": "mobile",
     "name": "Google & baidu Switcher (ALL in One)",
     "version": "2026.11.07.1",
@@ -324,11 +329,12 @@
     ],
     "update_channel": "repo-raw",
     "mirror": "raw",
-    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/google-baidu-switcher.user.js",
-    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/google-baidu-switcher.user.js"
+    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/google-baidu-switcher/google-baidu-switcher-mobile.user.js",
+    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/google-baidu-switcher/google-baidu-switcher-mobile.user.js",
+    "group": "Author"
   },
   {
-    "file": "mobile/html5-video-mobile.user.js",
+    "file": "Author/html5-video-mobile/html5-video-mobile-mobile.user.js",
     "platform": "mobile",
     "name": "HTML5手机版",
     "version": "72.09",
@@ -344,11 +350,12 @@
     ],
     "update_channel": "repo-raw",
     "mirror": "raw",
-    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/html5-video-mobile.user.js",
-    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/html5-video-mobile.user.js"
+    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/html5-video-mobile/html5-video-mobile-mobile.user.js",
+    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/html5-video-mobile/html5-video-mobile-mobile.user.js",
+    "group": "Author"
   },
   {
-    "file": "mobile/html5-video-player-merged.user.js",
+    "file": "Author/html5-video-player-merged/html5-video-player-merged-mobile.user.js",
     "platform": "mobile",
     "name": "HTML5视频播放工具（增强合并版）",
     "version": "2.2.7-merged",
@@ -363,11 +370,12 @@
     ],
     "update_channel": "repo-raw",
     "mirror": "raw",
-    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/html5-video-player-merged.user.js",
-    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/html5-video-player-merged.user.js"
+    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/html5-video-player-merged/html5-video-player-merged-mobile.user.js",
+    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/html5-video-player-merged/html5-video-player-merged-mobile.user.js",
+    "group": "Author"
   },
   {
-    "file": "mobile/linkswift.user.js",
+    "file": "Author/linkswift/linkswift-mobile.user.js",
     "platform": "mobile",
     "name": "LinkSwift",
     "version": "1.1.4",
@@ -420,11 +428,12 @@
     ],
     "update_channel": "repo-raw",
     "mirror": "raw",
-    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/linkswift.user.js",
-    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/linkswift.user.js"
+    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/linkswift/linkswift-mobile.user.js",
+    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/linkswift/linkswift-mobile.user.js",
+    "group": "Author"
   },
   {
-    "file": "mobile/pagetual.user.js",
+    "file": "Author/pagetual/pagetual-mobile.user.js",
     "platform": "mobile",
     "name": "Pagetual",
     "version": "1.9.37.134",
@@ -439,11 +448,12 @@
     ],
     "update_channel": "repo-raw",
     "mirror": "raw",
-    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/pagetual.user.js",
-    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/pagetual.user.js"
+    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/pagetual/pagetual-mobile.user.js",
+    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/pagetual/pagetual-mobile.user.js",
+    "group": "Author"
   },
   {
-    "file": "mobile/redirect-external-link.user.js",
+    "file": "Author/redirect-external-link/redirect-external-link-mobile.user.js",
     "platform": "mobile",
     "name": "redirect 外链跳转",
     "version": "1.67.1",
@@ -529,12 +539,13 @@
     ],
     "update_channel": "repo-raw",
     "mirror": "raw",
-    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/redirect-external-link.user.js",
-    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/redirect-external-link.user.js",
-    "synced_at": "2026-11-26"
+    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/redirect-external-link/redirect-external-link-mobile.user.js",
+    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/redirect-external-link/redirect-external-link-mobile.user.js",
+    "synced_at": "2026-11-26",
+    "group": "Author"
   },
   {
-    "file": "mobile/telegram-media-downloader.user.js",
+    "file": "Author/telegram-media-downloader/telegram-media-downloader-mobile.user.js",
     "platform": "mobile",
     "name": "Telegram Media Downloader",
     "version": "2.01",
@@ -551,11 +562,12 @@
     ],
     "update_channel": "repo-raw",
     "mirror": "raw",
-    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/telegram-media-downloader.user.js",
-    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/telegram-media-downloader.user.js"
+    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/telegram-media-downloader/telegram-media-downloader-mobile.user.js",
+    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/telegram-media-downloader/telegram-media-downloader-mobile.user.js",
+    "group": "Author"
   },
   {
-    "file": "mobile/universal-post-to-markdown.user.js",
+    "file": "Local/universal-post-to-markdown/universal-post-to-markdown-mobile.user.js",
     "platform": "mobile",
     "name": "Markdown",
     "version": "2.9.6",
@@ -609,11 +621,12 @@
     ],
     "update_channel": "repo-raw",
     "mirror": "raw",
-    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/universal-post-to-markdown.user.js",
-    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/universal-post-to-markdown.user.js"
+    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/universal-post-to-markdown/universal-post-to-markdown-mobile.user.js",
+    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/universal-post-to-markdown/universal-post-to-markdown-mobile.user.js",
+    "group": "Local"
   },
   {
-    "file": "mobile/video-episode-info.user.js",
+    "file": "Local/video-episode-info/video-episode-info-mobile.user.js",
     "platform": "mobile",
     "name": "视频剧集信息显示",
     "version": "6.6.1",
@@ -628,11 +641,12 @@
     ],
     "update_channel": "repo-raw",
     "mirror": "raw",
-    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/video-episode-info.user.js",
-    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/video-episode-info.user.js"
+    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/video-episode-info/video-episode-info-mobile.user.js",
+    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/video-episode-info/video-episode-info-mobile.user.js",
+    "group": "Local"
   },
   {
-    "file": "mobile/video-fullscreen-clock.user.js",
+    "file": "Author/video-fullscreen-clock/video-fullscreen-clock-mobile.user.js",
     "platform": "mobile",
     "name": "视频全屏显示时间（全站通用增强版）",
     "version": "0.6.11",
@@ -647,11 +661,12 @@
     ],
     "update_channel": "repo-raw",
     "mirror": "raw",
-    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/video-fullscreen-clock.user.js",
-    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/video-fullscreen-clock.user.js"
+    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/video-fullscreen-clock/video-fullscreen-clock-mobile.user.js",
+    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/video-fullscreen-clock/video-fullscreen-clock-mobile.user.js",
+    "group": "Author"
   },
   {
-    "file": "mobile/vip-video-unlock.user.js",
+    "file": "Author/vip-video-unlock/vip-video-unlock-mobile.user.js",
     "platform": "mobile",
     "name": "全网VIP视频免费破解去广告【最新3.2】",
     "version": "3.2.10",
@@ -664,12 +679,13 @@
     "match": [],
     "update_channel": "repo-raw",
     "mirror": "raw",
-    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/vip-video-unlock.user.js",
-    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/mobile/vip-video-unlock.user.js",
-    "synced_at": "2026-11-26"
+    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/vip-video-unlock/vip-video-unlock-mobile.user.js",
+    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/vip-video-unlock/vip-video-unlock-mobile.user.js",
+    "synced_at": "2026-11-26",
+    "group": "Author"
   },
   {
-    "file": "pc/ac-baidu-search.user.js",
+    "file": "Author/ac-baidu-search/ac-baidu-search.user.js",
     "platform": "pc",
     "name": "AC-baidu-重定向优化百度搜狗谷歌必应搜索_favicon_双列",
     "version": "27.20",
@@ -682,11 +698,12 @@
     "match": [],
     "update_channel": "repo-mirror",
     "mirror": "jsdelivr",
-    "update_url": "https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/edge-userscripts/pc/ac-baidu-search.user.js",
-    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/pc/ac-baidu-search.user.js"
+    "update_url": "https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Author/ac-baidu-search/ac-baidu-search.user.js",
+    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/ac-baidu-search/ac-baidu-search.user.js",
+    "group": "Author"
   },
   {
-    "file": "pc/adguard-extra.user.js",
+    "file": "Author/adguard-extra/adguard-extra.user.js",
     "platform": "pc",
     "name": "AdGuard Extra",
     "version": "1.1.41",
@@ -701,11 +718,12 @@
     ],
     "update_channel": "repo-mirror",
     "mirror": "jsdelivr",
-    "update_url": "https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/edge-userscripts/pc/adguard-extra.user.js",
-    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/pc/adguard-extra.user.js"
+    "update_url": "https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Author/adguard-extra/adguard-extra.user.js",
+    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/adguard-extra/adguard-extra.user.js",
+    "group": "Author"
   },
   {
-    "file": "pc/edge-dl.user.js",
+    "file": "Local/edge-dl/edge-dl.user.js",
     "platform": "pc",
     "name": "EdgeDL",
     "version": "2.3.3-local-float-toggle",
@@ -720,11 +738,12 @@
     ],
     "update_channel": "repo-mirror",
     "mirror": "jsdelivr",
-    "update_url": "https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/edge-userscripts/pc/edge-dl.user.js",
-    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/pc/edge-dl.user.js"
+    "update_url": "https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Local/edge-dl/edge-dl.user.js",
+    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/edge-dl/edge-dl.user.js",
+    "group": "Local"
   },
   {
-    "file": "pc/github-chinese.user.js",
+    "file": "Author/github-chinese/github-chinese.user.js",
     "platform": "pc",
     "name": "GitHub 中文化插件",
     "version": "1.9.2.4-2026-11-10",
@@ -742,11 +761,12 @@
     ],
     "update_channel": "repo-mirror",
     "mirror": "jsdelivr",
-    "update_url": "https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/edge-userscripts/pc/github-chinese.user.js",
-    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/pc/github-chinese.user.js"
+    "update_url": "https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Author/github-chinese/github-chinese.user.js",
+    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/github-chinese/github-chinese.user.js",
+    "group": "Author"
   },
   {
-    "file": "pc/github-fast-download.user.js",
+    "file": "Author/github-fast-download/github-fast-download.user.js",
     "platform": "pc",
     "name": "Github Enhancement - High Speed Download",
     "version": "2.6.41",
@@ -762,11 +782,12 @@
     ],
     "update_channel": "repo-mirror",
     "mirror": "jsdelivr",
-    "update_url": "https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/edge-userscripts/pc/github-fast-download.user.js",
-    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/pc/github-fast-download.user.js"
+    "update_url": "https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Author/github-fast-download/github-fast-download.user.js",
+    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/github-fast-download/github-fast-download.user.js",
+    "group": "Author"
   },
   {
-    "file": "pc/google-baidu-switcher.user.js",
+    "file": "Author/google-baidu-switcher/google-baidu-switcher.user.js",
     "platform": "pc",
     "name": "Google & baidu Switcher (ALL in One)",
     "version": "2026.11.07.1",
@@ -993,11 +1014,12 @@
     ],
     "update_channel": "repo-mirror",
     "mirror": "jsdelivr",
-    "update_url": "https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/edge-userscripts/pc/google-baidu-switcher.user.js",
-    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/pc/google-baidu-switcher.user.js"
+    "update_url": "https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Author/google-baidu-switcher/google-baidu-switcher.user.js",
+    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/google-baidu-switcher/google-baidu-switcher.user.js",
+    "group": "Author"
   },
   {
-    "file": "pc/html5-video-mobile.user.js",
+    "file": "Author/html5-video-mobile/html5-video-mobile.user.js",
     "platform": "pc",
     "name": "HTML5手机版",
     "version": "72.09",
@@ -1013,11 +1035,12 @@
     ],
     "update_channel": "repo-mirror",
     "mirror": "jsdelivr",
-    "update_url": "https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/edge-userscripts/pc/html5-video-mobile.user.js",
-    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/pc/html5-video-mobile.user.js"
+    "update_url": "https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Author/html5-video-mobile/html5-video-mobile.user.js",
+    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/html5-video-mobile/html5-video-mobile.user.js",
+    "group": "Author"
   },
   {
-    "file": "pc/html5-video-player-merged.user.js",
+    "file": "Author/html5-video-player-merged/html5-video-player-merged.user.js",
     "platform": "pc",
     "name": "HTML5视频播放工具（增强合并版）",
     "version": "2.2.7-merged",
@@ -1032,11 +1055,12 @@
     ],
     "update_channel": "repo-mirror",
     "mirror": "jsdelivr",
-    "update_url": "https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/edge-userscripts/pc/html5-video-player-merged.user.js",
-    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/pc/html5-video-player-merged.user.js"
+    "update_url": "https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Author/html5-video-player-merged/html5-video-player-merged.user.js",
+    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/html5-video-player-merged/html5-video-player-merged.user.js",
+    "group": "Author"
   },
   {
-    "file": "pc/linkswift.user.js",
+    "file": "Author/linkswift/linkswift.user.js",
     "platform": "pc",
     "name": "LinkSwift",
     "version": "1.1.4",
@@ -1089,11 +1113,12 @@
     ],
     "update_channel": "repo-mirror",
     "mirror": "jsdelivr",
-    "update_url": "https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/edge-userscripts/pc/linkswift.user.js",
-    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/pc/linkswift.user.js"
+    "update_url": "https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Author/linkswift/linkswift.user.js",
+    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/linkswift/linkswift.user.js",
+    "group": "Author"
   },
   {
-    "file": "pc/pagetual.user.js",
+    "file": "Author/pagetual/pagetual.user.js",
     "platform": "pc",
     "name": "Pagetual",
     "version": "1.9.37.134",
@@ -1108,11 +1133,12 @@
     ],
     "update_channel": "repo-mirror",
     "mirror": "jsdelivr",
-    "update_url": "https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/edge-userscripts/pc/pagetual.user.js",
-    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/pc/pagetual.user.js"
+    "update_url": "https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Author/pagetual/pagetual.user.js",
+    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/pagetual/pagetual.user.js",
+    "group": "Author"
   },
   {
-    "file": "pc/redirect-external-link.user.js",
+    "file": "Author/redirect-external-link/redirect-external-link.user.js",
     "platform": "pc",
     "name": "redirect 外链跳转",
     "version": "1.67.1",
@@ -1198,12 +1224,13 @@
     ],
     "update_channel": "repo-mirror",
     "mirror": "jsdelivr",
-    "update_url": "https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/edge-userscripts/pc/redirect-external-link.user.js",
-    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/pc/redirect-external-link.user.js",
-    "synced_at": "2026-11-26"
+    "update_url": "https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Author/redirect-external-link/redirect-external-link.user.js",
+    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/redirect-external-link/redirect-external-link.user.js",
+    "synced_at": "2026-11-26",
+    "group": "Author"
   },
   {
-    "file": "pc/telegram-media-downloader.user.js",
+    "file": "Author/telegram-media-downloader/telegram-media-downloader.user.js",
     "platform": "pc",
     "name": "Telegram Media Downloader",
     "version": "2.01",
@@ -1220,11 +1247,12 @@
     ],
     "update_channel": "repo-mirror",
     "mirror": "jsdelivr",
-    "update_url": "https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/edge-userscripts/pc/telegram-media-downloader.user.js",
-    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/pc/telegram-media-downloader.user.js"
+    "update_url": "https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Author/telegram-media-downloader/telegram-media-downloader.user.js",
+    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/telegram-media-downloader/telegram-media-downloader.user.js",
+    "group": "Author"
   },
   {
-    "file": "pc/universal-post-to-markdown.user.js",
+    "file": "Local/universal-post-to-markdown/universal-post-to-markdown.user.js",
     "platform": "pc",
     "name": "Markdown",
     "version": "2.9.6",
@@ -1278,11 +1306,12 @@
     ],
     "update_channel": "repo-mirror",
     "mirror": "jsdelivr",
-    "update_url": "https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/edge-userscripts/pc/universal-post-to-markdown.user.js",
-    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/pc/universal-post-to-markdown.user.js"
+    "update_url": "https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Local/universal-post-to-markdown/universal-post-to-markdown.user.js",
+    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/universal-post-to-markdown/universal-post-to-markdown.user.js",
+    "group": "Local"
   },
   {
-    "file": "pc/video-episode-info.user.js",
+    "file": "Local/video-episode-info/video-episode-info.user.js",
     "platform": "pc",
     "name": "视频剧集信息显示",
     "version": "6.6.1",
@@ -1297,11 +1326,12 @@
     ],
     "update_channel": "repo-mirror",
     "mirror": "jsdelivr",
-    "update_url": "https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/edge-userscripts/pc/video-episode-info.user.js",
-    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/pc/video-episode-info.user.js"
+    "update_url": "https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Local/video-episode-info/video-episode-info.user.js",
+    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/video-episode-info/video-episode-info.user.js",
+    "group": "Local"
   },
   {
-    "file": "pc/video-fullscreen-clock.user.js",
+    "file": "Author/video-fullscreen-clock/video-fullscreen-clock.user.js",
     "platform": "pc",
     "name": "视频全屏显示时间（全站通用增强版）",
     "version": "0.6.11",
@@ -1316,11 +1346,12 @@
     ],
     "update_channel": "repo-mirror",
     "mirror": "jsdelivr",
-    "update_url": "https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/edge-userscripts/pc/video-fullscreen-clock.user.js",
-    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/pc/video-fullscreen-clock.user.js"
+    "update_url": "https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Author/video-fullscreen-clock/video-fullscreen-clock.user.js",
+    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/video-fullscreen-clock/video-fullscreen-clock.user.js",
+    "group": "Author"
   },
   {
-    "file": "pc/vip-video-unlock.user.js",
+    "file": "Author/vip-video-unlock/vip-video-unlock.user.js",
     "platform": "pc",
     "name": "全网VIP视频免费破解去广告【最新3.2】",
     "version": "3.2.10",
@@ -1333,8 +1364,9 @@
     "match": [],
     "update_channel": "repo-mirror",
     "mirror": "jsdelivr",
-    "update_url": "https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/edge-userscripts/pc/vip-video-unlock.user.js",
-    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-userscripts/pc/vip-video-unlock.user.js",
-    "synced_at": "2026-11-26"
+    "update_url": "https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Author/vip-video-unlock/vip-video-unlock.user.js",
+    "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/vip-video-unlock/vip-video-unlock.user.js",
+    "synced_at": "2026-11-26",
+    "group": "Author"
   }
 ]

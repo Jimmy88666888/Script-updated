@@ -104,15 +104,15 @@ function Archive-OldVersions {
         if ($rel -match '^(.:)?(.+ )?-> (.+)$') { $rel = $Matches[3] }
         $rel = ($rel -replace '\\', '/')
         if (-not $rel.EndsWith('.user.js')) { continue }
-        if ($rel -match '^edge-userscripts/(pc|mobile|archive|tools)/') { continue }
+        if ($rel -match '/archive/') { continue }
         if ($rel -match '^docs/') { continue }
 
         $leaf = $rel -replace '^.*/', ''
         $stem = $leaf -replace '\.user\.js$', ''
         $slash = $rel.LastIndexOf('/')
         $dirRel = if ($slash -ge 0) { $rel.Substring(0, $slash) } else { '' }
-        # 已在归档目录内（父目录名 == 脚本主干名）则跳过
-        if ($dirRel -and (($dirRel -replace '^.*/', '') -eq $stem)) { continue }
+        # 已在 archive/ 内的文件不再二次归档
+        if ($dirRel -match '/archive$') { continue }
 
         $full = Join-Path $RepoPath ($rel -replace '/', [System.IO.Path]::DirectorySeparatorChar)
         if (-not (Test-Path -LiteralPath $full)) { continue }
@@ -131,9 +131,15 @@ function Archive-OldVersions {
         if (-not $oldVer -or $oldVer -eq $newVer) { continue }   # 版本没变：视为就地修改，走普通提交
 
         $parent = if ($dirRel) { Join-Path $RepoPath ($dirRel -replace '/', [System.IO.Path]::DirectorySeparatorChar) } else { $RepoPath }
-        $archDir = Join-Path $parent $stem
+        if ($dirRel -and (($dirRel -replace '^.*/', '') -eq $stem)) {
+            # 新结构：脚本已在 Local/<脚本名>/ 或 Author/<脚本名>/ 下，旧版放进该目录的 archive/
+            $archDir = Join-Path $parent 'archive'
+            $archRel = $dirRel + '/archive/' + $oldVer + '.user.js'
+        } else {
+            $archDir = Join-Path $parent $stem
+            $archRel = if ($dirRel) { $dirRel + '/' + $stem + '/' + $oldVer + '.user.js' } else { $stem + '/' + $oldVer + '.user.js' }
+        }
         $archFile = Join-Path $archDir ($oldVer + '.user.js')
-        $archRel = if ($dirRel) { $dirRel + '/' + $stem + '/' + $oldVer + '.user.js' } else { $stem + '/' + $oldVer + '.user.js' }
 
         if (Test-Path -LiteralPath $archFile) {
             $cur = [System.IO.File]::ReadAllText($archFile, [System.Text.Encoding]::UTF8)
@@ -186,6 +192,24 @@ function Get-NormalizedInboxName {
     return ($stem + '.user.js')
 }
 
+# 脚本落位规则：仓库里已有同名脚本就替换它原来的文件，否则视为本地脚本放入 Local/<脚本名>/。
+function Resolve-ScriptPath {
+    param([string]$FileName)
+    $stem = $FileName -replace '\.user\.js$', ''
+    foreach ($root in @('Local', 'Author')) {
+        $dir = Join-Path $RepoPath (Join-Path $root $stem)
+        if (Test-Path -LiteralPath $dir) {
+            $hit = Get-ChildItem -LiteralPath $dir -File -Filter '*.user.js' -ErrorAction SilentlyContinue |
+                Where-Object { $_.Name -notmatch '-mobile\.user\.js$' } | Select-Object -First 1
+            if (-not $hit) {
+                $hit = Get-ChildItem -LiteralPath $dir -File -Filter '*.user.js' -ErrorAction SilentlyContinue | Select-Object -First 1
+            }
+            if ($hit) { return $hit.FullName }
+        }
+    }
+    return (Join-Path $RepoPath (Join-Path 'Local' (Join-Path $stem $FileName)))
+}
+
 function Ingest-Inbox {
     if (-not (Test-Path -LiteralPath $InboxPath)) {
         try { New-Item -ItemType Directory -Path $InboxPath -Force | Out-Null } catch { return }
@@ -217,7 +241,9 @@ function Ingest-Inbox {
             }
             # 主名不在收件箱：可能已在仓库。同内容就静默吃掉；
             # 不同内容则这是“改过名重新投递”的真实升版，改名后继续摄取。
-            $repoFile = Join-Path $RepoPath $target
+            $repoFile = Resolve-ScriptPath $target
+            $repoDir = Split-Path -Parent $repoFile
+            if (-not (Test-Path -LiteralPath $repoDir)) { New-Item -ItemType Directory -Path $repoDir -Force | Out-Null }
             if (Test-Path -LiteralPath $repoFile) {
                 $a = RunGit @('hash-object', '--', $f.FullName)
                 $b = RunGit @('hash-object', '--', $repoFile)
@@ -237,11 +263,13 @@ function Ingest-Inbox {
             continue
         }
 
-        $dest = Join-Path $RepoPath $f.Name
+        $dest = Resolve-ScriptPath $f.Name
+        $destDir = Split-Path -Parent $dest
+        if (-not (Test-Path -LiteralPath $destDir)) { New-Item -ItemType Directory -Path $destDir -Force | Out-Null }
         $same = $false
         if (Test-Path -LiteralPath $dest) {
             $a = RunGit @('hash-object', '--', $f.FullName)
-            $b = RunGit @('hash-object', '--', ('.\' + $f.Name))
+            $b = RunGit @('hash-object', '--', $dest)
             if ($a.Code -eq 0 -and $b.Code -eq 0 -and $a.Out[0] -eq $b.Out[0]) { $same = $true }
         }
         if ($same) { continue }   # 内容一致，等推送核验阶段处理
@@ -264,7 +292,9 @@ function Purge-VerifiedInbox {
     foreach ($f in @(Get-ChildItem -LiteralPath $InboxPath -File -Force -ErrorAction SilentlyContinue)) {
         if ($f.Name -notlike '*.js') { continue }
         if (([datetime]::Now - $f.LastWriteTime).TotalSeconds -lt 5) { continue }
-        $remoteHash = RunGit @('rev-parse', ($RemoteName + '/' + $Branch + ':' + $f.Name))
+        $destPath = Resolve-ScriptPath $f.Name
+        $relPath = $destPath.Substring($RepoPath.Length + 1).Replace('\', '/')
+        $remoteHash = RunGit @('rev-parse', ($RemoteName + '/' + $Branch + ':' + $relPath))
         if ($remoteHash.Code -ne 0) { continue }          # 远端没有这个文件：未上传，保留
         $inboxBlob = RunGit @('hash-object', '--', $f.FullName)
         if ($inboxBlob.Code -ne 0) { continue }

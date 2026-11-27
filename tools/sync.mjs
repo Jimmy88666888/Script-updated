@@ -22,12 +22,11 @@ const DRY = process.argv.includes('--dry-run');
 
 const OWNER = 'Jimmy88666888';
 const REPO = 'Script-updated';
-// 并入 Script-updated 后，脚本位于仓库的 edge-userscripts/ 子目录下，
-// 安装与更新地址必须带上这段前缀，否则同步器会把旧的裸地址写回去。
-const SUBDIR = 'edge-userscripts';
+// rec.file 已经是仓库内相对路径（如 Author/pagetual/pagetual-mobile.user.js），
+// 直接由它拼出更新地址，避免再手写一层目录前缀。
 const CHANNEL = {
-  pc: (slug) => `https://cdn.jsdelivr.net/gh/${OWNER}/${REPO}@main/${SUBDIR}/pc/${slug}.user.js`,
-  mobile: (slug) => `https://raw.githubusercontent.com/${OWNER}/${REPO}/main/${SUBDIR}/mobile/${slug}.user.js`,
+  pc: (file) => `https://cdn.jsdelivr.net/gh/${OWNER}/${REPO}@main/${file}`,
+  mobile: (file) => `https://raw.githubusercontent.com/${OWNER}/${REPO}/main/${file}`,
 };
 
 const VERSION_RE = /^\/\/\s*@version\s+(\S+)\s*$/m;
@@ -110,7 +109,7 @@ async function main() {
   }
   for (const { slug, group, version, body } of changes) {
     for (const rec of group) {
-      const url = CHANNEL[rec.platform](slug);
+      const url = CHANNEL[rec.platform](rec.file);
       const target = path.join(ROOT, rec.file);
       await writeFile(target, rewrite(body, version, url), 'utf8');
       rec.version = version;
