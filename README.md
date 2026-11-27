@@ -35,6 +35,7 @@ Author/                    # 第三方脚本收录（10 个，多数为电脑版
   …
 docs/index.html            # GitHub Pages 安装页
 tools/sync.mjs             # 上游同步器
+tools/gen-docs.mjs         # 说明文件生成器（清单 / README 清单表 / 安装页卡片）
 updates.json               # 机器可读清单（37 条：21 个脚本 × 电脑/手机）
 .github/workflows/sync.yml # 每日上游同步（03:17 UTC）
 auto-push.ps1              # 本地变动自动提交推送（含旧版归档与收件箱摄取）
@@ -92,6 +93,13 @@ LICENSE
 
 ## 变更记录
 
+### 2026-11-27 说明文件改为自动生成
+
+- 新增 `tools/gen-docs.mjs`：以「目录 + 脚本头部元数据 + `updates.json` 里的人工说明」为唯一数据源，幂等重建 `updates.json`、README 的两张清单表与 `docs/index.html` 的卡片和全部计数。排序固定为 Local 在前、组内按目录名升序，同一脚本电脑版在前，连跑多次不产生 diff。
+- 新脚本丢进 `Local/<脚本名>/` 或 `Author/<脚本名>/` 后跑一次生成器就自动出现在清单和安装页上，不再需要手改三处；人工写好的 `name` / `author` / `description` / `upstream` 会被保留，`--check` 可用于 CI 与提交前校验。
+- 接入两处自动化：`auto-push.ps1` 在摄取收件箱、归档旧版之后、`git add` 之前调用（找不到 node 或生成失败只记日志、不阻断提交）；`.github/workflows/sync.yml` 在上游同步之后加一步生成，随当天提交一起推送。
+- 顺带归一化说明：补上此前只在安装页出现、清单里缺失的 5 个脚本记录（CloudLink Desktop / CloudLink Mobile / LinkSwift 手机版 / EdgeDL-PC / 视频竖排剧集名），`updates.json` 由 32 条增至 37 条、覆盖 21 个脚本；Markdown 的说明合并为「X/Threads/… + 微博/小红书/CSDN/知乎 导出 MD + 图片/视频（每条旁悬浮按钮）；FB 视频帖 MD 强化（Edge 安卓）」，清单与页面共用同一份。
+
 ### 2026-11-27 HTML5 与视频全屏脚本迁入 Local
 
 - 三个脚本（`html5-video-mobile`、`html5-video-player-merged`、`video-fullscreen-clock`）的 `@namespace` 早已是 `local.*` 本地身份，这次把目录整体从 `Author/` 移到 `Local/`，目录名与文件名不变：Local 由 8 个增至 11 个，Author 由 13 个减至 10 个。
@@ -123,11 +131,15 @@ LICENSE
 ```bash
 node tools/sync.mjs --dry-run   # 只看上游有没有新版
 node tools/sync.mjs             # 对比上游并更新电脑版 / 手机版两份
+node tools/gen-docs.mjs         # 重建 updates.json / README 清单表 / 安装页卡片
+node tools/gen-docs.mjs --check # 只校验三者是否与目录现状同步（不同步时退出码 1）
 git diff
 git commit -am "chore: sync upstream"
 ```
 
 同步需能访问 `update.greasyfork.org` / `userscripts.adtidy.org`（Node 18+ 自带 fetch）。
+
+**说明文件生成器**（`tools/gen-docs.mjs`）：把脚本丢进 `Local/<脚本名>/` 或 `Author/<脚本名>/` 后跑一次，`updates.json` 会自动补记录（平台、路径、版本、更新地址），README 的两张清单表、安装页卡片与各处计数一起重建，省掉手改三处。清单里已有的 `name` / `author` / `description` / `upstream` 视为人工整理结果会被保留——要改文案直接改 `updates.json` 再跑生成器即可；`auto-push.ps1` 每次提交前、CI 每日同步后都会自动执行一次。
 
 ## 许可与版权
 

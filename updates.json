@@ -573,7 +573,7 @@
     "author": "local",
     "license": "MIT",
     "namespace": "local.edge-userscripts/universal-post-to-markdown",
-    "description": "X / Threads / Reddit / Instagram / Facebook / Pinterest / Dailymotion / TikTok / Telegram公开页 导出 MD+图片/视频；FB视频帖MD强化（Edge安卓）",
+    "description": "X / Threads / Reddit / Instagram / Facebook / Pinterest / Dailymotion / TikTok / Telegram 公开页 + 微博 / 小红书 / CSDN / 知乎，导出 MD + 图片/视频（每条旁悬浮按钮）；FB 视频帖 MD 强化（Edge 安卓）",
     "upstream": "",
     "upstream_install": "",
     "match": [
@@ -1256,7 +1256,7 @@
     "author": "local",
     "license": "MIT",
     "namespace": "local.edge-userscripts/universal-post-to-markdown",
-    "description": "X / Threads / Reddit / Instagram / Facebook / Pinterest / Dailymotion / TikTok / Telegram公开页 导出 MD+图片/视频；FB视频帖MD强化（Edge安卓）",
+    "description": "X / Threads / Reddit / Instagram / Facebook / Pinterest / Dailymotion / TikTok / Telegram 公开页 + 微博 / 小红书 / CSDN / 知乎，导出 MD + 图片/视频（每条旁悬浮按钮）；FB 视频帖 MD 强化（Edge 安卓）",
     "upstream": "",
     "upstream_install": "",
     "match": [

@@ -321,6 +321,25 @@ function Purge-VerifiedInbox {
     }
 }
 
+# 说明文件生成器：README 清单表、安装页卡片、updates.json 三处与目录/脚本头部保持同源。
+# node 缺失或生成失败只记日志，不阻断提交（守护不能因为文档问题卡住）。
+function Invoke-GenDocs {
+    $node = Get-Command node -ErrorAction SilentlyContinue
+    if (-not $node) {
+        Write-Log '未找到 node，跳过说明文件生成（README / 安装页可能滞后）' 'WARN'
+        return
+    }
+    $genScript = Join-Path $RepoPath 'tools/gen-docs.mjs'
+    if (-not (Test-Path -LiteralPath $genScript)) { return }
+    $out = & $node.Source $genScript 2>&1
+    $code = $LASTEXITCODE
+    if ($code -ne 0) {
+        Write-Log ('说明文件生成失败（exit ' + $code + '）：' + (($out | Select-Object -Last 3) -join ' ')) 'WARN'
+        return
+    }
+    Write-Log ('说明文件生成器已执行：' + ((@($out) | Where-Object { $_ -match '说明文件|脚本 ' }) -join ' / '))
+}
+
 function Invoke-Sync {
     param([string]$Reason)
 
@@ -336,9 +355,10 @@ function Invoke-Sync {
             $guard++
             $st.Pending = $false
 
-            # 先摄取收件箱（新脚本入仓），再归档旧版，然后提交
+            # 先摄取收件箱（新脚本入仓），再归档旧版，然后重建说明文件，最后提交
             Ingest-Inbox
             Archive-OldVersions
+            Invoke-GenDocs
 
             if (-not (RunGitOk @('add', '-A', '--', '.'))) {
                 Write-Log ('git add 失败，本轮跳过，触发原因 ' + $Reason) 'WARN'

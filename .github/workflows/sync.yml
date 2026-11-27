@@ -28,6 +28,10 @@ jobs:
         # 脚本按 Local/、Author/ 分目录存放，同步器位于仓库根 tools/ 下，从仓库根运行。
         run: node tools/sync.mjs
 
+      - name: Generate docs (manifest / README / install page)
+        # 说明文件由生成器统一重建：目录 + 脚本头部 + 清单里的人工说明，三处同源。
+        run: node tools/gen-docs.mjs
+
       - name: Commit and push when changed
         run: |
           if [ -z "$(git status --porcelain)" ]; then
