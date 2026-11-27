@@ -49,8 +49,8 @@
 // @grant        GM_setValue
 // @grant        GM_getValue
 // @run-at       document-start
-// @updateURL    https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/html5-video-mobile/html5-video-mobile-mobile.user.js
-// @downloadURL  https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/html5-video-mobile/html5-video-mobile-mobile.user.js
+// @updateURL    https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/html5-video-mobile/html5-video-mobile-mobile.user.js
+// @downloadURL  https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/html5-video-mobile/html5-video-mobile-mobile.user.js
 // ==/UserScript==
 
 (function() {

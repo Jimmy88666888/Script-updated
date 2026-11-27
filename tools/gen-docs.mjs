@@ -43,6 +43,22 @@ const cdn = (f) => `https://cdn.jsdelivr.net/gh/${OWNER}/${REPO}@main/${f}`;
 const raw = (f) => `https://raw.githubusercontent.com/${OWNER}/${REPO}/main/${f}`;
 const blob = (f) => `https://github.com/${OWNER}/${REPO}/blob/main/${f}`;
 
+/** 脚本头部更新地址的规范值：电脑版走 jsDelivr、手机版走 raw，路径统一按 encodeURI 转义 */
+function expectedHeaderUrl(relPath) {
+  const folder = relPath.split('/')[1];
+  const stem = path.basename(relPath, '.user.js');
+  const platform = stem === `${folder}-mobile` ? 'mobile' : 'pc';
+  return { platform, url: encodeURI((platform === 'pc' ? cdn : raw)(relPath)) };
+}
+
+const decodeUrl = (u) => {
+  try {
+    return decodeURI(u);
+  } catch {
+    return u;
+  }
+};
+
 /** 说明文本归一化：去零宽字符、折叠换行与连续空格、去掉包裹引号 */
 function normText(value) {
   let s = String(value ?? '')
@@ -107,6 +123,41 @@ async function scanScripts() {
     }
   }
   return found;
+}
+
+/** 更新地址归一化：脚本头部 @updateURL / @downloadURL 必须指向该文件当前的仓库路径。
+ * 目录搬迁、改名、电脑版误用 raw 时自动改正；archive/ 里的旧版副本不动。
+ * 返回改动过的文件清单（--check / --dry-run 只报告、不写盘）。*/
+async function normalizeHeaders() {
+  const changed = [];
+  const line = (key, url) => `// ${key}  ${url}`;
+  for (const item of await scanScripts()) {
+    const abs = path.join(ROOT, item.file);
+    const text = await readFile(abs, 'utf8');
+    const { url } = expectedHeaderUrl(item.file);
+    let out = text;
+
+    for (const key of ['@updateURL', '@downloadURL']) {
+      const re = new RegExp(`^(//\\s*${key}\\s+)(\\S+)[ \\t]*$`, 'm');
+      const m = out.match(re);
+      if (m) {
+        if (decodeUrl(m[2]) !== decodeUrl(url)) out = out.replace(re, () => `${m[1]}${url}`);
+        continue;
+      }
+      // 头部没有这一行时补上：@updateURL 跟在 @version 后，@downloadURL 跟在 @updateURL 后
+      const anchor =
+        key === '@downloadURL' && /^\/\/\s*@updateURL\s+\S+/m.test(out)
+          ? /^(?:\/\/\s*@updateURL\s+\S+)[ \t]*$/m
+          : /^(?:\/\/\s*@version\s+\S+)[ \t]*$/m;
+      if (anchor.test(out)) out = out.replace(anchor, (found) => `${found}\n${line(key, url)}`);
+    }
+
+    if (out !== text) {
+      changed.push(item.file);
+      if (!CHECK && !DRY) await writeFile(abs, out, 'utf8');
+    }
+  }
+  return changed;
 }
 
 /** 合并清单：以文件系统为准，人工字段优先保留 */
@@ -338,6 +389,7 @@ function renderPage(html, scripts) {
 }
 
 async function main() {
+  const scriptChanges = await normalizeHeaders();
   const records = await buildRecords();
   const scripts = groupByScript(records);
   const total = scripts.length;
@@ -358,13 +410,15 @@ async function main() {
     const current = await readFile(file, 'utf8');
     if (current !== next) changes.push([file, next]);
   }
+  // 脚本头部地址已在 normalizeHeaders 中写过（--check / --dry-run 时未写），这里只登记
+  for (const file of scriptChanges) changes.push([path.join(ROOT, file), null]);
 
   console.log(
     `脚本 ${total} 个（Local ${local} / Author ${author}），清单 ${records.length} 条`
   );
 
   if (!changes.length) {
-    console.log('说明文件已是最新，无需改动');
+    console.log('说明文件与脚本头部地址均已最新，无需改动');
     return 0;
   }
   for (const [file] of changes) console.log(`  待更新：${path.relative(ROOT, file)}`);
@@ -378,6 +432,10 @@ async function main() {
     return 0;
   }
   for (const [file, next] of changes) {
+    if (next === null) {
+      console.log(`  已改写头部地址：${path.relative(ROOT, file)}`);
+      continue;
+    }
     await writeFile(file, next, 'utf8');
     console.log(`  已写入：${path.relative(ROOT, file)}`);
   }

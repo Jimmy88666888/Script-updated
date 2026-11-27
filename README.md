@@ -50,6 +50,7 @@ LICENSE
 - **手机版**走 raw 默认：
   `https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/<Local|Author>/<脚本名>/<脚本名>-mobile.user.js`
 - **旧版本归档**统一放脚本目录下的 `archive/<版本号>.user.js`。
+- **头部更新地址**：每个 `.user.js` 里的 `@updateURL` / `@downloadURL` 由 `tools/gen-docs.mjs` 统一改写为该文件**当前路径**对应的地址（电脑版 jsDelivr、手机版 raw）。目录搬迁或改名后跑一次生成器即同步，不会残留旧路径。
 
 ## 脚本清单
 
@@ -92,6 +93,12 @@ LICENSE
 - **缓存**：jsDelivr 对 `@main` 引用约有 12 小时缓存，电脑端会略滞后；急用可把 `@main` 换成具体提交 SHA。
 
 ## 变更记录
+
+### 2026-11-27 修正脚本头部更新地址
+
+- 三个脚本从 `Author/` 迁到 `Local/` 时只移动了目录，文件里的 `@updateURL` / `@downloadURL` 仍指向 `Author/...` 旧路径，装上新版后自动更新会打到 404。本次把 11 个文件的头部地址统一改写为当前路径：电脑版走 jsDelivr、手机版走 raw。
+- 另外 5 个单平台本地脚本（CloudLink Desktop、CloudLink Mobile、LinkSwift 手机版、EdgeDL-PC、视频竖排剧集名）的**电脑版**头部地址此前写成 raw，一并改为 jsDelivr 镜像，与其他电脑版保持一致。
+- 该改写已并入 `tools/gen-docs.mjs`：生成器现在同时校验并修正头部地址（`--check` 会把它算作不同步），此后目录搬迁、改名、收件箱新脚本都不会再出现地址滞后。
 
 ### 2026-11-27 说明文件改为自动生成
 
