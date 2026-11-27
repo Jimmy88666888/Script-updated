@@ -4,7 +4,7 @@
 // @version      2.3.3-local-float-toggle
 // @description  让 Android Edge 支持调用外部下载器接管下载任务（标题/图片/VLC/YTDLnis + 敏感页排除 + 复制链接）+ 图片悬浮下载。本地修复版：可开关悬浮按钮，避免包裹搜索结果/favicon等小图标
 // @icon         https://cdn.jsdelivr.net/gh/Chumor/EdgeDL@main/assets/icons/edge.svg
-// @author       Chumor (local fix)
+// @author       Jackson Smith
 // @match        *://*/*
 // @grant        GM_registerMenuCommand
 // @grant        GM_setValue

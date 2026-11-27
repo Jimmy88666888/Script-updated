@@ -4,7 +4,7 @@
 // @version           1.0.2
 // @description       国际网盘电脑直链助手：Google Drive / OneDrive / Dropbox。支持复制直链、IDM(.ef2)、Mister Download Manager(MDM)、Aria2 RPC、curl/aria2c。
 // @description:zh-CN 国际网盘电脑直链助手：Google Drive / OneDrive / Dropbox。支持复制直链、IDM(.ef2)、Mister Download Manager(MDM)、Aria2 RPC、curl/aria2c。
-// @author            CloudLink Desktop
+// @author       Jackson Smith
 // @license           MIT
 // @icon              https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/CloudLink-Desktop/icon.svg
 // @match             *://drive.google.com/*

@@ -13,7 +13,7 @@
 // @description:en    A mobile browser touch gesture plugin that combines the strengths of many. (PiP enhanced, sensitive pages restricted)
 // @description:ja    多くの強みを組み合わせたモバイルブラウザのタッチジェスチャープラグイン。
 // @description:ko    많은 장점을 결합한 모바일 브라우저 터치 제스처 플러그인입니다。
-// @author       Gemini & 仙
+// @author       Jackson Smith
 // @license      MIT
 // @icon         data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23FF6699'/%3E%3Cstop offset='100%25' stop-color='%23FF3366'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='url(%23g)'/%3E%3Ccircle cx='32' cy='32' r='18' fill='none' stroke='white' stroke-width='3' opacity='0.9'/%3E%3Cpolygon points='28,22 28,42 44,32' fill='white'/%3E%3Cpath d='M14 50 Q20 44 28 48' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' opacity='0.85'/%3E%3C/svg%3E
 // @match        http://*/*

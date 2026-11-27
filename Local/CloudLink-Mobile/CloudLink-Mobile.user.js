@@ -4,7 +4,7 @@
 // @version           1.0.1
 // @description       国际网盘手机直链助手：Google Drive / OneDrive / Dropbox。复制直链、1DM+、ytdlnis 格式，分享页一键复制。
 // @description:zh-CN 国际网盘手机直链助手：Google Drive / OneDrive / Dropbox。复制直链、1DM+、ytdlnis 格式，分享页一键复制。
-// @author            CloudLink Mobile
+// @author       Jackson Smith
 // @license           MIT
 // @icon              https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/CloudLink-Mobile/icon.svg
 // @match             *://drive.google.com/*
