@@ -22,20 +22,17 @@
 Local/                     # 自建与本地改写
   CloudLink-Desktop/CloudLink-Desktop.user.js
   CloudLink-Mobile/CloudLink-Mobile.user.js
-  LinkSwift-Mobile/LinkSwift-Mobile.user.js
+  LinkSwift-Mobile/LinkSwift.user.js
   edge-dl-pc/edge-dl-pc.user.js
   edge-dl-pc/archive/1.0.0-pc.user.js
-  edge-dl-mobile/edge-dl-mobile.user.js
+  edge-dl/edge-dl.user.js + edge-dl-mobile.user.js
   video-episode-info/…       universal-post-to-markdown/…
-  html5-video-mobile/…       html5-video-player-merged/…
-  video-fullscreen-clock/…
   视频竖排剧集名-全站通用版/…
 Author/                    # 第三方脚本收录（10 个，多数为电脑版 + 手机版两份）
   pagetual/pagetual.user.js + pagetual-mobile.user.js
   …
 docs/index.html            # GitHub Pages 安装页
 tools/sync.mjs             # 上游同步器
-tools/gen-docs.mjs         # 说明文件生成器（清单 / README 清单表 / 安装页卡片）
 updates.json               # 机器可读清单（34 条：21 个脚本 × 电脑/手机）
 .github/workflows/sync.yml # 每日上游同步（03:17 UTC）
 auto-push.ps1              # 本地变动自动提交推送（含旧版归档与收件箱摄取）
@@ -50,7 +47,6 @@ LICENSE
 - **手机版**走 raw 默认：
   `https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/<Local|Author>/<脚本名>/<脚本名>-mobile.user.js`
 - **旧版本归档**统一放脚本目录下的 `archive/<版本号>.user.js`。
-- **头部更新地址**：每个 `.user.js` 里的 `@updateURL` / `@downloadURL` 由 `tools/gen-docs.mjs` 统一改写为该文件**当前路径**对应的地址（电脑版 jsDelivr、手机版 raw）。目录搬迁或改名后跑一次生成器即同步，不会残留旧路径。
 
 ## 脚本清单
 
@@ -94,38 +90,6 @@ LICENSE
 
 ## 变更记录
 
-### 2026-11-27 Markdown 升到 3.0.3
-
-- 用新版脚本（3773 行 / 178 KB）替换原 3.0.2 后，把 `@version` 提升到 **3.0.3**，电脑版与手机版同步升号，让已装用户通过自动更新拿到这一版。
-- 更新地址不变（通用脚本走 raw 默认），此前装的是 3.0.2 的副本，下一次检查更新时会自动拉取，无需重装。
-
-### 2026-11-27 精简平台入口：EdgeDL 转手机版、HTML5 拆分单平台、三个脚本改通用
-
-- `edge-dl` 更名为 `edge-dl-mobile`、显示名「EdgeDL 手机版」，并删除电脑版文件 `edge-dl.user.js`；目录更名会改变安装与更新地址，已装旧版需按新链接重装一次。
-- HTML5 手机版只保留手机版文件（删除电脑版 `html5-video-mobile.user.js`）；HTML5 视频播放工具（增强合并版）只保留电脑版文件（删除手机版 `-mobile.user.js`）。两者的安装列由「电脑端 · 手机端」变成单一「安装」。
-- Markdown、视频剧集信息显示、视频全屏显示时间三份脚本的电脑版与手机版内容完全一致，改标「通用」：安装页只给一个「默认安装」按钮（指向电脑版 jsDelivr 链接，手机同样可装），README 安装列写作「默认安装（通用）」。生成器新增 `universal` 字段支持，`gen-docs.mjs --check` 可校验。
-- 清单由 37 条减至 34 条，脚本仍 21 个；安装页卡片数不变，README 目录结构的示例路径同步更正。
-
-### 2026-11-27 修正脚本头部更新地址
-
-- 三个脚本从 `Author/` 迁到 `Local/` 时只移动了目录，文件里的 `@updateURL` / `@downloadURL` 仍指向 `Author/...` 旧路径，装上新版后自动更新会打到 404。本次把 11 个文件的头部地址统一改写为当前路径：电脑版走 jsDelivr、手机版走 raw。
-- 另外 5 个单平台本地脚本（CloudLink Desktop、CloudLink Mobile、LinkSwift 手机版、EdgeDL-PC、视频竖排剧集名）的**电脑版**头部地址此前写成 raw，一并改为 jsDelivr 镜像，与其他电脑版保持一致。
-- 该改写已并入 `tools/gen-docs.mjs`：生成器现在同时校验并修正头部地址（`--check` 会把它算作不同步），此后目录搬迁、改名、收件箱新脚本都不会再出现地址滞后。
-
-### 2026-11-27 说明文件改为自动生成
-
-- 新增 `tools/gen-docs.mjs`：以「目录 + 脚本头部元数据 + `updates.json` 里的人工说明」为唯一数据源，幂等重建 `updates.json`、README 的两张清单表与 `docs/index.html` 的卡片和全部计数。排序固定为 Local 在前、组内按目录名升序，同一脚本电脑版在前，连跑多次不产生 diff。
-- 新脚本丢进 `Local/<脚本名>/` 或 `Author/<脚本名>/` 后跑一次生成器就自动出现在清单和安装页上，不再需要手改三处；人工写好的 `name` / `author` / `description` / `upstream` 会被保留，`--check` 可用于 CI 与提交前校验。
-- 接入两处自动化：`auto-push.ps1` 在摄取收件箱、归档旧版之后、`git add` 之前调用（找不到 node 或生成失败只记日志、不阻断提交）；`.github/workflows/sync.yml` 在上游同步之后加一步生成，随当天提交一起推送。
-- 顺带归一化说明：补上此前只在安装页出现、清单里缺失的 5 个脚本记录（CloudLink Desktop / CloudLink Mobile / LinkSwift 手机版 / EdgeDL-PC / 视频竖排剧集名），`updates.json` 由 32 条增至 37 条、覆盖 21 个脚本；Markdown 的说明合并为「X/Threads/… + 微博/小红书/CSDN/知乎 导出 MD + 图片/视频（每条旁悬浮按钮）；FB 视频帖 MD 强化（Edge 安卓）」，清单与页面共用同一份。
-
-### 2026-11-27 HTML5 与视频全屏脚本迁入 Local
-
-- 三个脚本（`html5-video-mobile`、`html5-video-player-merged`、`video-fullscreen-clock`）的 `@namespace` 早已是 `local.*` 本地身份，这次把目录整体从 `Author/` 移到 `Local/`，目录名与文件名不变：Local 由 8 个增至 11 个，Author 由 13 个减至 10 个。
-- `updates.json` 六条记录（三脚本 × 电脑/手机）的 `file` / `group` / `raw` / `update_url` 一并改到 `Local/`；`docs/index.html` 安装页与 README 清单同步换组。
-- **新增文件落位规则**写入 `auto-push.ps1`：新增脚本先找同名目录，命中就放进去；文件名带版本号（如 `link1.0`、`link1.1`）按主干名归入 `link/`；没有可用目录就自动新建同名目录再放入。
-- 因更新地址变化，这三份脚本需按新链接重装一次，之后恢复自动更新。
-
 ### 2026-11-26 目录重构为 Local / Author
 
 - 顶层由 `edge-userscripts/` 下的 `pc/` + `mobile/` 平台分层，改为 `Local/` + `Author/` 作者分层；每个脚本一个同名子目录，电脑版与手机版同目录共存。
@@ -150,15 +114,11 @@ LICENSE
 ```bash
 node tools/sync.mjs --dry-run   # 只看上游有没有新版
 node tools/sync.mjs             # 对比上游并更新电脑版 / 手机版两份
-node tools/gen-docs.mjs         # 重建 updates.json / README 清单表 / 安装页卡片
-node tools/gen-docs.mjs --check # 只校验三者是否与目录现状同步（不同步时退出码 1）
 git diff
 git commit -am "chore: sync upstream"
 ```
 
 同步需能访问 `update.greasyfork.org` / `userscripts.adtidy.org`（Node 18+ 自带 fetch）。
-
-**说明文件生成器**（`tools/gen-docs.mjs`）：把脚本丢进 `Local/<脚本名>/` 或 `Author/<脚本名>/` 后跑一次，`updates.json` 会自动补记录（平台、路径、版本、更新地址），README 的两张清单表、安装页卡片与各处计数一起重建，省掉手改三处。清单里已有的 `name` / `author` / `description` / `upstream` 视为人工整理结果会被保留——要改文案直接改 `updates.json` 再跑生成器即可；`auto-push.ps1` 每次提交前、CI 每日同步后都会自动执行一次。
 
 ## 许可与版权
 
