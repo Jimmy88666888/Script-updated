@@ -195,6 +195,8 @@ async function buildRecords() {
       match: prev ? prev.match || [] : h.match,
       update_channel: platform === 'pc' ? 'repo-mirror' : 'repo-raw',
       mirror: platform === 'pc' ? 'jsdelivr' : 'raw',
+      // universal：电脑版与手机版内容一致的脚本，页面上只给一个「默认安装」入口
+      universal: prev?.universal === true,
       update_url: (platform === 'pc' ? cdn : raw)(item.file),
       raw: raw(item.file),
       group: item.group,
@@ -255,8 +257,10 @@ function readmeLocalTable(scripts) {
   for (const s of scripts) {
     const main = s.pc || s.mobile;
     const href = encodeURI(main.file);
-    const install =
-      s.pc && s.mobile
+    // 通用脚本（两份内容一致）只给一个默认入口，避免同内容装两遍
+    const install = main.universal
+      ? `[默认安装]( ${cdn(main.file)} )（通用）`
+      : s.pc && s.mobile
         ? `[电脑端]( ${cdn(s.pc.file)} ) · [手机端]( ${raw(s.mobile.file)} )`
         : `[安装]( ${raw(main.file)} )`;
     rows.push(`| [${main.name}](${href}) | ${main.version} | ${install} | \`${s.dir}/\` |`);
@@ -297,11 +301,15 @@ function pageCards(scripts) {
         : main.upstream_install
           ? '<span class="badge upstream">上游镜像</span>'
           : '<span class="badge chip">第三方收录</span>';
+    // 通用脚本额外挂一个「通用」标记，按钮只留一个默认安装
+    const universalTag = main.universal ? '<span class="badge chip">通用</span>' : '';
     const meta = main.author
       ? `v${esc(main.version)} · 作者 ${esc(main.author)}`
       : `v${esc(main.version)}`;
     const buttons = [];
-    if (s.pc && s.mobile) {
+    if (main.universal) {
+      buttons.push(`<a class="btn primary" href="${cdn(main.file)}">默认安装</a>`);
+    } else if (s.pc && s.mobile) {
       buttons.push(`<a class="btn primary" href="${cdn(s.pc.file)}">电脑端安装</a>`);
       buttons.push(`<a class="btn primary" href="${raw(s.mobile.file)}">手机端安装</a>`);
     } else {
@@ -316,7 +324,7 @@ function pageCards(scripts) {
       '      <article class="card">',
       '        <div class="head">',
       `          <h3>${esc(main.name)}</h3>`,
-      `          ${badge}`,
+      `          ${badge}${universalTag}`,
       '        </div>',
       `        <p class="meta">${meta}</p>`,
       `        <p class="desc">${esc(main.description)}</p>`,

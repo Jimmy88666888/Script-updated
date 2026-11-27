@@ -22,10 +22,10 @@
 Local/                     # 自建与本地改写
   CloudLink-Desktop/CloudLink-Desktop.user.js
   CloudLink-Mobile/CloudLink-Mobile.user.js
-  LinkSwift-Mobile/LinkSwift.user.js
+  LinkSwift-Mobile/LinkSwift-Mobile.user.js
   edge-dl-pc/edge-dl-pc.user.js
   edge-dl-pc/archive/1.0.0-pc.user.js
-  edge-dl/edge-dl.user.js + edge-dl-mobile.user.js
+  edge-dl-mobile/edge-dl-mobile.user.js
   video-episode-info/…       universal-post-to-markdown/…
   html5-video-mobile/…       html5-video-player-merged/…
   video-fullscreen-clock/…
@@ -36,7 +36,7 @@ Author/                    # 第三方脚本收录（10 个，多数为电脑版
 docs/index.html            # GitHub Pages 安装页
 tools/sync.mjs             # 上游同步器
 tools/gen-docs.mjs         # 说明文件生成器（清单 / README 清单表 / 安装页卡片）
-updates.json               # 机器可读清单（37 条：21 个脚本 × 电脑/手机）
+updates.json               # 机器可读清单（34 条：21 个脚本 × 电脑/手机）
 .github/workflows/sync.yml # 每日上游同步（03:17 UTC）
 auto-push.ps1              # 本地变动自动提交推送（含旧版归档与收件箱摄取）
 LICENSE
@@ -60,14 +60,14 @@ LICENSE
 | --- | --- | --- | --- |
 | [CloudLink Desktop](Local/CloudLink-Desktop/CloudLink-Desktop.user.js) | 1.0.2 | [安装]( https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/CloudLink-Desktop/CloudLink-Desktop.user.js ) | `Local/CloudLink-Desktop/` |
 | [CloudLink Mobile](Local/CloudLink-Mobile/CloudLink-Mobile.user.js) | 1.0.1 | [安装]( https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/CloudLink-Mobile/CloudLink-Mobile.user.js ) | `Local/CloudLink-Mobile/` |
-| [EdgeDL](Local/edge-dl/edge-dl.user.js) | 2.3.3-local-float-toggle | [电脑端]( https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Local/edge-dl/edge-dl.user.js ) · [手机端]( https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/edge-dl/edge-dl-mobile.user.js ) | `Local/edge-dl/` |
+| [EdgeDL 手机版](Local/edge-dl-mobile/edge-dl-mobile.user.js) | 2.3.3-local-float-toggle | [安装]( https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/edge-dl-mobile/edge-dl-mobile.user.js ) | `Local/edge-dl-mobile/` |
 | [EdgeDL-PC（电脑版下载接管 + 媒体嗅探）](Local/edge-dl-pc/edge-dl-pc.user.js) | 1.1.0-pc | [安装]( https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/edge-dl-pc/edge-dl-pc.user.js ) | `Local/edge-dl-pc/` |
-| [HTML5手机版](Local/html5-video-mobile/html5-video-mobile.user.js) | 72.09 | [电脑端]( https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Local/html5-video-mobile/html5-video-mobile.user.js ) · [手机端]( https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/html5-video-mobile/html5-video-mobile-mobile.user.js ) | `Local/html5-video-mobile/` |
-| [HTML5视频播放工具（增强合并版）](Local/html5-video-player-merged/html5-video-player-merged.user.js) | 2.2.7-merged | [电脑端]( https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Local/html5-video-player-merged/html5-video-player-merged.user.js ) · [手机端]( https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/html5-video-player-merged/html5-video-player-merged-mobile.user.js ) | `Local/html5-video-player-merged/` |
+| [HTML5手机版](Local/html5-video-mobile/html5-video-mobile-mobile.user.js) | 72.09 | [安装]( https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/html5-video-mobile/html5-video-mobile-mobile.user.js ) | `Local/html5-video-mobile/` |
+| [HTML5视频播放工具（增强合并版）](Local/html5-video-player-merged/html5-video-player-merged.user.js) | 2.2.7-merged | [安装]( https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/html5-video-player-merged/html5-video-player-merged.user.js ) | `Local/html5-video-player-merged/` |
 | [LinkSwift 手机版](Local/LinkSwift-Mobile/LinkSwift-Mobile.user.js) | 1.1.3-mobile | [安装]( https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/LinkSwift-Mobile/LinkSwift-Mobile.user.js ) | `Local/LinkSwift-Mobile/` |
-| [Markdown](Local/universal-post-to-markdown/universal-post-to-markdown.user.js) | 3.0.2 | [电脑端]( https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Local/universal-post-to-markdown/universal-post-to-markdown.user.js ) · [手机端]( https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/universal-post-to-markdown/universal-post-to-markdown-mobile.user.js ) | `Local/universal-post-to-markdown/` |
-| [视频剧集信息显示](Local/video-episode-info/video-episode-info.user.js) | 6.6.1 | [电脑端]( https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Local/video-episode-info/video-episode-info.user.js ) · [手机端]( https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/video-episode-info/video-episode-info-mobile.user.js ) | `Local/video-episode-info/` |
-| [视频全屏显示时间（全站通用增强版）](Local/video-fullscreen-clock/video-fullscreen-clock.user.js) | 0.6.11 | [电脑端]( https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Local/video-fullscreen-clock/video-fullscreen-clock.user.js ) · [手机端]( https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/video-fullscreen-clock/video-fullscreen-clock-mobile.user.js ) | `Local/video-fullscreen-clock/` |
+| [Markdown](Local/universal-post-to-markdown/universal-post-to-markdown.user.js) | 3.0.2 | [默认安装]( https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Local/universal-post-to-markdown/universal-post-to-markdown.user.js )（通用） | `Local/universal-post-to-markdown/` |
+| [视频剧集信息显示](Local/video-episode-info/video-episode-info.user.js) | 6.6.1 | [默认安装]( https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Local/video-episode-info/video-episode-info.user.js )（通用） | `Local/video-episode-info/` |
+| [视频全屏显示时间（全站通用增强版）](Local/video-fullscreen-clock/video-fullscreen-clock.user.js) | 0.6.11 | [默认安装]( https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Local/video-fullscreen-clock/video-fullscreen-clock.user.js )（通用） | `Local/video-fullscreen-clock/` |
 | [视频播放页竖排剧集名 - 终极版](Local/%E8%A7%86%E9%A2%91%E7%AB%96%E6%8E%92%E5%89%A7%E9%9B%86%E5%90%8D-%E5%85%A8%E7%AB%99%E9%80%9A%E7%94%A8%E7%89%88/%E8%A7%86%E9%A2%91%E7%AB%96%E6%8E%92%E5%89%A7%E9%9B%86%E5%90%8D-%E5%85%A8%E7%AB%99%E9%80%9A%E7%94%A8%E7%89%88.user.js) | 6.0 | [安装]( https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/视频竖排剧集名-全站通用版/视频竖排剧集名-全站通用版.user.js ) | `Local/视频竖排剧集名-全站通用版/` |
 
 ### Author（10 个，第三方收录）
@@ -93,6 +93,13 @@ LICENSE
 - **缓存**：jsDelivr 对 `@main` 引用约有 12 小时缓存，电脑端会略滞后；急用可把 `@main` 换成具体提交 SHA。
 
 ## 变更记录
+
+### 2026-11-27 精简平台入口：EdgeDL 转手机版、HTML5 拆分单平台、三个脚本改通用
+
+- `edge-dl` 更名为 `edge-dl-mobile`、显示名「EdgeDL 手机版」，并删除电脑版文件 `edge-dl.user.js`；目录更名会改变安装与更新地址，已装旧版需按新链接重装一次。
+- HTML5 手机版只保留手机版文件（删除电脑版 `html5-video-mobile.user.js`）；HTML5 视频播放工具（增强合并版）只保留电脑版文件（删除手机版 `-mobile.user.js`）。两者的安装列由「电脑端 · 手机端」变成单一「安装」。
+- Markdown、视频剧集信息显示、视频全屏显示时间三份脚本的电脑版与手机版内容完全一致，改标「通用」：安装页只给一个「默认安装」按钮（指向电脑版 jsDelivr 链接，手机同样可装），README 安装列写作「默认安装（通用）」。生成器新增 `universal` 字段支持，`gen-docs.mjs --check` 可校验。
+- 清单由 37 条减至 34 条，脚本仍 21 个；安装页卡片数不变，README 目录结构的示例路径同步更正。
 
 ### 2026-11-27 修正脚本头部更新地址
 
