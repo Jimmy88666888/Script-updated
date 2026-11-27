@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name         EdgeDL-PC（电脑版下载接管 + 媒体嗅探）
 // @namespace    local.edgedl-pc
-// @version      1.0.0-pc
+// @version      1.1.0-pc
 // @updateURL    https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-dl-pc.user.js
 // @downloadURL  https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/edge-dl-pc.user.js
-// @description  让 Windows 上的 Edge/Chrome 把下载任务交给 Mister Download Manager / IDM / aria2，并嗅探页面媒体、图片悬浮下载、调用 yt-dlp 解析页面视频、推送本机播放器，同时回传下载进度。由安卓版 EdgeDL 改写为 PC 版。
+// @description  让 Windows 上的 Edge/Chrome 把下载任务交给 Mister Download Manager / IDM / aria2，并嗅探页面媒体、图片悬浮下载、调用 yt-dlp 解析页面视频、推送本机播放器，同时回传下载进度。由安卓版 EdgeDL 改写为 PC 版。1.1 起改为低侵入：不改写宿主 API、不重排页面 DOM，视频/音乐站点默认只嗅探不劫持点击。
 // @author       Chumor（原版）→ PC 版改写
 // @match        *://*/*
 // @grant        GM_registerMenuCommand
@@ -27,7 +27,7 @@
      * 0. 常量与配置
      * ===================================================================== */
 
-    const VER = '1.0.0-pc';
+    const VER = '1.1.0-pc';
 
     // 本地助手默认地址（可用菜单命令修改）
     const HELPER_KEY = 'edgedlpc-helper-base';
@@ -36,7 +36,8 @@
 
     const DEFAULT_BACKEND_KEY = 'edgedlpc-default-backend';
     const FLOAT_KEY = 'edgedlpc-float-buttons';
-    const INTERCEPT_KEY = 'edgedlpc-site-intercept';
+    const INTERCEPT_KEY = 'edgedlpc-site-intercept';        // 旧版：站点黑名单数组
+    const SITE_MODE_KEY = 'edgedlpc-site-mode';             // 1.1 起：{ host: 'on' | 'off' }
     const AUTO_PANEL_KEY = 'edgedlpc-auto-panel';
     const PAIR_CODE_KEY = 'edgedlpc-pair-code';
 
@@ -208,7 +209,7 @@
     }
 
     /* =====================================================================
-     * 3. 标题提取 / 文件名清洗（沿用原版逻辑）
+     * 3. 标题提取 / 文件名清洗
      * ===================================================================== */
 
     function getMetaContent(selectors) {
@@ -241,6 +242,10 @@
 
     function hostIs(re) {
         try { return re.test((location.hostname || '').toLowerCase()); } catch (_) { return false; }
+    }
+
+    function q(sel, root) {
+        try { return (root || document).querySelector(sel); } catch (_) { return null; }
     }
 
     function extractMediaTitle() {
@@ -282,10 +287,6 @@
         return '';
     }
 
-    function q(sel, root) {
-        try { return (root || document).querySelector(sel); } catch (_) { return null; }
-    }
-
     function guessExtension(url) {
         try {
             const path = new URL(url).pathname.toLowerCase();
@@ -322,27 +323,34 @@
     }
 
     /* =====================================================================
-     * 4. 下载链接判定（沿用原版规则）
+     * 4. 下载链接判定
+     *    1.1 收紧：只认"文件"与"明确下载语义"，不再把 .js/.css/.json
+     *    等资源、以及 ?file= 这类通用参数当成下载，避免误伤播放器。
      * ===================================================================== */
 
-    const EXTENSIONS = [
-        '.mp4', '.mkv', '.avi', '.mov', '.flv', '.wmv', '.webm', '.m4v', '.3gp', '.mpg', '.mpeg', '.vob', '.mts', '.m2ts', '.m3u8',
-        '.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg', '.bmp', '.tiff', '.tif', '.ico', '.heic', '.heif', '.avif', '.jfif', '.raw', '.psd', '.eps',
-        '.txt', '.log', '.md', '.json', '.xml', '.csv', '.tsv', '.rtf', '.yaml', '.yml', '.toml', '.ini', '.conf', '.tex', '.srt', '.vtt',
-        '.css', '.scss', '.less', '.js', '.mjs', '.cjs', '.jsx', '.tsx', '.vue', '.woff', '.woff2', '.ttf', '.otf', '.eot', '.map',
+    const FILE_EXTENSIONS = [
+        // 视频 / 音频
+        '.mp4', '.mkv', '.avi', '.mov', '.flv', '.wmv', '.webm', '.m4v', '.3gp', '.mpg', '.mpeg', '.vob', '.mts', '.m2ts',
         '.mp3', '.flac', '.wav', '.ogg', '.m4a', '.aac', '.wma', '.ape', '.opus', '.aiff', '.aif', '.au', '.ac3', '.wv', '.mid', '.midi', '.mka',
-        '.pdf', '.epub', '.mobi', '.azw3', '.djvu', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx',
+        // 图片
+        '.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.tiff', '.tif', '.heic', '.heif', '.avif', '.jfif', '.psd',
+        // 文档
+        '.pdf', '.epub', '.mobi', '.azw3', '.djvu', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx', '.srt', '.vtt',
+        // 压缩包 / 镜像 / 安装包
         '.zip', '.rar', '.7z', '.tar', '.gz', '.tgz', '.bz2', '.xz', '.iso', '.cab', '.jar',
         '.apk', '.apks', '.xapk', '.apkm', '.ipa', '.obb', '.aab',
-        '.exe', '.msi', '.bin', '.dmg', '.torrent',
+        '.exe', '.msi', '.dmg', '.torrent', '.bin',
     ];
-    // .html/.htm 不拦截，否则普通网页跳转会被误伤
 
-    const KEYWORDS = ['/down/', '/download/', '/downloads/', '/dl/', '/fetch/', '/files/', '/file/', '/attach/', '/attachment/',
-        '/repo/', '/backup/', '/upload/', '/releases/download/', '/binary/', '/pkg/', '/setup/', '/installer/', '/patch/', '/getfile',
-        '?file=', '&file=', '?filename=', '&filename=', 'download?', '&download=', '?download=',
-        '?act=download', '&act=download', '?action=download', '?mode=download', '?down=', '&down=',
-        'force_download', 'response-content-disposition=', 'content-disposition=attachment'];
+    // 明确带"下载"语义的 URL 特征；不再收录 ?file= / /file/ 这类通用参数
+    const DOWNLOAD_KEYWORDS = [
+        '/down/', '/download/', '/downloads/', '/dl/', '/fetch/',
+        '/attach/', '/attachment/', '/releases/download/', '/getfile',
+        'download?', '&download=', '?download=', '?dl=',
+        '?act=download', '&act=download', '?action=download', '&action=download',
+        '?mode=download', '?down=', '&down=', 'force_download',
+        'response-content-disposition=', 'content-disposition=attachment',
+    ];
 
     const EXCLUDE_PATHS = /\/(login|reg(ister)?|sign(in|up|out)|logout|account|user|blob|src|tree)(?:[\/?#]|$)/i;
 
@@ -387,18 +395,25 @@
         if (EXCLUDE_PATHS.test(lower) || SENSITIVE_PATH_RE.test(lower)) return false;
         try { if (SENSITIVE_HOST_RE.test(new URL(url).hostname)) return false; } catch (_) { }
         // 排除 HLS/DASH 分片，避免打断播放器
-        if (/\.(m4s|ts|m4v)(?:$|[?#])/i.test(lower) || /[?&](?:byterange|range|segment|sq)=/i.test(lower)) return false;
+        if (/\.(m4s|ts)(?:$|[?#])/i.test(lower) || /[?&](?:byterange|range|segment|sq)=/i.test(lower)) return false;
         if (/\/data\/data\/[^?#]*$/i.test(lower)) return false;
         if (REDIRECT_DOWNLOAD_PAGES.some(p => p.test(lower))) return true;
         try {
             const path = new URL(url).pathname.toLowerCase();
-            if (EXTENSIONS.some(ext => path.endsWith(ext))) return true;
+            if (FILE_EXTENSIONS.some(ext => path.endsWith(ext))) return true;
         } catch (_) {
             const path = lower.split('?')[0].split('#')[0];
-            if (EXTENSIONS.some(ext => path.endsWith(ext))) return true;
+            if (FILE_EXTENSIONS.some(ext => path.endsWith(ext))) return true;
         }
-        return KEYWORDS.some(kw => lower.includes(kw));
+        return DOWNLOAD_KEYWORDS.some(kw => lower.includes(kw));
     }
+
+    // 媒体文件本身（点开通常是"播放/查看"，不是下载）
+    const MEDIA_FILE_RE = /\.(?:m3u8|mpd|mp4|flv|m4v|webm|mov|mkv|avi|mp3|m4a|aac|flac|wav|ogg|opus)(?:$|[?#])/i;
+    function isMediaFileUrl(url) { return MEDIA_FILE_RE.test(String(url || '').toLowerCase()); }
+
+    // 视频 / 音乐 / 播放器站点：默认只嗅探，不劫持点击
+    const MEDIA_HOST_RE = /(^|\.)(youtube\.com|youtu\.be|ytimg\.com|bilibili\.com|b23\.tv|acfun\.cn|iqiyi\.com|youku\.com|v\.qq\.com|y\.qq\.com|mgtv\.com|sohu\.com|tv\.sohu\.com|le\.com|miguvideo\.com|pptv\.com|1905\.com|netflix\.com|twitch\.tv|vimeo\.com|dailymotion\.com|nicovideo\.jp|disneyplus\.com|primevideo\.com|hbomax\.com|max\.com|viki\.com|crunchyroll\.com|wetv\.vip|viu\.com|douyin\.com|iesdouyin\.com|kuaishou\.com|huya\.com|douyu\.com|spotify\.com|music\.163\.com|kugou\.com|kuwo\.cn|pornhub\.com|xvideos\.com|xhamster\.com)$/i;
 
     function normalizeUrl(input) {
         if (!input) return '';
@@ -414,7 +429,52 @@
     }
 
     /* =====================================================================
-     * 5. UI：Toast / 选择面板 / 进度面板
+     * 5. 站点接管策略
+     * ===================================================================== */
+
+    let siteModesCache = null;
+    let legacyBlockCache = null;
+
+    function siteModes() {
+        if (!siteModesCache) {
+            const raw = store(SITE_MODE_KEY, {});
+            siteModesCache = (raw && typeof raw === 'object') ? Object.assign({}, raw) : {};
+        }
+        return siteModesCache;
+    }
+    function legacyBlockList() {
+        if (!legacyBlockCache) {
+            const raw = store(INTERCEPT_KEY, []);
+            legacyBlockCache = Array.isArray(raw) ? raw.map(x => String(x).toLowerCase()) : [];
+        }
+        return legacyBlockCache;
+    }
+    function controlledHost() {
+        try { return String((window.top && window.top.location.hostname) || location.hostname).toLowerCase(); }
+        catch (_) { return String(location.hostname || '').toLowerCase(); }
+    }
+    // 本站是否接管点击下载
+    function siteInterceptOn() {
+        try {
+            const host = controlledHost();
+            const m = siteModes()[host];
+            if (m === 'on') return true;
+            if (m === 'off') return false;
+            if (legacyBlockList().includes(host)) return false;
+            if (MEDIA_HOST_RE.test(host)) return false;   // 媒体站点默认放行，只做主动嗅探
+            return true;
+        } catch (_) { return true; }
+    }
+    function toggleSiteIntercept() {
+        const host = controlledHost();
+        const next = !siteInterceptOn();
+        siteModes()[host] = next ? 'on' : 'off';
+        save(SITE_MODE_KEY, siteModes());
+        return next;
+    }
+
+    /* =====================================================================
+     * 6. UI：Toast / 选择面板 / 进度面板
      * ===================================================================== */
 
     let toastEl = null;
@@ -448,6 +508,7 @@
             '.edgedlpc-ver{position:absolute;top:12px;right:14px;font:600 9.5px ui-monospace,Consolas,monospace;color:#9a9a9e;}',
             '@keyframes edpc-fade{from{opacity:0}to{opacity:1}}',
             '@keyframes edpc-up{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}',
+            '.edgedlpc-float{position:fixed;width:26px;height:26px;border-radius:50%;display:none;align-items:center;justify-content:center;cursor:pointer;z-index:2147483640;box-shadow:0 2px 10px rgba(0,0,0,.45);pointer-events:auto;-webkit-user-select:none;user-select:none;}',
             '#edgedlpc-panel{position:fixed;right:16px;bottom:16px;z-index:2147483645;width:322px;max-height:52vh;overflow:auto;background:rgba(24,24,26,.95);color:#fff;border-radius:14px;padding:11px 12px 8px;font:12.5px/1.5 system-ui,-apple-system,"Microsoft YaHei",sans-serif;box-shadow:0 12px 34px rgba(0,0,0,.4);backdrop-filter:blur(12px);}',
             '#edgedlpc-panel h4{margin:0 0 8px;font-size:12.5px;font-weight:600;display:flex;justify-content:space-between;align-items:center;}',
             '#edgedlpc-panel h4 button{background:none;border:none;color:#9a9aa0;cursor:pointer;font-size:15px;line-height:1;padding:0 2px;}',
@@ -518,16 +579,19 @@
                 '</div></div>';
             document.documentElement.appendChild(host);
 
-            const done = (k) => { host.remove(); resolve(k); };
+            const onKey = (e) => { if (e.key === 'Escape') done(null); };
+            const done = (k) => {
+                document.removeEventListener('keydown', onKey, true);
+                if (host.isConnected) host.remove();
+                resolve(k);
+            };
+            document.addEventListener('keydown', onKey, true);
             host.addEventListener('click', (e) => { if (e.target === host) done(null); });
             host.querySelector('.edgedlpc-cancel').addEventListener('click', () => done(null));
-            const onKey = (e) => { if (e.key === 'Escape') { done(null); document.removeEventListener('keydown', onKey, true); } };
-            document.addEventListener('keydown', onKey, true);
             host.querySelectorAll('.edgedlpc-opt').forEach(btn => {
                 btn.addEventListener('click', () => {
                     const k = btn.dataset.k;
                     if (host.querySelector('#edpc-def').checked) save(DEFAULT_BACKEND_KEY, k);
-                    document.removeEventListener('keydown', onKey, true);
                     done(k);
                 });
             });
@@ -556,11 +620,13 @@
         let data;
         try { data = await api('/jobs', {}); }
         catch (e) {
-            panelEl.querySelector('.edgedlpc-body').innerHTML = '<div class="edpc-empty">' + (e.message || '读取失败') + '</div>';
+            const b = panelEl.querySelector('.edgedlpc-body');
+            if (b) b.innerHTML = '<div class="edpc-empty">' + String(e.message || '读取失败').replace(/[&<>]/g, '') + '</div>';
             return;
         }
         const list = [].concat(data.local || [], data.aria2 || []);
         const body = panelEl.querySelector('.edgedlpc-body');
+        if (!body) return;
         if (!list.length) {
             body.innerHTML = '<div class="edpc-empty">当前没有进行中的任务</div>';
             return;
@@ -586,7 +652,7 @@
         (document.body || document.documentElement).appendChild(panelEl);
         panelEl.querySelector('button').addEventListener('click', closePanel);
         refreshPanel();
-        panelTimer = setInterval(refreshPanel, 1500);
+        panelTimer = setInterval(refreshPanel, 2000);
     }
     function closePanel() {
         if (panelTimer) clearInterval(panelTimer);
@@ -596,8 +662,10 @@
     }
 
     /* =====================================================================
-     * 6. 动作：下载 / 视频解析 / 播放 / 复制
+     * 7. 动作：下载 / 视频解析 / 播放 / 复制
      * ===================================================================== */
+
+    let suppressUntil = 0;
 
     async function sendDownload(url, filename, forcePick) {
         const backend = forcePick ? null : store(DEFAULT_BACKEND_KEY, '');
@@ -636,7 +704,7 @@
         }
     }
 
-    async function detectVideo(quality, forcePick) {
+    async function detectVideo(quality) {
         if (isSensitivePage()) {
             toast('当前是登录/支付等敏感页面，已禁止媒体嗅探', 'error', 3000);
             return;
@@ -679,49 +747,21 @@
     }
 
     /* =====================================================================
-     * 7. 点击 / 导航拦截
+     * 8. 点击接管 / 导航守卫
+     *    1.1 的边界：
+     *    - 只处理真实用户点击（e.isTrusted），程序化点击一律放行；
+     *    - 不再改写 window.open / a.click / iframe.src / setAttribute；
+     *    - 只在"本站接管"开启、且确实命中文件下载链接时阻断，不做三连 stop；
+     *    - 媒体站点默认不接管（菜单可逐站开启）。
      * ===================================================================== */
 
-    let interceptEnabled = true;
-    let suppressUntil = 0;
     let lastGesture = 0;
-
-    function controlledHost() {
-        try { return (window.top && window.top.location.hostname) || location.hostname; }
-        catch (_) { return location.hostname; }
-    }
-
-    function getSiteBlock() {
-        const l = store(INTERCEPT_KEY, []);
-        return Array.isArray(l) ? l : [];
-    }
-    function setSiteBlock(list) {
-        save(INTERCEPT_KEY, list.map(x => String(x).toLowerCase()));
-        interceptEnabled = !getSiteBlock().includes(String(controlledHost()).toLowerCase());
-        return list;
-    }
-    function toggleSiteBlock() {
-        const host = String(controlledHost()).toLowerCase();
-        const list = getSiteBlock();
-        const i = list.findIndex(x => String(x).toLowerCase() === host);
-        if (i >= 0) list.splice(i, 1); else list.push(host);
-        setSiteBlock(list);
-        return i < 0;
-    }
+    let lastPassNoticeAt = 0;
 
     function requestDownload(url, filename) {
         if (!url) return;
         if (Date.now() < suppressUntil) return;
-        void sendDownload(url, filename || sanitizeFilename(extractMediaTitle(), url), false);
-    }
-
-    function tryInterceptNavigation(input, opts) {
-        if (!interceptEnabled || Date.now() < suppressUntil) return false;
-        if (opts && opts.requireGesture && Date.now() - lastGesture > 1600) return false;
-        const url = normalizeUrl(input);
-        if (!url || !isDownloadLink(url)) return false;
-        requestDownload(url);
-        return true;
+        void sendDownload(url, filename || sanitizeFilename('', url), false);
     }
 
     function extractUrlFromOnclick(onclick) {
@@ -730,60 +770,80 @@
         return m ? m[1] : null;
     }
 
-    function handleClick(e) {
-        lastGesture = Date.now();
-        if (e.__edgedlpc) return;
-        e.__edgedlpc = true;
-        if (e.target && e.target.closest && e.target.closest('#edgedlpc-panel, .edgedlpc-mask, .edgedlpc-float')) return;
-
-        const link = e.target && e.target.closest
-            ? e.target.closest('a, [onclick], [data-ng-href], [data-href], [data-url], [data-gokey]') : null;
-        let url = '';
-        if (link) {
-            url = link.getAttribute('href') || link.getAttribute('data-ng-href') || link.getAttribute('data-href')
-                || (link.getAttribute('data-gokey') || '').match(/download_url=([^&]+)/)?.[1]
-                || link.getAttribute('data-url') || link.href || '';
+    function linkTargetUrl(link) {
+        let url = link.getAttribute('href') || link.getAttribute('data-ng-href')
+            || link.getAttribute('data-href') || link.getAttribute('data-url') || '';
+        if (!url) {
+            const gk = link.getAttribute('data-gokey');
+            if (gk) {
+                const m = String(gk).match(/download_url=([^&]+)/);
+                if (m) { try { url = decodeURIComponent(m[1]); } catch (_) { } }
+            }
         }
-        if (isInvalidNav(url) && link) {
-            const oc = link.getAttribute('onclick') || (link.closest('[onclick]') && link.closest('[onclick]').getAttribute('onclick'));
+        if (isInvalidNav(url)) {
+            let oc = link.getAttribute('onclick') || '';
+            if (!oc) {
+                const anc = link.closest('[onclick]');
+                oc = (anc && anc.getAttribute('onclick')) || '';
+            }
             if (oc) url = extractUrlFromOnclick(oc) || '';
         }
-        url = normalizeUrl(url);
-        if (!url || !isDownloadLink(url)) return;
-        if (!interceptEnabled) {
-            toast('本站已设为不接管，使用浏览器默认行为', 'info', 1500);
-            return;
-        }
-        e.preventDefault();
-        e.stopPropagation();
-        e.stopImmediatePropagation();
-        requestDownload(url);
+        if (!url && link.href) url = link.href;
+        return normalizeUrl(url);
     }
 
-    function attachBridge() {
-        interceptEnabled = !getSiteBlock().includes(String(controlledHost()).toLowerCase());
-        document.addEventListener('click', handleClick, true);
+    function handleClick(e) {
+        if (!e.isTrusted) return;             // 合成/程序化点击属于页面自己的逻辑
+        lastGesture = Date.now();
+        if (e.defaultPrevented) return;
+        const t = e.target;
+        if (!t || !t.closest) return;
+        if (t.closest('.edgedlpc-float, #edgedlpc-panel, .edgedlpc-mask, .edgedlpc-toast')) return;
 
+        const link = t.closest('a, [onclick], [data-ng-href], [data-href], [data-url], [data-gokey]');
+        if (!link) return;
+        const url = linkTargetUrl(link);
+        if (!url || !isDownloadLink(url)) return;
+
+        // 媒体站上点开视频/音频文件是"播放"诉求，不是下载
+        if (isMediaFileUrl(url) && MEDIA_HOST_RE.test(controlledHost())) {
+            if (Date.now() - lastPassNoticeAt > 20000) {
+                lastPassNoticeAt = Date.now();
+                log('媒体链接放行（本站在只嗅探模式）：' + url.slice(0, 120));
+            }
+            return;
+        }
+        if (!siteInterceptOn()) return;
+        if (Date.now() < suppressUntil) return;
+
+        e.preventDefault();
+        e.stopPropagation();
+        const dlName = link.getAttribute('download') || '';
+        requestDownload(url, sanitizeFilename(dlName, url));
+    }
+
+    // 仅守卫"用户刚点过、且是同页跳转到文件"的场景；不碰 open / a.click / iframe
+    function attachNavigationGuard() {
         const w = (typeof unsafeWindow !== 'undefined' && unsafeWindow) || window;
-        try {
-            const originOpen = w.open;
-            w.open = function (url, t, f) {
-                if (tryInterceptNavigation(url)) return null;
-                return originOpen.call(w, url, t, f);
-            };
-        } catch (_) { }
-        try {
-            const originClick = w.HTMLAnchorElement.prototype.click;
-            w.HTMLAnchorElement.prototype.click = function () {
-                if (tryInterceptNavigation(this.href)) return;
-                return originClick.call(this);
-            };
-        } catch (_) { }
+        const guarded = (target) => {
+            if (Date.now() < suppressUntil) return false;
+            if (Date.now() - lastGesture > 2000) return false;      // 没有紧邻的用户手势，不动
+            if (window.top !== window.self) return false;           // 只在顶层生效
+            const url = normalizeUrl(target);
+            if (!url) return false;
+            if (!siteInterceptOn()) return false;
+            if (isMediaFileUrl(url) && MEDIA_HOST_RE.test(controlledHost())) return false;
+            if (!isDownloadLink(url)) return false;
+            requestDownload(url);
+            return true;
+        };
+        if (!w || !w.Location || !w.Location.prototype) return;
         ['assign', 'replace'].forEach(m => {
             try {
                 const o = w.Location.prototype[m];
+                if (typeof o !== 'function') return;
                 w.Location.prototype[m] = function (u) {
-                    if (tryInterceptNavigation(u)) return;
+                    if (guarded(u)) return;
                     return o.call(this, u);
                 };
             } catch (_) { }
@@ -793,30 +853,14 @@
             if (d && d.set) {
                 const o = d.set;
                 Object.defineProperty(w.Location.prototype, 'href', {
-                    ...d, set: function (v) { if (tryInterceptNavigation(v)) return; o.call(this, v); }
+                    ...d, set: function (v) { if (guarded(v)) return; o.call(this, v); }
                 });
             }
-        } catch (_) { }
-        try {
-            const di = Object.getOwnPropertyDescriptor(w.HTMLIFrameElement.prototype, 'src');
-            if (di && di.set) {
-                const oi = di.set;
-                Object.defineProperty(w.HTMLIFrameElement.prototype, 'src', {
-                    ...di, set: function (v) { if (tryInterceptNavigation(v, { requireGesture: true })) return; oi.call(this, v); }
-                });
-            }
-            const sa = w.Element.prototype.setAttribute;
-            w.Element.prototype.setAttribute = function (name, value) {
-                if (this instanceof w.HTMLIFrameElement && String(name).toLowerCase() === 'src') {
-                    if (tryInterceptNavigation(value, { requireGesture: true })) return;
-                }
-                return sa.call(this, name, value);
-            };
         } catch (_) { }
     }
 
     /* =====================================================================
-     * 8. 媒体嗅探 + CDN 原图升级
+     * 9. 媒体嗅探 + CDN 原图升级
      * ===================================================================== */
 
     const VIDEO_EXT_RE = /\.(?:m3u8|mp4|flv|m4v|webm|mov|mkv|avi|m4s|ts)(?:[?#]|$)/i;
@@ -927,14 +971,20 @@
             });
             document.querySelectorAll('picture source').forEach(s => addImg(s.getAttribute('srcset'), 40));
             try {
-                performance.getEntriesByType('resource').forEach(e => {
+                const entries = performance.getEntriesByType('resource').slice(-400);
+                entries.forEach(e => {
                     if (isImageUrl(e.name) && (e.transferSize || 0) > 40000) addImg(e.name, 25);
                     else if (isVideoUrl(e.name)) addVid(e.name);
                 });
             } catch (_) { }
-            document.querySelectorAll('script').forEach(s => {
-                const txt = (s.textContent || '');
-                if (txt.length > 1_500_000) return;
+            // 只扫内联脚本，且先做关键词快筛，避免在巨型页面里跑大正则
+            let scanned = 0;
+            document.querySelectorAll('script:not([src])').forEach(s => {
+                if (scanned++ > 400) return;
+                const txt = s.textContent || '';
+                if (txt.length < 20 || txt.length > 600000) return;
+                if (txt.indexOf('m3u8') < 0 && txt.indexOf('.mp4') < 0 && txt.indexOf('.jpg') < 0 &&
+                    txt.indexOf('.png') < 0 && txt.indexOf('.webp') < 0 && txt.indexOf('.m4v') < 0) return;
                 (txt.match(IMAGE_URL_RE) || []).forEach(m => addImg(m, 15));
                 (txt.match(VIDEO_URL_RE) || []).forEach(addVid);
             });
@@ -947,12 +997,22 @@
     }
 
     /* =====================================================================
-     * 9. 图片/视频悬浮下载按钮
+     * 10. 媒体悬浮下载按钮
+     *     1.1 起：不再包装/移动页面图片，只在自己的 fixed 悬浮层里放一个按钮，
+     *     鼠标经过时出现、离开即移除，页面 DOM 零改动。
      * ===================================================================== */
 
-    const SEARCH_HOST_RE = /(^|\.)(bing\.com|google\.[a-z.]+|baidu\.com|sogou\.com|so\.com|yahoo\.com|duckduckgo\.com|yandex\.[a-z.]+|search\.brave\.com|ecosia\.org)/i;
-    const PLAYER_HOST_RE = /(^|\.)(youtube\.com|youtu\.be|bilibili\.com|iqiyi\.com|youku\.com|v\.qq\.com|mgtv\.com|sohu\.com|netflix\.com|twitch\.tv|vimeo\.com|dailymotion\.com|nicovideo\.jp|douyin\.com|kuaishou\.com|pornhub\.com|xvideos\.com)/i;
+    const SEARCH_HOST_RE = /(^|\.)(bing\.com|google\.[a-z.]+|baidu\.com|sogou\.com|so\.com|yahoo\.com|duckduckgo\.com|yandex\.[a-z.]+|search\.brave\.com|ecosia\.org)$/i;
+    const PLAYER_HOST_RE = MEDIA_HOST_RE;
     const CFG = { minW: 110, minH: 110, size: 26 };
+
+    let floatBtn = null;
+    let floatTarget = null;
+    let floatRaf = 0;
+
+    function floatEnabled() {
+        try { return !!store(FLOAT_KEY, true); } catch (_) { return false; }
+    }
 
     function isLikelyIconOrUI(img) {
         if (!img || img.tagName !== 'IMG') return true;
@@ -1011,66 +1071,65 @@
         return extractMediaTitle() || document.title || '';
     }
 
-    function makeFloat(target, isVideo) {
-        if (!store(FLOAT_KEY, true)) return;
-        if (!target || target.dataset.edgedlpc) return;
-        if (!isVideo && isLikelyIconOrUI(target)) { target.dataset.edgedlpc = 'skip'; return; }
-        if (!isVideo && !target.complete && !(target.naturalWidth > 0)) {
-            target.dataset.edgedlpc = 'wait';
-            target.addEventListener('load', () => { target.dataset.edgedlpc = ''; makeFloat(target, false); }, { once: true });
+    function hideFloat() {
+        floatTarget = null;
+        if (floatBtn) { floatBtn.remove(); floatBtn = null; }
+    }
+
+    function placeFloat() {
+        if (!floatBtn || !floatTarget) return;
+        const r = floatTarget.getBoundingClientRect();
+        if (r.width < 40 || r.height < 40 || r.bottom < 0 || r.top > innerHeight || r.right < 0 || r.left > innerWidth) {
+            floatBtn.style.display = 'none';
             return;
         }
-        const parent = target.parentElement;
-        if (!parent) return;
-        if (!isVideo) {
-            const nw = target.naturalWidth || target.clientWidth || 0;
-            const nh = target.naturalHeight || target.clientHeight || 0;
-            if ((nw && nw < CFG.minW) || (nh && nh < CFG.minH)) { target.dataset.edgedlpc = 'skip-small'; return; }
+        floatBtn.style.display = 'flex';
+        const left = Math.min(Math.max(4, r.right - CFG.size - 6), innerWidth - CFG.size - 4);
+        const top = Math.min(Math.max(4, r.top + 6), innerHeight - CFG.size - 4);
+        floatBtn.style.left = left + 'px';
+        floatBtn.style.top = top + 'px';
+    }
+
+    function scheduleFloatPlace() {
+        if (floatRaf) return;
+        floatRaf = requestAnimationFrame(() => { floatRaf = 0; placeFloat(); });
+    }
+
+    function floatCandidate(el) {
+        if (!el || el.nodeType !== 1) return false;
+        if (!floatEnabled() || isSensitivePage()) return false;
+        const host = String(location.hostname || '').toLowerCase();
+        if (SEARCH_HOST_RE.test(host.replace(/^www\./, ''))) return false;
+        if (el.tagName === 'IMG') {
+            if (isLikelyIconOrUI(el)) return false;
+            const nw = el.naturalWidth || el.clientWidth || 0;
+            const nh = el.naturalHeight || el.clientHeight || 0;
+            if (nw < CFG.minW || nh < CFG.minH) return false;
+            if (!el.complete && !el.naturalWidth) return false;
+            return true;
         }
-        target.dataset.edgedlpc = '1';
+        if (el.tagName === 'VIDEO') {
+            if (PLAYER_HOST_RE.test(host)) return false;   // 播放器站点不叠加按钮，避免与控件打架
+            return !!bestVideoUrl(el);
+        }
+        return false;
+    }
 
-        let host = parent;
-        try {
-            if (getComputedStyle(host).position === 'static') {
-                host.style.setProperty('position', 'relative', 'important');
-            }
-        } catch (_) { }
-
-        injectStyle();
+    function buildFloatButton(target, isVideo) {
         const btn = document.createElement('div');
         btn.className = 'edgedlpc-float';
         btn.title = isVideo ? '下载视频（EdgeDL-PC）' : '下载图片（EdgeDL-PC）';
-        btn.style.cssText = 'position:absolute!important;top:6px;right:6px;width:' + CFG.size + 'px;height:' + CFG.size +
-            'px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2147483640;' +
-            'background:' + (isVideo ? 'rgba(220,38,38,.88)' : 'rgba(0,0,0,.68)') + ';opacity:0;transition:opacity .15s,transform .15s;' +
-            'box-shadow:0 2px 10px rgba(0,0,0,.45);pointer-events:auto;-webkit-user-select:none;user-select:none;';
+        btn.style.background = isVideo ? 'rgba(220,38,38,.88)' : 'rgba(0,0,0,.68)';
         btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
 
-        // 鼠标移到图上才显示，减少对页面视觉的干扰
-        const show = () => { btn.style.opacity = '1'; };
-        const hide = () => { btn.style.opacity = '0'; };
-
-        if (!isVideo) {
-            const wrap = document.createElement('span');
-            wrap.style.cssText = 'position:relative;display:inline-block;max-width:100%;vertical-align:middle;';
-            parent.insertBefore(wrap, target);
-            wrap.appendChild(target);
-            wrap.appendChild(btn);
-            wrap.dataset.edgedlpcWrap = '1';
-            wrap.addEventListener('mouseenter', show);
-            wrap.addEventListener('mouseleave', hide);
-        } else {
-            host.appendChild(btn);
-            target.addEventListener('mouseenter', show);
-            target.addEventListener('mouseleave', hide);
-            btn.addEventListener('mouseenter', show);
-        }
+        btn.addEventListener('mouseenter', () => { btn.style.opacity = '1'; });
+        btn.addEventListener('mouseleave', hideFloat);
 
         btn.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
-            e.stopImmediatePropagation();
             const url = isVideo ? bestVideoUrl(target) : upgradeImageUrl(bestImageUrl(target));
+            hideFloat();
             if (!url) { toast('没找到可直接下载的地址，试试菜单「解析本页视频」', 'error', 2600); return; }
             const title = elementTitle(target);
             requestDownload(url, sanitizeFilename(title, url, isVideo ? 'mp4' : 'jpg'));
@@ -1096,67 +1155,47 @@
                 if (a === 'dl') requestDownload(url, sanitizeFilename(elementTitle(target), url, isV ? 'mp4' : 'jpg'));
                 else if (a === 'play') playMedia(url, elementTitle(target), '');
                 else copyText(url, isV ? '视频直链' : '图片直链');
+                hideFloat();
                 off();
             });
         });
+        return btn;
     }
 
-    function scanMedia(root) {
-        if (!store(FLOAT_KEY, true)) return;
-        if (isSensitivePage()) return;
-        const host = (location.hostname || '').toLowerCase().replace(/^www\./, '');
-        if (SEARCH_HOST_RE.test(host)) return;      // 保护搜索结果页图标
-        (root || document).querySelectorAll('img:not([data-edgedlpc])').forEach(img => {
-            if (!img.src && !img.currentSrc && !img.getAttribute('data-src')) return;
-            makeFloat(img, false);
-        });
-        if (!PLAYER_HOST_RE.test(host)) {
-            (root || document).querySelectorAll('video:not([data-edgedlpc])').forEach(v => {
-                if (bestVideoUrl(v)) makeFloat(v, true);
-                else v.dataset.edgedlpc = 'blob';
-            });
-        }
+    function showFloat(target) {
+        if (floatTarget === target && floatBtn) return;
+        if (document.fullscreenElement) return;              // 全屏观看时不出现按钮
+        hideFloat();
+        if (!floatCandidate(target)) return;
+        floatTarget = target;
+        floatBtn = buildFloatButton(target, target.tagName === 'VIDEO');
+        (document.body || document.documentElement).appendChild(floatBtn);
+        placeFloat();
     }
 
-    function initFloat() {
-        if (!store(FLOAT_KEY, true)) { log('悬浮按钮已关闭'); return; }
-        const start = () => {
-            scanMedia();
-            setTimeout(scanMedia, 1200);
-            setTimeout(scanMedia, 4000);
-            const obs = new MutationObserver(muts => {
-                let broad = false;
-                for (const m of muts) {
-                    if (m.type === 'childList') {
-                        m.addedNodes.forEach(n => {
-                            if (n.nodeType !== 1 || n.id === 'edgedlpc-panel' || n.classList?.contains('edgedlpc-toast')) return;
-                            if (n.tagName === 'IMG' || n.tagName === 'VIDEO') makeFloat(n, n.tagName === 'VIDEO');
-                            else if (n.querySelectorAll) broad = true;
-                        });
-                    }
-                }
-                if (broad) clearTimeout(obs._t), obs._t = setTimeout(() => scanMedia(), 400);
-            });
-            obs.observe(document.documentElement, { childList: true, subtree: true });
-            document.addEventListener('visibilitychange', () => {
-                if (document.visibilityState === 'visible') setTimeout(scanMedia, 300);
-            });
+    function attachFloatLayer() {
+        const onOver = (e) => {
+            const t = e.target;
+            if (!t || t.nodeType !== 1) return;
+            if (t === floatBtn) return;
+            if (t.tagName === 'IMG' || t.tagName === 'VIDEO') showFloat(t);
         };
-        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, { once: true });
-        else start();
-    }
-
-    function clearFloat() {
-        document.querySelectorAll('.edgedlpc-float').forEach(el => el.remove());
-        document.querySelectorAll('span[data-edgedlpc-wrap]').forEach(w => {
-            const img = w.querySelector('img');
-            if (img) { img.dataset.edgedlpc = ''; w.replaceWith(img); } else w.remove();
-        });
-        document.querySelectorAll('img[data-edgedlpc], video[data-edgedlpc]').forEach(el => { el.dataset.edgedlpc = ''; });
+        const onOut = (e) => {
+            if (!floatTarget || e.target !== floatTarget) return;
+            const to = e.relatedTarget;
+            if (to && (to === floatBtn || (to.nodeType === 1 && floatBtn && floatBtn.contains(to)))) return;
+            if (to && floatTarget.contains && floatTarget.contains(to)) return;
+            hideFloat();
+        };
+        document.addEventListener('mouseover', onOver, true);
+        document.addEventListener('mouseout', onOut, true);
+        document.addEventListener('scroll', () => { if (floatBtn) scheduleFloatPlace(); }, true);
+        window.addEventListener('resize', () => { if (floatBtn) scheduleFloatPlace(); }, true);
+        document.addEventListener('visibilitychange', () => { if (document.hidden) hideFloat(); });
     }
 
     /* =====================================================================
-     * 10. 菜单命令
+     * 11. 菜单命令 / 快捷键 / 启动
      * ===================================================================== */
 
     async function menuSelfTest() {
@@ -1174,6 +1213,26 @@
             ok ? 'ok' : 'error', 7000);
     }
 
+    async function sniffAndDownload() {
+        if (isSensitivePage()) {
+            toast('当前是登录/支付等敏感页面，已禁止媒体嗅探', 'error', 3200);
+            return;
+        }
+        const m = collectMedia();
+        const total = m.videos.length + m.images.length;
+        if (!total) { toast('未嗅探到可下载的媒体', 'info', 1800); return; }
+        const target = m.videos.find(u => /\.m3u8/i.test(u)) || m.videos[0] || m.images[0];
+        const isImg = !isVideoUrl(target);
+        toast('嗅到 ' + m.videos.length + ' 个视频源 / ' + m.images.length + ' 张图片，接管' + (isImg ? '图片' : '视频'), 'ok', 1800);
+        requestDownload(target, sanitizeFilename(extractMediaTitle(), target, isImg ? 'jpg' : 'mp4'));
+    }
+
+    function copyBestLink() {
+        const m = collectMedia();
+        const t = m.videos.find(u => /\.m3u8/i.test(u)) || m.videos[0] || m.images[0];
+        copyText(t || location.href, t ? '媒体直链' : '页面地址');
+    }
+
     function registerMenu() {
         if (typeof GM_registerMenuCommand !== 'function') return;
 
@@ -1186,26 +1245,22 @@
             if (!t) { toast('本页没有可直接播放的媒体流', 'error', 2200); return; }
             playMedia(t, extractMediaTitle(), '');
         });
-        GM_registerMenuCommand('复制本页最佳媒体直链（Alt+Shift+C）', () => {
-            const m = collectMedia();
-            const t = m.videos.find(u => /\.m3u8/i.test(u)) || m.videos[0] || m.images[0];
-            copyText(t || location.href, t ? (isVideoUrl(t) ? '视频直链' : '图片直链') : '页面地址');
-        });
+        GM_registerMenuCommand('复制本页最佳媒体直链（Alt+Shift+C）', () => copyBestLink());
         GM_registerMenuCommand('更改默认下载方式', async () => {
             drop(DEFAULT_BACKEND_KEY);
             const k = await pickBackend('（设置默认下载方式）', true);
             if (k) toast('默认下载方式：' + (BACKENDS.find(b => b.key === k) || {}).short, 'ok');
             else toast('已设为每次都询问', 'info');
         });
-        GM_registerMenuCommand('切换本站接管（当前：' + (interceptEnabled ? '接管中' : '已放行') + '）', () => {
-            const blocked = toggleSiteBlock();
-            toast(blocked ? '已禁止接管本站，交还浏览器' : '已恢复接管本站', 'info', 2200);
+        GM_registerMenuCommand('本站接管：' + (siteInterceptOn() ? '开（点击下载即接管）' : '关（只做主动嗅探）') + ' — 点击切换', () => {
+            const on = toggleSiteIntercept();
+            toast(on ? '已接管本站：点文件链接会交给下载器' : '已放行本站：只嗅探，不劫持点击', 'info', 2600);
         });
-        GM_registerMenuCommand('切换图片悬浮下载按钮', () => {
-            const next = !store(FLOAT_KEY, true);
+        GM_registerMenuCommand('切换图片/视频悬浮下载按钮', () => {
+            const next = !floatEnabled();
             save(FLOAT_KEY, next);
-            if (!next) clearFloat();
-            toast(next ? '已开启悬浮下载按钮，刷新页面生效' : '已关闭悬浮下载按钮', 'info', 2200);
+            if (!next) hideFloat();
+            toast(next ? '已开启悬浮下载按钮（鼠标悬停大图/视频生效）' : '已关闭悬浮下载按钮', 'info', 2400);
         });
         GM_registerMenuCommand('下载任务面板', () => (panelEl ? closePanel() : openPanel()));
         GM_registerMenuCommand('与本地助手配对 / 重连', async () => {
@@ -1232,43 +1287,25 @@
         });
     }
 
-    async function sniffAndDownload() {
-        if (isSensitivePage()) {
-            toast('当前是登录/支付等敏感页面，已禁止媒体嗅探', 'error', 3200);
-            return;
-        }
-        const m = collectMedia();
-        const total = m.videos.length + m.images.length;
-        if (!total) { toast('未嗅探到可下载的媒体', 'info', 1800); return; }
-        const target = m.videos.find(u => /\.m3u8/i.test(u)) || m.videos[0] || m.images[0];
-        const isImg = !isVideoUrl(target);
-        toast('嗅到 ' + m.videos.length + ' 个视频源 / ' + m.images.length + ' 张图片，接管' + (isImg ? '图片' : '视频'), 'ok', 1800);
-        requestDownload(target, sanitizeFilename(extractMediaTitle(), target, isImg ? 'jpg' : 'mp4'));
-    }
-
-    /* =====================================================================
-     * 11. 启动
-     * ===================================================================== */
-
-    function init() {
-        injectStyle();
-        attachBridge();
-        registerMenu();
-        void handshake();          // 预热，让第一次下载不用等握手
-        setTimeout(initFloat, 400);
-
+    function bindShortcuts() {
         document.addEventListener('keydown', (e) => {
-            if (!e.altKey || !e.shiftKey) return;
+            if (!e.altKey || !e.shiftKey || e.isTrusted === false) return;
+            if (e.ctrlKey || e.metaKey) return;
             if (e.key === 'D' || e.key === 'd') { e.preventDefault(); sniffAndDownload(); }
             if (e.key === 'C' || e.key === 'c') { e.preventDefault(); copyBestLink(); }
             if (e.key === 'V' || e.key === 'v') { e.preventDefault(); detectVideo(''); }
         }, true);
     }
 
-    function copyBestLink() {
-        const m = collectMedia();
-        const t = m.videos.find(u => /\.m3u8/i.test(u)) || m.videos[0] || m.images[0];
-        copyText(t || location.href, t ? (isVideoUrl(t) ? '媒体直链' : '媒体直链') : '页面地址');
+    function init() {
+        injectStyle();
+        document.addEventListener('click', handleClick, true);
+        attachNavigationGuard();
+        attachFloatLayer();
+        registerMenu();
+        bindShortcuts();
+        // 预热握手，让第一次下载不用等；失败时静默
+        setTimeout(() => { void handshake(); }, 800);
     }
 
     init();
