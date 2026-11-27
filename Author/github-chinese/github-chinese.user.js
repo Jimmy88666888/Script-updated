@@ -21,8 +21,8 @@
 // @grant        GM_notification
 // @connect      www.iflyrec.com
 // @supportURL   https://github.com/maboloshi/github-chinese/issues
-// @downloadURL  https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/edge-userscripts/pc/github-chinese.user.js
-// @updateURL    https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/edge-userscripts/pc/github-chinese.user.js
+// @downloadURL  https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Author/github-chinese/github-chinese.user.js
+// @updateURL    https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Author/github-chinese/github-chinese.user.js
 // ==/UserScript==
 
 (function (window, document, undefined) {

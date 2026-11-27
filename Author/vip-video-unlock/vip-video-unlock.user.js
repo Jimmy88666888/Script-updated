@@ -57,8 +57,8 @@
 // @compatible        opera safari edge
 // @compatible        safari
 // @compatible        edge
-// @downloadURL  https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/edge-userscripts/pc/vip-video-unlock.user.js
-// @updateURL    https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/edge-userscripts/pc/vip-video-unlock.user.js
+// @downloadURL  https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Author/vip-video-unlock/vip-video-unlock.user.js
+// @updateURL    https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Author/vip-video-unlock/vip-video-unlock.user.js
 // ==/UserScript==
 
 const util = (function () {

@@ -22,8 +22,8 @@
 // @grant             GM_notification
 // @grant             GM_addStyle
 // @run-at            document-idle
-// @updateURL         https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/CloudLink-Mobile/CloudLink-Mobile.user.js
-// @downloadURL       https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/CloudLink-Mobile/CloudLink-Mobile.user.js
+// @updateURL         https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/CloudLink-Mobile/CloudLink-Mobile.user.js
+// @downloadURL       https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/CloudLink-Mobile/CloudLink-Mobile.user.js
 // @homepageURL       https://github.com/Jimmy88666888/Script-updated/tree/main/CloudLink-Mobile
 // @supportURL        https://github.com/Jimmy88666888/Script-updated/issues
 // ==/UserScript==

@@ -1,11 +1,13 @@
 #!/usr/bin/env node
 /**
- * sync.mjs — 上游脚本同步器（pc/ 与 mobile/ 两份副本）
+ * sync.mjs — 上游脚本同步器（同一脚本目录下的电脑版 / 手机版两份）
  *
- * updates.json 每条记录带 platform（pc / mobile）。同一脚本的两份副本共用上游来源，
+ * 仓库按作者归属分为 Local/ 与 Author/，每个脚本一个同名子目录，目录内放
+ * <脚本名>.user.js（电脑版）与 <脚本名>-mobile.user.js（手机版）。
+ * updates.json 每条记录带 platform（pc / mobile）与 file（仓库内相对路径），
  * 同步时取上游最新 @version 与全文，再按各自平台重写 @version 与更新地址：
- *   pc     -> https://cdn.jsdelivr.net/gh/<owner>/<repo>@main/pc/<slug>.user.js
- *   mobile -> https://raw.githubusercontent.com/<owner>/<repo>/main/mobile/<slug>.user.js
+ *   pc     -> https://cdn.jsdelivr.net/gh/<owner>/<repo>@main/<file>
+ *   mobile -> https://raw.githubusercontent.com/<owner>/<repo>/main/<file>
  * 无上游来源（本地维护脚本）不参与同步。
  *
  * 用法：node tools/sync.mjs [--dry-run]
