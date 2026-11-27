@@ -65,7 +65,7 @@ LICENSE
 | [HTML5手机版](Local/html5-video-mobile/html5-video-mobile-mobile.user.js) | 72.09 | [安装]( https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/html5-video-mobile/html5-video-mobile-mobile.user.js ) | `Local/html5-video-mobile/` |
 | [HTML5视频播放工具（增强合并版）](Local/html5-video-player-merged/html5-video-player-merged.user.js) | 2.2.7-merged | [安装]( https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/html5-video-player-merged/html5-video-player-merged.user.js ) | `Local/html5-video-player-merged/` |
 | [LinkSwift 手机版](Local/LinkSwift-Mobile/LinkSwift-Mobile.user.js) | 1.1.3-mobile | [安装]( https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/LinkSwift-Mobile/LinkSwift-Mobile.user.js ) | `Local/LinkSwift-Mobile/` |
-| [Markdown](Local/universal-post-to-markdown/universal-post-to-markdown.user.js) | 3.0.2 | [默认安装]( https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/universal-post-to-markdown/universal-post-to-markdown.user.js )（通用） | `Local/universal-post-to-markdown/` |
+| [Markdown](Local/universal-post-to-markdown/universal-post-to-markdown.user.js) | 3.0.3 | [默认安装]( https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/universal-post-to-markdown/universal-post-to-markdown.user.js )（通用） | `Local/universal-post-to-markdown/` |
 | [视频剧集信息显示](Local/video-episode-info/video-episode-info.user.js) | 6.6.1 | [默认安装]( https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/video-episode-info/video-episode-info.user.js )（通用） | `Local/video-episode-info/` |
 | [视频全屏显示时间（全站通用增强版）](Local/video-fullscreen-clock/video-fullscreen-clock.user.js) | 0.6.11 | [默认安装]( https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/video-fullscreen-clock/video-fullscreen-clock.user.js )（通用） | `Local/video-fullscreen-clock/` |
 | [视频播放页竖排剧集名 - 终极版](Local/%E8%A7%86%E9%A2%91%E7%AB%96%E6%8E%92%E5%89%A7%E9%9B%86%E5%90%8D-%E5%85%A8%E7%AB%99%E9%80%9A%E7%94%A8%E7%89%88/%E8%A7%86%E9%A2%91%E7%AB%96%E6%8E%92%E5%89%A7%E9%9B%86%E5%90%8D-%E5%85%A8%E7%AB%99%E9%80%9A%E7%94%A8%E7%89%88.user.js) | 6.0 | [安装]( https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/视频竖排剧集名-全站通用版/视频竖排剧集名-全站通用版.user.js ) | `Local/视频竖排剧集名-全站通用版/` |
@@ -93,6 +93,11 @@ LICENSE
 - **缓存**：jsDelivr 对 `@main` 引用约有 12 小时缓存，电脑端会略滞后；急用可把 `@main` 换成具体提交 SHA。
 
 ## 变更记录
+
+### 2026-11-27 Markdown 升到 3.0.3
+
+- 用新版脚本（3773 行 / 178 KB）替换原 3.0.2 后，把 `@version` 提升到 **3.0.3**，电脑版与手机版同步升号，让已装用户通过自动更新拿到这一版。
+- 更新地址不变（通用脚本走 raw 默认），此前装的是 3.0.2 的副本，下一次检查更新时会自动拉取，无需重装。
 
 ### 2026-11-27 精简平台入口：EdgeDL 转手机版、HTML5 拆分单平台、三个脚本改通用
 
