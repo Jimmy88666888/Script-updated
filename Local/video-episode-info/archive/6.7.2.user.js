@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         视频剧集信息显示
 // @namespace    local.edge-userscripts/video-episode-info
-// @version      6.7.3
-// @description  竖排/横排显示剧集名+集数，带完整设置面板、主题、快捷键、全屏适配、按站配置、移动端触摸适配。v4.1 修复爱奇艺等站点全屏不显示；v4.2 剧名优先读播放器 DOM 与选集高亮项，切集不滞后；v4.3 识别失败自动降级；v4.4 切集重播入场动画、小屏字号自适应、竖排长标题溢出保护、可选沉浸淡出、面板位置记忆与 Esc 关闭；v4.5 新增电脑/手机/极简一键预设；v4.6 按真实播放页 DOM 重写识别层（CSS Module 哈希类名、8 位期号、播放器标题区取集数、避开热搜榜等数字干扰）；v4.6.2 修集数位于标题开头时剧名被污染、剧名尾随时长未剥离；v4.7 修竖排换行实为换列、固定单列宽度+overflow:hidden 把集数列整列裁掉（“看不到集数”的真凶）；v4.8 竖排数字/字母改为逐字直立（text-orientation: upright），不再横躺，可在面板切回；v4.9 集数支持独立字号（默认自动取剧名70%），两列高度更协调；v5.0 新增列间距滑杆（竖排下用 line-height 拉开两列，间距仍带背景不断裂）；v5.1 一键预设纳入集数字号与列间距，电脑/手机/极简三档整套观感一起切换；v6.0 全站注入（检测到 video 才启用，iframe 内不运行）、设置入口改为头像按钮（默认仅全屏显示，可自定义图片地址或上传）、面板新增保存选项、未知站点走通用识别兜底（标题区 / JSON-LD / 选集高亮），爱奇艺专属逻辑保持不变；v6.1 默认头像改为「剧」字；优化 YouTube 标题/集数识别（专属选择器、剥离 - YouTube 尾巴、支持 Episode/Ep/SxxExx 英文集数格式）；v6.1.1 为 Tampermonkey 脚本列表添加「剧」字 @icon；v6.2 实测主流站修复：B站 mediaTitle、腾讯 player-play-title、剥离 15:18 时长尾巴、强化腾讯/B站标题噪音与英文集数清理；v6.3 增强非主流站：MacCMS 系（trvod/szctv）、爱壹帆 iyf.tv、OnDemandChina 标题/URL 集数识别与站点尾巴清理；v6.4 手机端油猴菜单新增：打开设置、切换显示、手机预设、头像常驻；v6.5 配置改存油猴自身存储（GM_setValue）并双写 localStorage 兜底，修复关闭「按站配置」后一保存就丢的问题，重启浏览器后不再回到默认；v6.6 新增「仅全屏时显示标题」选项（与「全屏时隐藏标题」互斥）；v6.7 侧边默认只显示「剧名+数字集数」单列（红日第一集 → 红日1），长剧名自动折成多列，面板可关闭合并；v6.7.1 集数一律归一为纯数字（EP01/S01E02/01 → 1/1/2），剧名自带同集号不重复，长剧名优先折列而不再压字号；v6.7.2 修手机端设置面板不显示（打开时强制夹回视口、小屏全宽适配、头像入口缺面板时自动创建）、修横排贴底/左右定位冲突导致错位与裁切；v6.7.3 优化 OnDemandChina：专属标题选择器、跳过「观看剧集」无障碍占位、URL /ep-N 取集数、避免 JSON-LD 把「第N集」当剧名
+// @version      6.7.2
+// @description  竖排/横排显示剧集名+集数，带完整设置面板、主题、快捷键、全屏适配、按站配置、移动端触摸适配。v4.1 修复爱奇艺等站点全屏不显示；v4.2 剧名优先读播放器 DOM 与选集高亮项，切集不滞后；v4.3 识别失败自动降级；v4.4 切集重播入场动画、小屏字号自适应、竖排长标题溢出保护、可选沉浸淡出、面板位置记忆与 Esc 关闭；v4.5 新增电脑/手机/极简一键预设；v4.6 按真实播放页 DOM 重写识别层（CSS Module 哈希类名、8 位期号、播放器标题区取集数、避开热搜榜等数字干扰）；v4.6.2 修集数位于标题开头时剧名被污染、剧名尾随时长未剥离；v4.7 修竖排换行实为换列、固定单列宽度+overflow:hidden 把集数列整列裁掉（“看不到集数”的真凶）；v4.8 竖排数字/字母改为逐字直立（text-orientation: upright），不再横躺，可在面板切回；v4.9 集数支持独立字号（默认自动取剧名70%），两列高度更协调；v5.0 新增列间距滑杆（竖排下用 line-height 拉开两列，间距仍带背景不断裂）；v5.1 一键预设纳入集数字号与列间距，电脑/手机/极简三档整套观感一起切换；v6.0 全站注入（检测到 video 才启用，iframe 内不运行）、设置入口改为头像按钮（默认仅全屏显示，可自定义图片地址或上传）、面板新增保存选项、未知站点走通用识别兜底（标题区 / JSON-LD / 选集高亮），爱奇艺专属逻辑保持不变；v6.1 默认头像改为「剧」字；优化 YouTube 标题/集数识别（专属选择器、剥离 - YouTube 尾巴、支持 Episode/Ep/SxxExx 英文集数格式）；v6.1.1 为 Tampermonkey 脚本列表添加「剧」字 @icon；v6.2 实测主流站修复：B站 mediaTitle、腾讯 player-play-title、剥离 15:18 时长尾巴、强化腾讯/B站标题噪音与英文集数清理；v6.3 增强非主流站：MacCMS 系（trvod/szctv）、爱壹帆 iyf.tv、OnDemandChina 标题/URL 集数识别与站点尾巴清理；v6.4 手机端油猴菜单新增：打开设置、切换显示、手机预设、头像常驻；v6.5 配置改存油猴自身存储（GM_setValue）并双写 localStorage 兜底，修复关闭「按站配置」后一保存就丢的问题，重启浏览器后不再回到默认；v6.6 新增「仅全屏时显示标题」选项（与「全屏时隐藏标题」互斥）；v6.7 侧边默认只显示「剧名+数字集数」单列（红日第一集 → 红日1），长剧名自动折成多列，面板可关闭合并；v6.7.1 集数一律归一为纯数字（EP01/S01E02/01 → 1/1/2），剧名自带同集号不重复，长剧名优先折列而不再压字号；v6.7.2 修手机端设置面板不显示（打开时强制夹回视口、小屏全宽适配、头像入口缺面板时自动创建）、修横排贴底/左右定位冲突导致错位与裁切
 // @author       Jackson Smith
 // @icon         data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%2232%22%20r%3D%2232%22%20fill%3D%22%231a1a1a%22%2F%3E%3Ctext%20x%3D%2232%22%20y%3D%2243%22%20text-anchor%3D%22middle%22%20font-size%3D%2236%22%20font-weight%3D%22700%22%20fill%3D%22%23f5f5f5%22%20font-family%3D%22system-ui%2Csans-serif%22%3E%E5%89%A7%3C%2Ftext%3E%3C%2Fsvg%3E
 // @match        *://*/*
@@ -12,8 +12,8 @@
 // @grant        GM_getValue
 // @grant        GM_setValue
 // @run-at       document-body
-// @updateURL    https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Local/video-episode-info.user%20(2).js/video-episode-info.user%20(2).js.user.js
-// @downloadURL  https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Local/video-episode-info.user%20(2).js/video-episode-info.user%20(2).js.user.js
+// @updateURL    https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/video-episode-info/video-episode-info-mobile.user.js
+// @downloadURL  https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/video-episode-info/video-episode-info-mobile.user.js
 // ==/UserScript==
 
 (function () {
@@ -544,15 +544,6 @@
             'h1 yt-formatted-string',
             'h1',
         ],
-        // OnDemandChina：真实剧名在 FullScreen__Episode__title / EpisodeDetail__title（「剧名 - 第N集」），
-        // 页面另有无障碍 h1「观看剧集」和错误的 JSON-LD name=「第N集」，通用选择器会先命中占位文案导致只剩集数。
-        ondemandchina: [
-            'h1.FullScreen__Episode__title', 'h2.EpisodeDetail__title',
-            '[class*="FullScreen__Episode__title" i]', '[class*="EpisodeDetail__title" i]',
-            '[class*="Episode__title" i]', '[class*="ProgramDetail" i] h1', '[class*="ProgramDetail" i] h2',
-            '[class*="titleAndMeta" i] h1', '[class*="titleAndMeta" i] h2',
-            'h1:not(.screen-reader-text)', 'h2:not(.screen-reader-text)',
-        ],
         // v6.0 全站通用：未知站点没有专属选择器，用一组“播放页常见”的宽泛选择器兜底。
         // 误伤由 isJunkSource / cleanTitle 的噪音过滤收住；完全识别不到就整块隐藏，不留空框。
         generic: [
@@ -577,7 +568,6 @@
         if (/bilibili\.com/.test(h)) return 'bilibili';
         if (/mgtv\.com/.test(h)) return 'mgtv';
         if (/(^|\.)youtube\.com$|(^|\.)youtu\.be$/.test(h)) return 'youtube';
-        if (/ondemandchina\.com$/i.test(h)) return 'ondemandchina';
         return 'generic';
     }
 
@@ -647,20 +637,17 @@
     // 这种门户标题，绝不能当剧名显示（真实端到端跑出来过这个笑话）。
     // 只列门户式兜底标题的特征词，宁窄勿宽：正常片名里出现的“在线观看”等不能误判
     const GENERIC_TITLE_RE = /(在线视频网站|海量正版|官网首页|免费在线观看视频|领先的视频平台|弹幕视频网站|好剧看不完|つロ 干杯)/;
-    // 播放页无障碍/骨架占位，绝不能当剧名（ODC 的 h1.screen-reader-text「观看剧集」是典型）
-    const PLACEHOLDER_TITLE_RE = /^(观看剧集|观看影片|观看视频|播放页|剧集详情|影片详情|视频详情|Watch\s*(Episode|Movie|Now|Video)?|Episode\s*Detail|Loading\.?\.?\.?)$/i;
     const BARE_SITE_NAMES = new Set(['爱奇艺', 'iqiyi', '腾讯视频', 'v.qq', '优酷', 'youku', '搜狐视频',
-        '哔哩哔哩', 'bilibili', 'bili', '芒果tv', 'mgtv', 'netflix', 'youtube', 'ondemandchina', 'odc影视', 'odc']);
+        '哔哩哔哩', 'bilibili', 'bili', '芒果tv', 'mgtv', 'netflix', 'youtube']);
 
     function isJunkSource(text) {
         const t = String(text || '').replace(/\s+/g, ' ').trim();
         if (!t) return true;
         if (GENERIC_TITLE_RE.test(t)) return true;
-        if (PLACEHOLDER_TITLE_RE.test(t)) return true;
         const low = t.toLowerCase();
         if (BARE_SITE_NAMES.has(low)) return true;
         const cleaned = cleanTitle(t).toLowerCase();
-        return cleaned.length < 2 || BARE_SITE_NAMES.has(cleaned) || PLACEHOLDER_TITLE_RE.test(cleaned);
+        return cleaned.length < 2 || BARE_SITE_NAMES.has(cleaned);
     }
 
     function isPureEpisodeLike(txt) {
@@ -673,14 +660,8 @@
         const out = [];
         for (const sel of sels) {
             let nodes = [];
-            try { nodes = Array.from(document.querySelectorAll(sel)).slice(0, 6); } catch (e) { continue; }
+            try { nodes = Array.from(document.querySelectorAll(sel)).slice(0, 4); } catch (e) { continue; }
             for (const el of nodes) {
-                // 跳过无障碍/视觉隐藏占位，避免 ODC「观看剧集」之类抢占剧名
-                try {
-                    const cls = String(el.className || '');
-                    if (/screen-reader|sr-only|visually-hidden|aria-hidden/i.test(cls)) continue;
-                    if (el.getAttribute('aria-hidden') === 'true') continue;
-                } catch (e) {}
                 const t = String(el.textContent || el.getAttribute('title') || '').replace(/\s+/g, ' ').trim();
                 if (t && t.length <= 160 && !isJunkSource(t) && out.indexOf(t) < 0) out.push(t);
             }
@@ -726,16 +707,7 @@
             walk(data, 0);
             for (const n of nodes) {
                 const nm = String(n.name || n.headline || '').replace(/\s+/g, ' ').trim();
-                // ODC 等站 JSON-LD 的 name 常被写成「第1集」，不能当剧名
-                if (!out.name && nm.length >= 2 && nm.length <= 60 && !isJunkSource(nm) && !isPureEpisodeLike(nm)) out.name = nm;
-                // partOfSeries.name 才是真正剧名
-                try {
-                    const series = n.partOfSeries;
-                    const sn = series && String(series.name || '').replace(/\s+/g, ' ').trim();
-                    if (sn && sn.length >= 2 && sn.length <= 60 && !isJunkSource(sn) && !isPureEpisodeLike(sn)) {
-                        if (!out.name || isPureEpisodeLike(out.name)) out.name = sn;
-                    }
-                } catch (e) {}
+                if (!out.name && nm.length >= 2 && nm.length <= 60 && !isJunkSource(nm)) out.name = nm;
                 const no = n.episodeNumber;
                 if (!out.episode && no !== undefined && no !== null && /^\d{1,4}$/.test(String(no).trim())) {
                     const num = parseInt(String(no).trim(), 10);
@@ -849,7 +821,6 @@
     }
 
     // MacCMS 播放页 URL：/play/105860-2-18.html 或 /vodplay/xxx-1-18.html，末段 nid 即集序号
-    // OnDemandChina：/zh-Hans/watch/slug/ep-12 或 /movie-1
     function episodeFromUrl() {
         try {
             const path = location.pathname || '';
@@ -857,16 +828,6 @@
             if (m) {
                 const n = parseInt(m[3], 10);
                 if (n >= 1 && n <= 2000) return `第${n}集`;
-            }
-            m = path.match(/\/(?:ep|episode|e)[-_]?(\d{1,4})(?:\/|$|\?)/i);
-            if (m) {
-                const n = parseInt(m[1], 10);
-                if (n >= 1 && n <= 2000) return `第${n}集`;
-            }
-            m = path.match(/\/movie[-_]?(\d{1,3})(?:\/|$|\?)/i);
-            if (m) {
-                const n = parseInt(m[1], 10);
-                if (n >= 1 && n <= 50) return `第${n}集`;
             }
             m = location.search.match(/[?&](?:nid|ep|episode|n)=(\d{1,4})\b/i);
             if (m) {
@@ -896,19 +857,16 @@
         let title = '';
         for (const h of heads) {
             const c = cleanTitle(h);
-            if (c.length >= 2 && c.length <= 60 && !isPureEpisodeLike(c) && !PLACEHOLDER_TITLE_RE.test(c)) { title = c; break; }
+            if (c.length >= 2 && c.length <= 60 && !isPureEpisodeLike(c)) { title = c; break; }
         }
         if (!title && ld.name) {
             const c = cleanTitle(ld.name);
-            if (c.length >= 2 && c.length <= 60 && !isPureEpisodeLike(c) && !PLACEHOLDER_TITLE_RE.test(c)) title = c;
+            if (c.length >= 2 && c.length <= 60 && !isPureEpisodeLike(c)) title = c;
         }
-        if (!title && fromPage.length >= 2 && !isPureEpisodeLike(fromPage) && !PLACEHOLDER_TITLE_RE.test(fromPage)) title = fromPage;
-        // 标题区被副标题/占位污染时，document.title 解析出的更短剧名更干净
+        if (!title && fromPage.length >= 2 && !isPureEpisodeLike(fromPage)) title = fromPage;
         if (title && fromPage.length >= 2 && fromPage.length < title.length && title.indexOf(fromPage) === 0) {
             title = fromPage;
         }
-        // ODC 等：head 命中「观看剧集」类占位时，强制回退到 document.title 解析
-        if (title && PLACEHOLDER_TITLE_RE.test(title) && fromPage.length >= 2) title = fromPage;
 
         // 集数：选集“正在播放”项 > 播放器标题区 > JSON-LD > document.title。
         // 选集高亮/playing 图标是播放器运行时写上去的，切集时最可靠；
