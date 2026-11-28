@@ -312,7 +312,19 @@ function Repair-MisplacedScriptFolders {
             }
 
             $mains = @(Get-ChildItem -LiteralPath $targetDir -Filter '*.user.js' -File -Force -ErrorAction SilentlyContinue)
-            $mainFile = if ($mains.Count -gt 0) { $mains[0].FullName } else { Join-Path $targetDir ($stem + '.user.js') }
+            # 正主 = 与目录同名的 <脚本名>.user.js；没有就退而取非 -mobile 的那个，避免把手机版当正主
+            $mainFile = $null
+            if ($mains.Count -gt 0) {
+                $exact = @($mains | Where-Object { $_.Name -eq ($stem + '.user.js') })
+                if ($exact.Count -gt 0) {
+                    $mainFile = $exact[0].FullName
+                } else {
+                    $desk = @($mains | Where-Object { $_.Name -notmatch '-mobile\.user\.js$' })
+                    $mainFile = if ($desk.Count -gt 0) { $desk[0].FullName } else { $mains[0].FullName }
+                }
+            } else {
+                $mainFile = Join-Path $targetDir ($stem + '.user.js')
+            }
             $mainRel = ($mainFile.Substring($RepoPath.Length).TrimStart('\')) -replace '\\', '/'
             $url = Get-CanonicalScriptUrl $mainRel
 
