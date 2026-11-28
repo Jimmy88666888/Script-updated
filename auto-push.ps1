@@ -1,4 +1,4 @@
-﻿#Requires -Version 5.1
+#Requires -Version 5.1
 <#
   油猴脚本目录自动推送到 GitHub
 
@@ -481,6 +481,9 @@ function Ingest-Inbox {
             continue
         }
 
+        # 读一次正文：归一化落位要靠 @namespace / @name 认身份
+        $fText = [System.IO.File]::ReadAllText($f.FullName, [System.Text.Encoding]::UTF8)
+
         # 归一化目标名：重名送达的副本合并到主名
         $target = Get-NormalizedInboxName $f.Name
         if ($target -ne $f.Name) {
@@ -500,7 +503,7 @@ function Ingest-Inbox {
             # 主名不在收件箱：可能已在仓库。同内容就静默吃掉；
             # 内容不同则按版本判：比仓库主文件新才算真实升版（覆盖主文件），
             # 比主文件旧就归档进同目录 archive/，绝不允许旧副本把主文件降级。
-            $repoFile = Resolve-ScriptPath $target
+            $repoFile = Resolve-ScriptPath -FileName $target -Text $fText
             $repoDir = Split-Path -Parent $repoFile
             if (-not (Test-Path -LiteralPath $repoDir)) { New-Item -ItemType Directory -Path $repoDir -Force | Out-Null }
             if (Test-Path -LiteralPath $repoFile) {
@@ -512,7 +515,7 @@ function Ingest-Inbox {
                     continue
                 }
 
-                $newText = [System.IO.File]::ReadAllText($f.FullName, [System.Text.Encoding]::UTF8)
+                $newText = $fText
                 $oldText = [System.IO.File]::ReadAllText($repoFile, [System.Text.Encoding]::UTF8)
                 $newVer = Get-ScriptVersion $newText
                 $oldVer = Get-ScriptVersion $oldText
@@ -544,7 +547,7 @@ function Ingest-Inbox {
             continue
         }
 
-        $dest = Resolve-ScriptPath $f.Name
+        $dest = Resolve-ScriptPath -FileName $f.Name -Text $fText
         $destDir = Split-Path -Parent $dest
         if (-not (Test-Path -LiteralPath $destDir)) { New-Item -ItemType Directory -Path $destDir -Force | Out-Null }
         $same = $false
@@ -557,7 +560,7 @@ function Ingest-Inbox {
 
         # 与仓库主文件同名但版本更旧：同样只归档、不覆盖，避免一次误投把主文件降级
         if ((Test-Path -LiteralPath $dest)) {
-            $newText = [System.IO.File]::ReadAllText($f.FullName, [System.Text.Encoding]::UTF8)
+            $newText = $fText
             $oldText = [System.IO.File]::ReadAllText($dest, [System.Text.Encoding]::UTF8)
             $newVer = Get-ScriptVersion $newText
             $oldVer = Get-ScriptVersion $oldText
@@ -604,7 +607,9 @@ function Purge-VerifiedInbox {
     foreach ($f in @(Get-ChildItem -LiteralPath $InboxPath -File -Force -ErrorAction SilentlyContinue)) {
         if ($f.Name -notlike '*.js') { continue }
         if (([datetime]::Now - $f.LastWriteTime).TotalSeconds -lt 5) { continue }
-        $destPath = Resolve-ScriptPath $f.Name
+        # 落位判据与摄取阶段保持一致（含 @namespace / @name 认身份），否则核验会指到错的远端路径
+        $fText = [System.IO.File]::ReadAllText($f.FullName, [System.Text.Encoding]::UTF8)
+        $destPath = Resolve-ScriptPath -FileName $f.Name -Text $fText
         $relPath = $destPath.Substring($RepoPath.Length + 1).Replace('\', '/')
         $remoteHash = RunGit @('rev-parse', ($RemoteName + '/' + $Branch + ':' + $relPath))
         if ($remoteHash.Code -ne 0) { continue }          # 远端没有这个文件：未上传，保留
@@ -654,7 +659,9 @@ function Invoke-Sync {
             $guard++
             $st.Pending = $false
 
-            # 先收编历史误建目录，再摄取收件箱（新脚本入仓），然后归档旧版，最后重建说明文件并提交
+            # 先刷新脚本身份索引（@namespace/@name -> 目录），再收编历史误建目录、
+            # 摄取收件箱（新脚本入仓），然后归档旧版，最后重建说明文件并提交
+            Get-ScriptIndex -Refresh | Out-Null
             Repair-MisplacedScriptFolders
             Ingest-Inbox
             Archive-OldVersions
