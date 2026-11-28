@@ -268,8 +268,8 @@
 // @license            GPL-3.0-only
 // @copyright          2015-2026, F9y4ng
 // @run-at             document-start
-// @downloadURL  https://fastly.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Author/google-baidu-switcher/google-baidu-switcher-mobile.user.js
-// @updateURL    https://fastly.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Author/google-baidu-switcher/google-baidu-switcher-mobile.user.js
+// @downloadURL  https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/google-baidu-switcher/google-baidu-switcher-mobile.user.js
+// @updateURL    https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/google-baidu-switcher/google-baidu-switcher-mobile.user.js
 // ==/UserScript==
 
 /* jshint esversion: 11 */

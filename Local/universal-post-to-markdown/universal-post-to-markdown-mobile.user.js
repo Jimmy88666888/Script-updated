@@ -82,8 +82,8 @@
 // @connect      *
 // @run-at       document-idle
 // @license      MIT
-// @updateURL    https://fastly.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Local/universal-post-to-markdown/universal-post-to-markdown-mobile.user.js
-// @downloadURL  https://fastly.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Local/universal-post-to-markdown/universal-post-to-markdown-mobile.user.js
+// @updateURL    https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/universal-post-to-markdown/universal-post-to-markdown-mobile.user.js
+// @downloadURL  https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/universal-post-to-markdown/universal-post-to-markdown-mobile.user.js
 // @exclude      *://accounts.google.com/*
 // @exclude      *://login.microsoftonline.com/*
 // @exclude      *://login.live.com/*

@@ -40,7 +40,7 @@ const CHECK = process.argv.includes('--check');
 const DRY = process.argv.includes('--dry-run');
 
 const cdn = (f) => `https://fastly.jsdelivr.net/gh/${OWNER}/${REPO}@main/${f}`;
-const raw = (f) => `https://fastly.jsdelivr.net/gh/${OWNER}/${REPO}@main/${f}`;  // raw.githubusercontent 在本地被阻断，统一走可达的 jsDelivr 边缘
+const raw = (f) => `https://raw.githubusercontent.com/${OWNER}/${REPO}/main/${f}`;  // 手机端走直链（手机网络可达）
 const blob = (f) => `https://github.com/${OWNER}/${REPO}/blob/main/${f}`;
 
 /** 脚本头部更新地址的规范值：跟随该记录的更新通道（mirror=jsdelivr 走镜像，否则 raw 默认） */
@@ -177,9 +177,9 @@ async function buildRecords() {
     // platform_override 标注，避免被当成电脑版而走镜像
     const derived = stem === `${item.folder}-mobile` ? 'mobile' : 'pc';
     const platform = prev?.platform_override === 'mobile' ? 'mobile' : derived;
-    const universal = prev?.universal === true;
-    // 通道：手机脚本与本地通用脚本一律 raw 默认（不走镜像）；只有电脑版非通用脚本走 jsDelivr
-    const useMirror = platform === 'pc' && !universal;
+    const universal = false; // 已取消合并：电脑端、手机端各自独立入口与通道
+    // 通道：电脑端走 jsDelivr 镜像（本机网络可达），手机端走 raw 直链（手机网络可达）
+    const useMirror = platform === 'pc';
     const pick = (key, fallback) =>
       prev && prev[key] !== undefined && prev[key] !== '' ? prev[key] : fallback;
 
@@ -262,12 +262,12 @@ function readmeLocalTable(scripts) {
   for (const s of scripts) {
     const main = s.pc || s.mobile;
     const href = encodeURI(main.file);
-    // 通用脚本（两份内容一致）只给一个默认入口，避免同内容装两遍
-    const install = main.universal
-      ? `[默认安装]( ${raw(main.file)} )（通用）`
-      : s.pc && s.mobile
+    // 电脑端走 jsDelivr 镜像（本机网络可达），手机端走 raw 直链（手机网络可达）
+    const single = s.pc ? cdn(main.file) : raw(main.file);
+    const install =
+      s.pc && s.mobile
         ? `[电脑端]( ${cdn(s.pc.file)} ) · [手机端]( ${raw(s.mobile.file)} )`
-        : `[安装]( ${raw(main.file)} )`;
+        : `[安装]( ${single} )`;
     rows.push(`| [${main.name}](${href}) | ${main.version} | ${install} | \`${s.dir}/\` |`);
   }
   return rows.join('\n');
@@ -307,18 +307,19 @@ function pageCards(scripts) {
           ? '<span class="badge upstream">上游镜像</span>'
           : '<span class="badge chip">第三方收录</span>';
     // 通用脚本额外挂一个「通用」标记，按钮只留一个默认安装
-    const universalTag = main.universal ? '<span class="badge chip">通用</span>' : '';
+    // 不再有「通用」合并入口：电脑端走镜像，手机端走直链
+    const universalTag = '';
     const meta = main.author
       ? `v${esc(main.version)} · 作者 ${esc(main.author)}`
       : `v${esc(main.version)}`;
     const buttons = [];
-    if (main.universal) {
-      buttons.push(`<a class="btn primary" href="${raw(main.file)}">默认安装</a>`);
-    } else if (s.pc && s.mobile) {
-      buttons.push(`<a class="btn primary" href="${cdn(s.pc.file)}">电脑端安装</a>`);
-      buttons.push(`<a class="btn primary" href="${raw(s.mobile.file)}">手机端安装</a>`);
+    if (s.pc && s.mobile) {
+      buttons.push(`<a class="btn primary" href="${cdn(s.pc.file)}">电脑端安装（镜像）</a>`);
+      buttons.push(`<a class="btn primary" href="${raw(s.mobile.file)}">手机端安装（直链）</a>`);
+    } else if (s.mobile) {
+      buttons.push(`<a class="btn primary" href="${raw(main.file)}">手机端安装（直链）</a>`);
     } else {
-      buttons.push(`<a class="btn primary" href="${raw(main.file)}">安装</a>`);
+      buttons.push(`<a class="btn primary" href="${cdn(main.file)}">电脑端安装（镜像）</a>`);
     }
     const source = `<a class="btn" href="${blob(main.file)}" target="_blank" rel="noopener">源码</a>`;
     const origin = main.upstream_install
