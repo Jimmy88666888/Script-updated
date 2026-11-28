@@ -33,7 +33,7 @@ Author/                    # 第三方脚本收录（10 个，多数为电脑版
   …
 docs/index.html            # GitHub Pages 安装页
 tools/sync.mjs             # 上游同步器
-updates.json               # 机器可读清单（34 条：21 个脚本 × 电脑/手机）
+updates.json               # 机器可读清单（35 条：21 个脚本 × 电脑/手机）
 .github/workflows/sync.yml # 每日上游同步（03:17 UTC）
 auto-push.ps1              # 本地变动自动提交推送（含旧版归档与收件箱摄取）
 LICENSE
@@ -64,7 +64,7 @@ LICENSE
 | [Markdown](Local/universal-post-to-markdown/universal-post-to-markdown.user.js) | 3.0.5 | [电脑端]( https://fastly.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Local/universal-post-to-markdown/universal-post-to-markdown.user.js ) · [手机端]( https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/universal-post-to-markdown/universal-post-to-markdown-mobile.user.js ) | `Local/universal-post-to-markdown/` |
 | [视频剧集信息显示](Local/video-episode-info/video-episode-info.user.js) | 6.7.5 | [电脑端]( https://fastly.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Local/video-episode-info/video-episode-info.user.js ) · [手机端]( https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/video-episode-info/video-episode-info-mobile.user.js ) | `Local/video-episode-info/` |
 | [视频全屏显示时间（全站通用增强版）](Local/video-fullscreen-clock/video-fullscreen-clock.user.js) | 0.6.12 | [电脑端]( https://fastly.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Local/video-fullscreen-clock/video-fullscreen-clock.user.js ) · [手机端]( https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/video-fullscreen-clock/video-fullscreen-clock-mobile.user.js ) | `Local/video-fullscreen-clock/` |
-| [视频播放页竖排剧集名 - 终极版](Local/%E8%A7%86%E9%A2%91%E7%AB%96%E6%8E%92%E5%89%A7%E9%9B%86%E5%90%8D-%E5%85%A8%E7%AB%99%E9%80%9A%E7%94%A8%E7%89%88/%E8%A7%86%E9%A2%91%E7%AB%96%E6%8E%92%E5%89%A7%E9%9B%86%E5%90%8D-%E5%85%A8%E7%AB%99%E9%80%9A%E7%94%A8%E7%89%88.user.js) | 6.1 | [安装]( https://fastly.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Local/视频竖排剧集名-全站通用版/视频竖排剧集名-全站通用版.user.js ) | `Local/视频竖排剧集名-全站通用版/` |
+| [视频播放页竖排剧集名 - 电脑版](Local/%E8%A7%86%E9%A2%91%E7%AB%96%E6%8E%92%E5%89%A7%E9%9B%86%E5%90%8D-%E5%85%A8%E7%AB%99%E9%80%9A%E7%94%A8%E7%89%88/%E8%A7%86%E9%A2%91%E7%AB%96%E6%8E%92%E5%89%A7%E9%9B%86%E5%90%8D-%E5%85%A8%E7%AB%99%E9%80%9A%E7%94%A8%E7%89%88.user.js) | 6.2 | [电脑端]( https://fastly.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Local/视频竖排剧集名-全站通用版/视频竖排剧集名-全站通用版.user.js ) · [手机端]( https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/视频竖排剧集名-全站通用版/视频竖排剧集名-全站通用版-mobile.user.js ) | `Local/视频竖排剧集名-全站通用版/` |
 
 ### Author（10 个，第三方收录）
 
