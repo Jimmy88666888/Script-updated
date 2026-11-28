@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name         视频播放页竖排剧集名 - 电脑版
 // @namespace    http://tampermonkey.net/
-// @version      6.4
+// @version      6.5
 // @updateURL    https://jimmy88666888.github.io/Script-updated/scripts/Local/%E8%A7%86%E9%A2%91%E7%AB%96%E6%8E%92%E5%89%A7%E9%9B%86%E5%90%8D-%E5%85%A8%E7%AB%99%E9%80%9A%E7%94%A8%E7%89%88/%E8%A7%86%E9%A2%91%E7%AB%96%E6%8E%92%E5%89%A7%E9%9B%86%E5%90%8D-%E5%85%A8%E7%AB%99%E9%80%9A%E7%94%A8%E7%89%88.user.js
 // @downloadURL  https://jimmy88666888.github.io/Script-updated/scripts/Local/%E8%A7%86%E9%A2%91%E7%AB%96%E6%8E%92%E5%89%A7%E9%9B%86%E5%90%8D-%E5%85%A8%E7%AB%99%E9%80%9A%E7%94%A8%E7%89%88/%E8%A7%86%E9%A2%91%E7%AB%96%E6%8E%92%E5%89%A7%E9%9B%86%E5%90%8D-%E5%85%A8%E7%AB%99%E9%80%9A%E7%94%A8%E7%89%88.user.js
-// @description  电脑端版本。竖排/横排显示剧集名+集数，带完整设置面板、主题、快捷键、全屏适配、按站配置、移动端触摸适配。v4.1 修复爱奇艺等站点全屏不显示；v4.2 剧名优先读播放器 DOM 与选集高亮项，切集不滞后；v4.3 识别失败自动降级；v4.4 切集重播入场动画、小屏字号自适应、竖排长标题溢出保护、可选沉浸淡出、面板位置记忆与 Esc 关闭；v4.5 新增电脑/手机/极简一键预设；v4.6 按真实播放页 DOM 重写识别层（CSS Module 哈希类名、8 位期号、播放器标题区取集数、避开热搜榜等数字干扰）；v4.6.2 修集数位于标题开头时剧名被污染、剧名尾随时长未剥离；v4.7 修竖排换行实为换列、固定单列宽度+overflow:hidden 把集数列整列裁掉（“看不到集数”的真凶）；v4.8 竖排数字/字母改为逐字直立（text-orientation: upright），不再横躺，可在面板切回；v4.9 集数支持独立字号（默认自动取剧名70%），两列高度更协调；v5.0 新增列间距滑杆（竖排下用 line-height 拉开两列，间距仍带背景不断裂）；v5.1 一键预设纳入集数字号与列间距，电脑/手机/极简三档整套观感一起切换；v6.4 垂直位置可到 100（贴视口底边锚定，不再被居中位移切掉一半）；v6.3 修竖排大字号（60+）配大列间距（60+）时剧名列被浏览器从中间断列、视觉上“横排倒写”的问题：剧名与集数改为各占一列的块级元素、列内不再断行，列间距与字号按可用宽高自动收口；v6.0 全站注入（检测到 video 才启用，iframe 内不运行）、设置入口改为头像按钮（默认仅全屏显示，可自定义图片地址或上传）、面板新增保存选项、未知站点走通用识别兜底（标题区 / JSON-LD / 选集高亮），爱奇艺专属逻辑保持不变
+// @description  电脑端版本。竖排/横排显示剧集名+集数，带完整设置面板、主题、快捷键、全屏适配、按站配置、移动端触摸适配。v4.1 修复爱奇艺等站点全屏不显示；v4.2 剧名优先读播放器 DOM 与选集高亮项，切集不滞后；v4.3 识别失败自动降级；v4.4 切集重播入场动画、小屏字号自适应、竖排长标题溢出保护、可选沉浸淡出、面板位置记忆与 Esc 关闭；v4.5 新增电脑/手机/极简一键预设；v4.6 按真实播放页 DOM 重写识别层（CSS Module 哈希类名、8 位期号、播放器标题区取集数、避开热搜榜等数字干扰）；v4.6.2 修集数位于标题开头时剧名被污染、剧名尾随时长未剥离；v4.7 修竖排换行实为换列、固定单列宽度+overflow:hidden 把集数列整列裁掉（“看不到集数”的真凶）；v4.8 竖排数字/字母改为逐字直立（text-orientation: upright），不再横躺，可在面板切回；v4.9 集数支持独立字号（默认自动取剧名70%），两列高度更协调；v5.0 新增列间距滑杆（竖排下用 line-height 拉开两列，间距仍带背景不断裂）；v5.1 一键预设纳入集数字号与列间距，电脑/手机/极简三档整套观感一起切换；v6.5 贴底模式（垂直 100）层级压到页面最底、点击全穿透，剧名会被播放器控制条盖住；v6.4 垂直位置可到 100（贴视口底边锚定，不再被居中位移切掉一半）；v6.3 修竖排大字号（60+）配大列间距（60+）时剧名列被浏览器从中间断列、视觉上“横排倒写”的问题：剧名与集数改为各占一列的块级元素、列内不再断行，列间距与字号按可用宽高自动收口；v6.0 全站注入（检测到 video 才启用，iframe 内不运行）、设置入口改为头像按钮（默认仅全屏显示，可自定义图片地址或上传）、面板新增保存选项、未知站点走通用识别兜底（标题区 / JSON-LD / 选集高亮），爱奇艺专属逻辑保持不变
 // @author       Jackson Smith
 // @match        *://*/*
 // @noframes
@@ -338,8 +338,10 @@
         // v4.2：overlayHasText 为 false（剧名和集数都没识别出来）时整块隐藏，
         // 而不是留一个只有背景没有字的空框挂着。
         const visible = config.enabled && overlayHasText && !(isFS && config.autoHideFullscreen);
-        // 全屏时绝不吞掉点击，否则会盖住播放器控制条
-        const interactive = !!visible && !isFS && config.touchMode;
+        // v6.4：垂直位置拉到 100 时切换成“贴底”锚定，元素底边压住视口底边
+        // v6.5：贴底时整块降到页面最底层（被播放器控制条压住）
+        const anchoredBottom = isBottomAnchored();
+        const interactive = !!visible && !isFS && config.touchMode && !anchoredBottom;
 
         // v4.4 字号自适应：小屏按视口等比缩小；竖排再按最长行预估高度二次收缩，
         // 避免手机上 36px 竖排顶满整屏、或长剧名溢出到屏幕外看不见。
@@ -350,8 +352,6 @@
         const colGap = isVertical ? getColumnGap(fs) : Math.max(0, Number(config.columnGap) || 0);
         currentTitleFs = fs;
         applyEpisodeFontSize();
-        // v6.4：垂直位置拉到 100 时切换成“贴底”锚定，元素底边压住视口底边
-        const anchoredBottom = isBottomAnchored();
 
 
         const faded = shouldFadeNow();
@@ -384,7 +384,8 @@
             `;
         }
 
-        const baseZ = isFS ? 2147483647 : 99998;
+        // v6.5：贴底（垂直 100）时把层级压到最底，让播放器控制条 / 进度条盖在字上面
+        const baseZ = anchoredBottom ? 2 : (isFS ? 2147483647 : 99998);
 
         titleEl.style.cssText = `
             position: fixed !important;
