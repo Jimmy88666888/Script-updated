@@ -14,7 +14,7 @@
 // @license           AGPL-3.0-or-later
 // @source            https://github.com/Jimmy88666888/Script-updated/tree/main/LinkSwift-Mobile/
 // @website            https://github.com/Jimmy88666888/Script-updated/tree/main/LinkSwift-Mobile/
-// @homepageURL            https://github.com/Jimmy88666888/Script-updated/tree/main/LinkSwift-Mobile/
+// @homepageURL            https://github.com/Jimmy88666888/Script-updated/tree/main/Local/LinkSwift-Mobile/
 // @homepage            https://github.com/Jimmy88666888/Script-updated/tree/main/LinkSwift-Mobile/
 // @support           https://github.com/Jimmy88666888/Script-updated/issues
 // @supportURL        https://github.com/Jimmy88666888/Script-updated/issues
