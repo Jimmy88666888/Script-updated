@@ -810,6 +810,9 @@
                     : 1;
                 longest = Math.max(longest, Math.ceil(chars * ratio));
             });
+            if (!cols.length) {
+                longest = Math.max(1, (titleEl.textContent || '').replace(/\n/g, '').trim().length);
+            }
             const avail = window.innerHeight * 0.9 - 44;
             if (longest * (fs + 6) > avail) fs = Math.max(14, Math.floor(avail / longest - 6));
             const gap = getColumnGap(fs);
@@ -908,6 +911,8 @@
         const hadRealText = !!(lastRenderedText && lastRenderedText.trim());
         lastRenderedText = text;
         renderTitleParts(title, episode);
+        // v6.3：列结构刚换完，立刻按新列内容重算字号/列间距，避免先按旧长度排一次
+        applyTitleStyle();
         contentChangedAt = Date.now(); // 沉浸淡出重新计时
         // 只在“原本已有内容 → 换成新内容”时重播，避免首次识别出来也闪一下
         if (hadRealText && nowHasText && config.replayOnEpisodeChange) playEntranceAnimation();
