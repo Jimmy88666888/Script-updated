@@ -333,6 +333,25 @@ function Set-ScriptUpdateUrl {
     return $Text
 }
 
+# 摄取落位后：若脚本里的更新地址指向本仓库、却不是它现在的位置（改名下载留下的死链），
+# 改写成它实际所在文件的地址，避免油猴检查更新时 404。外部地址一律不动。
+function Repair-IngestedUrls {
+    param([string]$Path)
+    $slug = Get-RepoSlug
+    if (-not $slug) { return }
+    $canonical = Get-CanonicalScriptUrl ((($Path.Substring($RepoPath.Length)).TrimStart('\')) -replace '\\', '/')
+    if (-not $canonical) { return }
+    $text = [System.IO.File]::ReadAllText($Path, [System.Text.Encoding]::UTF8)
+    $need = $false
+    foreach ($m in [regex]::Matches($text, '(?m)^[ \t]*//[ \t]*@(?:updateURL|downloadURL)[ \t]+(\S+)')) {
+        $u = $m.Groups[1].Value.Trim()
+        if ($u -match [regex]::Escape($slug) -and $u -ne $canonical) { $need = $true; break }
+    }
+    if (-not $need) { return }
+    [System.IO.File]::WriteAllText($Path, (Set-ScriptUpdateUrl -Text $text -Url $canonical), (New-Object System.Text.UTF8Encoding($false)))
+    Write-Log ('更新地址已改为实际位置：' + ($Path.Substring($RepoPath.Length)))
+}
+
 # 文件名主干：把结尾的版本号（link1.0 / link-1.1 / link v2.0.0）剥掉，归入主干名目录。
 # 只认带小数点的版本号，避免把 html5、video-episode-info 这类正常名字截断。
 function Get-ScriptBaseStem {
@@ -556,6 +575,7 @@ function Ingest-Inbox {
                 }
             }
             Move-Item -LiteralPath $f.FullName -Destination $repoFile -Force
+            Repair-IngestedUrls -Path $repoFile
             Write-Log ('已按主名摄取：' + $f.Name + ' -> ' + $target)
             continue
         }
@@ -584,7 +604,8 @@ function Ingest-Inbox {
             $oldVer = Get-ScriptVersion $oldText
             if ($newVer -and $oldVer -and ((Compare-ScriptVersion $newVer $oldVer) -lt 0)) {
                 $archDir = Join-Path $destDir 'archive'
-                $archFile = Join-Path $archDir ($newVer + '.user.js')
+                $variant = Get-ScriptVariant -Leaf (Split-Path -Leaf $destDir) -Stem ((Split-Path -Leaf $dest) -replace '\.user\.js$', '')
+                $archFile = Join-Path $archDir ($newVer + $variant + '.user.js')
                 if (Test-Path -LiteralPath $archFile) {
                     $h1 = RunGit @('hash-object', '--', $f.FullName)
                     $h2 = RunGit @('hash-object', '--', $archFile)
@@ -608,6 +629,7 @@ function Ingest-Inbox {
         }
         try {
             Copy-Item -LiteralPath $f.FullName -Destination $dest -Force
+            Repair-IngestedUrls -Path $dest
             Write-Log ('已摄取进仓库：' + $f.Name + '（' + $f.Length + ' B）')
         } catch {
             Write-Log ('摄取失败：' + $f.Name + ' ' + $_.Exception.Message) 'ERROR'
