@@ -408,42 +408,39 @@ function Repair-MisplacedScriptFolders {
                 continue
             }
 
-            # 正主目录：同名目录已存在就用它（Local 优先，其次 Author），没有就在 Local 下新建
-            $targetDir = $null
-            foreach ($r in @('Local', 'Author')) {
-                $cand = Join-Path $RepoPath (Join-Path $r $stem)
-                if (Test-Path -LiteralPath $cand) { $targetDir = $cand; break }
-            }
-            if (-not $targetDir) {
-                $targetDir = Join-Path $RepoPath (Join-Path 'Local' $stem)
-                New-Item -ItemType Directory -Path $targetDir -Force | Out-Null
-            }
-
-            $mains = @(Get-ChildItem -LiteralPath $targetDir -Filter '*.user.js' -File -Force -ErrorAction SilentlyContinue)
-            # 正主 = 与目录同名的 <脚本名>.user.js；没有就退而取非 -mobile 的那个，避免把手机版当正主
-            $mainFile = $null
-            if ($mains.Count -gt 0) {
-                $exact = @($mains | Where-Object { $_.Name -eq ($stem + '.user.js') })
-                if ($exact.Count -gt 0) {
-                    $mainFile = $exact[0].FullName
-                } else {
-                    $desk = @($mains | Where-Object { $_.Name -notmatch '-mobile\.user\.js$' })
-                    $mainFile = if ($desk.Count -gt 0) { $desk[0].FullName } else { $mains[0].FullName }
-                }
-            } else {
-                $mainFile = Join-Path $targetDir ($stem + '.user.js')
-            }
-            $mainRel = ($mainFile.Substring($RepoPath.Length).TrimStart('\')) -replace '\\', '/'
-            $url = Get-CanonicalScriptUrl $mainRel
-
             foreach ($file in $files) {
                 $text = [System.IO.File]::ReadAllText($file.FullName, [System.Text.Encoding]::UTF8)
                 $ver = Get-ScriptVersion $text
-                $isMainSlot = ($mains.Count -eq 0) -and (-not (Test-Path -LiteralPath $mainFile))
-                if ($isMainSlot) {
+
+                # 目标目录：先按内容认身份（@namespace / @name）回到原目录，认不出才把目录名当脚本名
+                $hit = Find-ScriptDirByText $text
+                if ($hit) {
+                    $tDir = $hit.Dir
+                    $leaf = $hit.Leaf
+                } else {
+                    $leaf = $stem
+                    $tDir = $null
+                    foreach ($r in @('Local', 'Author')) {
+                        $cand = Join-Path $RepoPath (Join-Path $r $leaf)
+                        if (Test-Path -LiteralPath $cand) { $tDir = $cand; break }
+                    }
+                    if (-not $tDir) {
+                        $tDir = Join-Path $RepoPath (Join-Path 'Local' $leaf)
+                        New-Item -ItemType Directory -Path $tDir -Force | Out-Null
+                    }
+                }
+
+                $mainFile = Get-MainScriptFile -Dir $tDir -Leaf $leaf
+                if (-not $mainFile) { $mainFile = Join-Path $tDir ($leaf + '.user.js') }
+                $mainRel = ($mainFile.Substring($RepoPath.Length).TrimStart('\')) -replace '\\', '/'
+                $url = Get-CanonicalScriptUrl $mainRel
+
+                # 目录里还没有正主文件 -> 直接占正主位；否则按版本号归档
+                $dest = $null
+                if (-not (Test-Path -LiteralPath $mainFile)) {
                     $dest = $mainFile
                 } else {
-                    $archDir = Join-Path $targetDir 'archive'
+                    $archDir = Join-Path $tDir 'archive'
                     if (-not (Test-Path -LiteralPath $archDir)) { New-Item -ItemType Directory -Path $archDir -Force | Out-Null }
                     $base = if ($ver) { $ver } else { 'legacy-' + $file.LastWriteTime.ToString('yyyyMMddHHmmss') }
                     $dest = Join-Path $archDir ($base + '.user.js')
