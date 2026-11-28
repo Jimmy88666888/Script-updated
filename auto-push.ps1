@@ -196,7 +196,7 @@ function Get-NormalizedInboxName {
     while ($changed) {
         $before = $stem
         $stem = $stem -replace '\s*[（(]\s*(?:\d+|[一二三四五六七八九十]+)\s*[)）]\s*$', ''
-        $stem = $stem -replace '[-_ ](?:copy|副本|冲突文件|已接收|来自)\S*$', ''
+        $stem = $stem -replace '[-_ ]?(?:copy|副本|冲突文件|已接收|来自)\S*$', ''
         $stem = $stem -replace '[-_ ]\d{1,3}$', ''
         $stem = $stem -replace '(?i)[-_ .]?\.user$', ''
         $stem = $stem.TrimEnd('-', '_', ' ', '.')
@@ -381,7 +381,8 @@ function Ingest-Inbox {
                 continue
             }
             # 主名不在收件箱：可能已在仓库。同内容就静默吃掉；
-            # 不同内容则这是“改过名重新投递”的真实升版，改名后继续摄取。
+            # 内容不同则按版本判：比仓库主文件新才算真实升版（覆盖主文件），
+            # 比主文件旧就归档进同目录 archive/，绝不允许旧副本把主文件降级。
             $repoFile = Resolve-ScriptPath $target
             $repoDir = Split-Path -Parent $repoFile
             if (-not (Test-Path -LiteralPath $repoDir)) { New-Item -ItemType Directory -Path $repoDir -Force | Out-Null }
@@ -391,6 +392,28 @@ function Ingest-Inbox {
                 if ($a.Code -eq 0 -and $b.Code -eq 0 -and $a.Out[0] -eq $b.Out[0]) {
                     Remove-Item -LiteralPath $f.FullName -Force -ErrorAction SilentlyContinue
                     Write-Log ('与仓库现有内容相同的重复送达，已清理：' + $f.Name)
+                    continue
+                }
+
+                $newText = [System.IO.File]::ReadAllText($f.FullName, [System.Text.Encoding]::UTF8)
+                $oldText = [System.IO.File]::ReadAllText($repoFile, [System.Text.Encoding]::UTF8)
+                $newVer = Get-ScriptVersion $newText
+                $oldVer = Get-ScriptVersion $oldText
+                if ($newVer -and $oldVer -and ((Compare-ScriptVersion $newVer $oldVer) -lt 0)) {
+                    $archDir = Join-Path $repoDir 'archive'
+                    $archFile = Join-Path $archDir ($newVer + '.user.js')
+                    if (Test-Path -LiteralPath $archFile) {
+                        Remove-Item -LiteralPath $f.FullName -Force -ErrorAction SilentlyContinue
+                        Write-Log ('旧版副本 v' + $newVer + ' 已有归档，重复送达已清理：' + $f.Name)
+                        continue
+                    }
+                    if (-not (Test-Path -LiteralPath $archDir)) { New-Item -ItemType Directory -Path $archDir -Force | Out-Null }
+                    $mainRel = ($repoFile.Substring($RepoPath.Length).TrimStart('\')) -replace '\\', '/'
+                    $url = Get-CanonicalScriptUrl $mainRel
+                    $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
+                    [System.IO.File]::WriteAllText($archFile, (Set-ScriptUpdateUrl -Text $newText -Url $url), $utf8NoBom)
+                    Remove-Item -LiteralPath $f.FullName -Force -ErrorAction SilentlyContinue
+                    Write-Log ('旧版副本已归档：' + $f.Name + ' v' + $newVer + ' -> ' + $archFile)
                     continue
                 }
             }
@@ -414,6 +437,37 @@ function Ingest-Inbox {
             if ($a.Code -eq 0 -and $b.Code -eq 0 -and $a.Out[0] -eq $b.Out[0]) { $same = $true }
         }
         if ($same) { continue }   # 内容一致，等推送核验阶段处理
+
+        # 与仓库主文件同名但版本更旧：同样只归档、不覆盖，避免一次误投把主文件降级
+        if ((Test-Path -LiteralPath $dest)) {
+            $newText = [System.IO.File]::ReadAllText($f.FullName, [System.Text.Encoding]::UTF8)
+            $oldText = [System.IO.File]::ReadAllText($dest, [System.Text.Encoding]::UTF8)
+            $newVer = Get-ScriptVersion $newText
+            $oldVer = Get-ScriptVersion $oldText
+            if ($newVer -and $oldVer -and ((Compare-ScriptVersion $newVer $oldVer) -lt 0)) {
+                $archDir = Join-Path $destDir 'archive'
+                $archFile = Join-Path $archDir ($newVer + '.user.js')
+                if (Test-Path -LiteralPath $archFile) {
+                    $h1 = RunGit @('hash-object', '--', $f.FullName)
+                    $h2 = RunGit @('hash-object', '--', $archFile)
+                    if ($h1.Code -eq 0 -and $h2.Code -eq 0 -and $h1.Out[0] -ne $h2.Out[0]) {
+                        Write-Log ('旧版 v' + $newVer + ' 归档已存在且内容不同，保留收件箱原件待人工确认：' + $f.Name) 'WARN'
+                    } else {
+                        Remove-Item -LiteralPath $f.FullName -Force -ErrorAction SilentlyContinue
+                        Write-Log ('旧版副本 v' + $newVer + ' 已在归档中，重复送达已清理：' + $f.Name)
+                    }
+                } else {
+                    if (-not (Test-Path -LiteralPath $archDir)) { New-Item -ItemType Directory -Path $archDir -Force | Out-Null }
+                    $destRel = ($dest.Substring($RepoPath.Length).TrimStart('\')) -replace '\\', '/'
+                    $url = Get-CanonicalScriptUrl $destRel
+                    $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
+                    [System.IO.File]::WriteAllText($archFile, (Set-ScriptUpdateUrl -Text $newText -Url $url), $utf8NoBom)
+                    Remove-Item -LiteralPath $f.FullName -Force -ErrorAction SilentlyContinue
+                    Write-Log ('旧版副本已归档：' + $f.Name + ' v' + $newVer + ' -> ' + $archFile)
+                }
+                continue
+            }
+        }
         try {
             Copy-Item -LiteralPath $f.FullName -Destination $dest -Force
             Write-Log ('已摄取进仓库：' + $f.Name + '（' + $f.Length + ' B）')
@@ -483,7 +537,8 @@ function Invoke-Sync {
             $guard++
             $st.Pending = $false
 
-            # 先摄取收件箱（新脚本入仓），再归档旧版，然后重建说明文件，最后提交
+            # 先收编历史误建目录，再摄取收件箱（新脚本入仓），然后归档旧版，最后重建说明文件并提交
+            Repair-MisplacedScriptFolders
             Ingest-Inbox
             Archive-OldVersions
             Invoke-GenDocs
