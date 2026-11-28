@@ -336,10 +336,11 @@ function Set-ScriptUpdateUrl {
 # 摄取落位后：若脚本里的更新地址指向本仓库、却不是它现在的位置（改名下载留下的死链），
 # 改写成它实际所在文件的地址，避免油猴检查更新时 404。外部地址一律不动。
 function Repair-IngestedUrls {
-    param([string]$Path)
+    param([string]$Path, [string]$TargetPath)
+    if (-not $TargetPath) { $TargetPath = $Path }
     $slug = Get-RepoSlug
     if (-not $slug) { return }
-    $canonical = Get-CanonicalScriptUrl ((($Path.Substring($RepoPath.Length)).TrimStart('\')) -replace '\\', '/')
+    $canonical = Get-CanonicalScriptUrl ((($TargetPath.Substring($RepoPath.Length)).TrimStart('\')) -replace '\\', '/')
     if (-not $canonical) { return }
     $text = [System.IO.File]::ReadAllText($Path, [System.Text.Encoding]::UTF8)
     $need = $false
@@ -540,6 +541,8 @@ function Ingest-Inbox {
             # 内容不同则按版本判：比仓库主文件新才算真实升版（覆盖主文件），
             # 比主文件旧就归档进同目录 archive/，绝不允许旧副本把主文件降级。
             $repoFile = Resolve-ScriptPath -FileName $target -Text $fText
+            Repair-IngestedUrls -Path $f.FullName -TargetPath $repoFile
+            $fText = [System.IO.File]::ReadAllText($f.FullName, [System.Text.Encoding]::UTF8)
             $repoDir = Split-Path -Parent $repoFile
             if (-not (Test-Path -LiteralPath $repoDir)) { New-Item -ItemType Directory -Path $repoDir -Force | Out-Null }
             if (Test-Path -LiteralPath $repoFile) {
@@ -575,7 +578,6 @@ function Ingest-Inbox {
                 }
             }
             Move-Item -LiteralPath $f.FullName -Destination $repoFile -Force
-            Repair-IngestedUrls -Path $repoFile
             Write-Log ('已按主名摄取：' + $f.Name + ' -> ' + $target)
             continue
         }
@@ -586,6 +588,8 @@ function Ingest-Inbox {
         }
 
         $dest = Resolve-ScriptPath -FileName $f.Name -Text $fText
+        Repair-IngestedUrls -Path $f.FullName -TargetPath $dest
+        $fText = [System.IO.File]::ReadAllText($f.FullName, [System.Text.Encoding]::UTF8)
         $destDir = Split-Path -Parent $dest
         if (-not (Test-Path -LiteralPath $destDir)) { New-Item -ItemType Directory -Path $destDir -Force | Out-Null }
         $same = $false
@@ -629,7 +633,6 @@ function Ingest-Inbox {
         }
         try {
             Copy-Item -LiteralPath $f.FullName -Destination $dest -Force
-            Repair-IngestedUrls -Path $dest
             Write-Log ('已摄取进仓库：' + $f.Name + '（' + $f.Length + ' B）')
         } catch {
             Write-Log ('摄取失败：' + $f.Name + ' ' + $_.Exception.Message) 'ERROR'
