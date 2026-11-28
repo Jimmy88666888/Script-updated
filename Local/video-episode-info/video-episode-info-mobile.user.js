@@ -12,8 +12,8 @@
 // @grant        GM_getValue
 // @grant        GM_setValue
 // @run-at       document-body
-// @updateURL    https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/video-episode-info/video-episode-info-mobile.user.js
-// @downloadURL  https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/video-episode-info/video-episode-info-mobile.user.js
+// @updateURL    https://fastly.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Local/video-episode-info/video-episode-info-mobile.user.js
+// @downloadURL  https://fastly.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Local/video-episode-info/video-episode-info-mobile.user.js
 // @exclude      *://accounts.google.com/*
 // @exclude      *://login.microsoftonline.com/*
 // @exclude      *://login.live.com/*

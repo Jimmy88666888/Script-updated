@@ -39,8 +39,8 @@ const GROUPS = ['Local', 'Author'];
 const CHECK = process.argv.includes('--check');
 const DRY = process.argv.includes('--dry-run');
 
-const cdn = (f) => `https://cdn.jsdelivr.net/gh/${OWNER}/${REPO}@main/${f}`;
-const raw = (f) => `https://raw.githubusercontent.com/${OWNER}/${REPO}/main/${f}`;
+const cdn = (f) => `https://fastly.jsdelivr.net/gh/${OWNER}/${REPO}@main/${f}`;
+const raw = (f) => `https://fastly.jsdelivr.net/gh/${OWNER}/${REPO}@main/${f}`;  // raw.githubusercontent 在本地被阻断，统一走可达的 jsDelivr 边缘
 const blob = (f) => `https://github.com/${OWNER}/${REPO}/blob/main/${f}`;
 
 /** 脚本头部更新地址的规范值：跟随该记录的更新通道（mirror=jsdelivr 走镜像，否则 raw 默认） */

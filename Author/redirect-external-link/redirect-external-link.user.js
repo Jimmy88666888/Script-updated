@@ -83,8 +83,8 @@
 // @compatible   chrome Latest
 // @compatible   firefox Latest
 // @compatible   edge Latest
-// @downloadURL  https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Author/redirect-external-link/redirect-external-link.user.js
-// @updateURL    https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Author/redirect-external-link/redirect-external-link.user.js
+// @downloadURL  https://fastly.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Author/redirect-external-link/redirect-external-link.user.js
+// @updateURL    https://fastly.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Author/redirect-external-link/redirect-external-link.user.js
 // ==/UserScript==
 
 (function() {

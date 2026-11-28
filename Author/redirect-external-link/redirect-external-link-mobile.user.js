@@ -83,8 +83,8 @@
 // @compatible   chrome Latest
 // @compatible   firefox Latest
 // @compatible   edge Latest
-// @downloadURL  https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/redirect-external-link/redirect-external-link-mobile.user.js
-// @updateURL    https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/redirect-external-link/redirect-external-link-mobile.user.js
+// @downloadURL  https://fastly.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Author/redirect-external-link/redirect-external-link-mobile.user.js
+// @updateURL    https://fastly.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Author/redirect-external-link/redirect-external-link-mobile.user.js
 // ==/UserScript==
 
 (function() {

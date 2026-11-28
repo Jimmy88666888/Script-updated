@@ -98,8 +98,8 @@
 // @connect      *
 // @contributionURL      https://ko-fi.com/hoothin
 // @contributionAmount   1
-// @downloadURL  https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Author/pagetual/pagetual.user.js
-// @updateURL    https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Author/pagetual/pagetual.user.js
+// @downloadURL  https://fastly.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Author/pagetual/pagetual.user.js
+// @updateURL    https://fastly.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Author/pagetual/pagetual.user.js
 // ==/UserScript==
 
 (function() {

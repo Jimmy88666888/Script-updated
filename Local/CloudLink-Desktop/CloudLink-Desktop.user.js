@@ -29,8 +29,8 @@
 // @connect           localhost
 // @connect           *
 // @run-at            document-idle
-// @updateURL         https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Local/CloudLink-Desktop/CloudLink-Desktop.user.js
-// @downloadURL       https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Local/CloudLink-Desktop/CloudLink-Desktop.user.js
+// @updateURL         https://fastly.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Local/CloudLink-Desktop/CloudLink-Desktop.user.js
+// @downloadURL       https://fastly.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Local/CloudLink-Desktop/CloudLink-Desktop.user.js
 // @homepageURL       https://github.com/Jimmy88666888/Script-updated/tree/main/Local/CloudLink-Desktop
 // @supportURL        https://github.com/Jimmy88666888/Script-updated/issues
 // @exclude      *://accounts.google.com/*

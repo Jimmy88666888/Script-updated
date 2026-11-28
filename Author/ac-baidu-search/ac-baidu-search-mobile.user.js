@@ -144,8 +144,8 @@
 // @grant    GM_addValueChangeListener
 // @grant    unsafeWindow
 // @namespace 1353464539@qq.com
-// @downloadURL  https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/ac-baidu-search/ac-baidu-search-mobile.user.js
-// @updateURL    https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/ac-baidu-search/ac-baidu-search-mobile.user.js
+// @downloadURL  https://fastly.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Author/ac-baidu-search/ac-baidu-search-mobile.user.js
+// @updateURL    https://fastly.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Author/ac-baidu-search/ac-baidu-search-mobile.user.js
 // ==/UserScript==
 ~(async () => {
   Object.defineProperty(console, 'mylog', {
