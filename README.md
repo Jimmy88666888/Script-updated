@@ -3,7 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Install page](https://img.shields.io/badge/install-page-2ea44f)](https://jimmy88666888.github.io/Script-updated/)
 
-共 **21** 个用户脚本，顶层按作者归属分两层：`Local/` 收自建与本地改写，`Author/` 收第三方脚本。
+共 **23** 个用户脚本，顶层按作者归属分两层：`Local/` 收自建与本地改写，`Author/` 收第三方脚本。
 每个脚本一个**同名子目录**，目录内放电脑版 `<脚本名>.user.js` 与手机版 `<脚本名>-mobile.user.js`（该脚本没有手机版时就只放一份）。
 
 ## 快速安装
@@ -33,7 +33,7 @@ Author/                    # 第三方脚本收录（10 个，多数为电脑版
   …
 docs/index.html            # GitHub Pages 安装页
 tools/sync.mjs             # 上游同步器
-updates.json               # 机器可读清单（34 条：21 个脚本 × 电脑/手机）
+updates.json               # 机器可读清单（36 条：23 个脚本 × 电脑/手机）
 .github/workflows/sync.yml # 每日上游同步（03:17 UTC）
 auto-push.ps1              # 本地变动自动提交推送（含旧版归档与收件箱摄取）
 LICENSE
@@ -50,7 +50,7 @@ LICENSE
 
 ## 脚本清单
 
-### Local（11 个，自建与本地改写）
+### Local（13 个，自建与本地改写）
 
 | 脚本 | 版本 | 安装 | 位置 |
 | --- | --- | --- | --- |
@@ -62,7 +62,9 @@ LICENSE
 | [HTML5视频播放工具（增强合并版）](Local/html5-video-player-merged/html5-video-player-merged.user.js) | 2.2.7-merged | [安装]( https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/html5-video-player-merged/html5-video-player-merged.user.js ) | `Local/html5-video-player-merged/` |
 | [LinkSwift 手机版](Local/LinkSwift-Mobile/LinkSwift-Mobile.user.js) | 1.1.3-mobile | [安装]( https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/LinkSwift-Mobile/LinkSwift-Mobile.user.js ) | `Local/LinkSwift-Mobile/` |
 | [Markdown](Local/universal-post-to-markdown/universal-post-to-markdown.user.js) | 3.0.3 | [默认安装]( https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/universal-post-to-markdown/universal-post-to-markdown.user.js )（通用） | `Local/universal-post-to-markdown/` |
-| [视频剧集信息显示](Local/video-episode-info/video-episode-info.user.js) | 6.7.1 | [默认安装]( https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/video-episode-info/video-episode-info.user.js )（通用） | `Local/video-episode-info/` |
+| [视频剧集信息显示](Local/video-episode-info/video-episode-info.user.js) | 6.7.4 | [默认安装]( https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/video-episode-info/video-episode-info.user.js )（通用） | `Local/video-episode-info/` |
+| [视频剧集信息显示](Local/video-episode-info.user%20(2).js/video-episode-info.user%20(2).js.user.js) | 6.7.3 | [安装]( https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/video-episode-info.user (2).js/video-episode-info.user (2).js.user.js ) | `Local/video-episode-info.user (2).js/` |
+| [视频剧集信息显示](Local/video-episode-info.user%20(3).js/video-episode-info.user%20(3).js.user.js) | 6.7.2 | [安装]( https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/video-episode-info.user (3).js/video-episode-info.user (3).js.user.js ) | `Local/video-episode-info.user (3).js/` |
 | [视频全屏显示时间（全站通用增强版）](Local/video-fullscreen-clock/video-fullscreen-clock.user.js) | 0.6.11 | [默认安装]( https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/video-fullscreen-clock/video-fullscreen-clock.user.js )（通用） | `Local/video-fullscreen-clock/` |
 | [视频播放页竖排剧集名 - 终极版](Local/%E8%A7%86%E9%A2%91%E7%AB%96%E6%8E%92%E5%89%A7%E9%9B%86%E5%90%8D-%E5%85%A8%E7%AB%99%E9%80%9A%E7%94%A8%E7%89%88/%E8%A7%86%E9%A2%91%E7%AB%96%E6%8E%92%E5%89%A7%E9%9B%86%E5%90%8D-%E5%85%A8%E7%AB%99%E9%80%9A%E7%94%A8%E7%89%88.user.js) | 6.0 | [安装]( https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/视频竖排剧集名-全站通用版/视频竖排剧集名-全站通用版.user.js ) | `Local/视频竖排剧集名-全站通用版/` |
 

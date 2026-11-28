@@ -1,11 +1,152 @@
 // ==UserScript==
 // @name         视频剧集信息显示
 // @namespace    local.edge-userscripts/video-episode-info
-// @version      6.7.1
-// @description  竖排/横排显示剧集名+集数，带完整设置面板、主题、快捷键、全屏适配、按站配置、移动端触摸适配。v4.1 修复爱奇艺等站点全屏不显示；v4.2 剧名优先读播放器 DOM 与选集高亮项，切集不滞后；v4.3 识别失败自动降级；v4.4 切集重播入场动画、小屏字号自适应、竖排长标题溢出保护、可选沉浸淡出、面板位置记忆与 Esc 关闭；v4.5 新增电脑/手机/极简一键预设；v4.6 按真实播放页 DOM 重写识别层（CSS Module 哈希类名、8 位期号、播放器标题区取集数、避开热搜榜等数字干扰）；v4.6.2 修集数位于标题开头时剧名被污染、剧名尾随时长未剥离；v4.7 修竖排换行实为换列、固定单列宽度+overflow:hidden 把集数列整列裁掉（“看不到集数”的真凶）；v4.8 竖排数字/字母改为逐字直立（text-orientation: upright），不再横躺，可在面板切回；v4.9 集数支持独立字号（默认自动取剧名70%），两列高度更协调；v5.0 新增列间距滑杆（竖排下用 line-height 拉开两列，间距仍带背景不断裂）；v5.1 一键预设纳入集数字号与列间距，电脑/手机/极简三档整套观感一起切换；v6.0 全站注入（检测到 video 才启用，iframe 内不运行）、设置入口改为头像按钮（默认仅全屏显示，可自定义图片地址或上传）、面板新增保存选项、未知站点走通用识别兜底（标题区 / JSON-LD / 选集高亮），爱奇艺专属逻辑保持不变；v6.1 默认头像改为「剧」字；优化 YouTube 标题/集数识别（专属选择器、剥离 - YouTube 尾巴、支持 Episode/Ep/SxxExx 英文集数格式）；v6.1.1 为 Tampermonkey 脚本列表添加「剧」字 @icon；v6.2 实测主流站修复：B站 mediaTitle、腾讯 player-play-title、剥离 15:18 时长尾巴、强化腾讯/B站标题噪音与英文集数清理；v6.3 增强非主流站：MacCMS 系（trvod/szctv）、爱壹帆 iyf.tv、OnDemandChina 标题/URL 集数识别与站点尾巴清理；v6.4 手机端油猴菜单新增：打开设置、切换显示、手机预设、头像常驻；v6.5 配置改存油猴自身存储（GM_setValue）并双写 localStorage 兜底，修复关闭「按站配置」后一保存就丢的问题，重启浏览器后不再回到默认；v6.6 新增「仅全屏时显示标题」选项（与「全屏时隐藏标题」互斥）；v6.7 侧边默认只显示「剧名+数字集数」单列（红日第一集 → 红日1），长剧名自动折成多列，面板可关闭合并；v6.7.1 集数一律归一为纯数字（EP01/S01E02/01 → 1/1/2），剧名自带同集号不重复，长剧名优先折列而不再压字号
+// @version      6.7.4
+// @description  竖排/横排显示剧集名+集数，带完整设置面板、主题、快捷键、全屏适配、按站配置、移动端触摸适配。v4.1 修复爱奇艺等站点全屏不显示；v4.2 剧名优先读播放器 DOM 与选集高亮项，切集不滞后；v4.3 识别失败自动降级；v4.4 切集重播入场动画、小屏字号自适应、竖排长标题溢出保护、可选沉浸淡出、面板位置记忆与 Esc 关闭；v4.5 新增电脑/手机/极简一键预设；v4.6 按真实播放页 DOM 重写识别层（CSS Module 哈希类名、8 位期号、播放器标题区取集数、避开热搜榜等数字干扰）；v4.6.2 修集数位于标题开头时剧名被污染、剧名尾随时长未剥离；v4.7 修竖排换行实为换列、固定单列宽度+overflow:hidden 把集数列整列裁掉（“看不到集数”的真凶）；v4.8 竖排数字/字母改为逐字直立（text-orientation: upright），不再横躺，可在面板切回；v4.9 集数支持独立字号（默认自动取剧名70%），两列高度更协调；v5.0 新增列间距滑杆（竖排下用 line-height 拉开两列，间距仍带背景不断裂）；v5.1 一键预设纳入集数字号与列间距，电脑/手机/极简三档整套观感一起切换；v6.0 全站注入（检测到 video 才启用，iframe 内不运行）、设置入口改为头像按钮（默认仅全屏显示，可自定义图片地址或上传）、面板新增保存选项、未知站点走通用识别兜底（标题区 / JSON-LD / 选集高亮），爱奇艺专属逻辑保持不变；v6.1 默认头像改为「剧」字；优化 YouTube 标题/集数识别（专属选择器、剥离 - YouTube 尾巴、支持 Episode/Ep/SxxExx 英文集数格式）；v6.1.1 为 Tampermonkey 脚本列表添加「剧」字 @icon；v6.2 实测主流站修复：B站 mediaTitle、腾讯 player-play-title、剥离 15:18 时长尾巴、强化腾讯/B站标题噪音与英文集数清理；v6.3 增强非主流站：MacCMS 系（trvod/szctv）、爱壹帆 iyf.tv、OnDemandChina 标题/URL 集数识别与站点尾巴清理；v6.4 手机端油猴菜单新增：打开设置、切换显示、手机预设、头像常驻；v6.5 配置改存油猴自身存储（GM_setValue）并双写 localStorage 兜底，修复关闭「按站配置」后一保存就丢的问题，重启浏览器后不再回到默认；v6.6 新增「仅全屏时显示标题」选项（与「全屏时隐藏标题」互斥）；v6.7 侧边默认只显示「剧名+数字集数」单列（红日第一集 → 红日1），长剧名自动折成多列，面板可关闭合并；v6.7.1 集数一律归一为纯数字（EP01/S01E02/01 → 1/1/2），剧名自带同集号不重复，长剧名优先折列而不再压字号；v6.7.2 修手机端设置面板不显示（打开时强制夹回视口、小屏全宽适配、头像入口缺面板时自动创建）、修横排贴底/左右定位冲突导致错位与裁切；v6.7.3 优化 OnDemandChina：专属标题选择器、跳过「观看剧集」无障碍占位、URL /ep-N 取集数、避免 JSON-LD 把「第N集」当剧名；v6.7.4 排除主流非视频站与敏感登录页（搜索/社交/邮箱/网银/办公等 @exclude + 运行时登录路径短路）
 // @author       Jackson Smith
 // @icon         data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%2232%22%20r%3D%2232%22%20fill%3D%22%231a1a1a%22%2F%3E%3Ctext%20x%3D%2232%22%20y%3D%2243%22%20text-anchor%3D%22middle%22%20font-size%3D%2236%22%20font-weight%3D%22700%22%20fill%3D%22%23f5f5f5%22%20font-family%3D%22system-ui%2Csans-serif%22%3E%E5%89%A7%3C%2Ftext%3E%3C%2Fsvg%3E
 // @match        *://*/*
+// @noframes
+// ---------- 主流非视频站（减少无谓注入） ----------
+// @exclude      *://*.google.com/*
+// @exclude      *://google.com/*
+// @exclude      *://*.google.com.hk/*
+// @exclude      *://*.google.co.jp/*
+// @exclude      *://*.baidu.com/*
+// @exclude      *://baidu.com/*
+// @exclude      *://*.bing.com/*
+// @exclude      *://bing.com/*
+// @exclude      *://*.yahoo.com/*
+// @exclude      *://*.duckduckgo.com/*
+// @exclude      *://*.sogou.com/*
+// @exclude      *://*.so.com/*
+// @exclude      *://*.wikipedia.org/*
+// @exclude      *://*.zhihu.com/*
+// @exclude      *://zhihu.com/*
+// @exclude      *://*.weibo.com/*
+// @exclude      *://weibo.com/*
+// @exclude      *://*.twitter.com/*
+// @exclude      *://twitter.com/*
+// @exclude      *://*.x.com/*
+// @exclude      *://x.com/*
+// @exclude      *://*.facebook.com/*
+// @exclude      *://facebook.com/*
+// @exclude      *://*.instagram.com/*
+// @exclude      *://instagram.com/*
+// @exclude      *://*.linkedin.com/*
+// @exclude      *://*.reddit.com/*
+// @exclude      *://reddit.com/*
+// @exclude      *://*.tiktok.com/*
+// @exclude      *://*.douyin.com/*
+// @exclude      *://*.xiaohongshu.com/*
+// @exclude      *://*.xhs.com/*
+// @exclude      *://*.threads.net/*
+// @exclude      *://*.discord.com/*
+// @exclude      *://*.telegram.org/*
+// @exclude      *://web.telegram.org/*
+// @exclude      *://*.whatsapp.com/*
+// @exclude      *://web.whatsapp.com/*
+// ---------- 邮箱 / 办公 / 文档 ----------
+// @exclude      *://*.gmail.com/*
+// @exclude      *://mail.google.com/*
+// @exclude      *://*.outlook.com/*
+// @exclude      *://outlook.live.com/*
+// @exclude      *://*.office.com/*
+// @exclude      *://*.office365.com/*
+// @exclude      *://*.microsoft.com/*
+// @exclude      *://*.live.com/*
+// @exclude      *://*.sharepoint.com/*
+// @exclude      *://*.onedrive.com/*
+// @exclude      *://*.docs.google.com/*
+// @exclude      *://docs.google.com/*
+// @exclude      *://drive.google.com/*
+// @exclude      *://sheets.google.com/*
+// @exclude      *://slides.google.com/*
+// @exclude      *://*.notion.so/*
+// @exclude      *://notion.so/*
+// @exclude      *://*.feishu.cn/*
+// @exclude      *://*.larksuite.com/*
+// @exclude      *://*.dingtalk.com/*
+// @exclude      *://*.yuque.com/*
+// @exclude      *://*.jianshu.com/*
+// @exclude      *://*.csdn.net/*
+// @exclude      *://*.github.com/*
+// @exclude      *://github.com/*
+// @exclude      *://*.gitlab.com/*
+// @exclude      *://*.stackoverflow.com/*
+// @exclude      *://*.stackexchange.com/*
+// ---------- 购物 / 支付 / 网银 ----------
+// @exclude      *://*.taobao.com/*
+// @exclude      *://*.tmall.com/*
+// @exclude      *://*.jd.com/*
+// @exclude      *://*.amazon.com/*
+// @exclude      *://*.amazon.co.jp/*
+// @exclude      *://*.amazon.cn/*
+// @exclude      *://*.ebay.com/*
+// @exclude      *://*.paypal.com/*
+// @exclude      *://*.alipay.com/*
+// @exclude      *://*.alipayobjects.com/*
+// @exclude      *://*.tenpay.com/*
+// @exclude      *://*.stripe.com/*
+// @exclude      *://*.icbc.com.cn/*
+// @exclude      *://*.ccb.com/*
+// @exclude      *://*.abchina.com/*
+// @exclude      *://*.bankofchina.com/*
+// @exclude      *://*.boc.cn/*
+// @exclude      *://*.cmbchina.com/*
+// @exclude      *://*.psbc.com/*
+// @exclude      *://*.bankcomm.com/*
+// @exclude      *://*.spdb.com.cn/*
+// @exclude      *://*.citibank.com/*
+// @exclude      *://*.chase.com/*
+// @exclude      *://*.bankofamerica.com/*
+// @exclude      *://*.wellsfargo.com/*
+// ---------- 政务 / 账号体系 / 云 ----------
+// @exclude      *://*.gov.cn/*
+// @exclude      *://*.gov/*
+// @exclude      *://*.irs.gov/*
+// @exclude      *://*.apple.com/*
+// @exclude      *://*.icloud.com/*
+// @exclude      *://account.microsoft.com/*
+// @exclude      *://login.microsoftonline.com/*
+// @exclude      *://*.amazonaws.com/*
+// @exclude      *://*.cloud.google.com/*
+// @exclude      *://console.cloud.google.com/*
+// @exclude      *://*.aliyun.com/*
+// @exclude      *://*.tencentcloud.com/*
+// ---------- 敏感登录 / 认证路径（任意域名） ----------
+// @exclude      *://*/login*
+// @exclude      *://*/signin*
+// @exclude      *://*/sign-in*
+// @exclude      *://*/sign_in*
+// @exclude      *://*/signup*
+// @exclude      *://*/sign-up*
+// @exclude      *://*/sign_up*
+// @exclude      *://*/register*
+// @exclude      *://*/passport*
+// @exclude      *://*/oauth*
+// @exclude      *://*/sso/*
+// @exclude      *://*/auth/*
+// @exclude      *://*/authenticate*
+// @exclude      *://*/account/login*
+// @exclude      *://*/accounts/login*
+// @exclude      *://*/user/login*
+// @exclude      *://*/users/sign_in*
+// @exclude      *://*/session/new*
+// @exclude      *://*/sessions/new*
+// @exclude      *://*/cas/login*
+// @exclude      *://*/idp/*
+// @exclude      *://*/password/reset*
+// @exclude      *://*/forgot*password*
+// @exclude      *://*/reset*password*
+// @exclude      *://*/2fa*
+// @exclude      *://*/mfa*
+// @exclude      *://*/captcha*
+// @exclude      *://*/pay/*
+// @exclude      *://*/payment/*
+// @exclude      *://*/checkout*
+// @exclude      *://*/cashier*
+// @exclude      *://*/wallet*
 // @noframes
 // @grant        GM_registerMenuCommand
 // @grant        GM_unregisterMenuCommand
@@ -18,6 +159,26 @@
 
 (function () {
     'use strict';
+
+    // 运行时再拦一层：敏感登录/支付路径（@exclude 对 hash 路由、部分 SPA 可能漏网）
+    // 视频站自己的 /login 也不该挂剧集浮层，避免挡表单、抢焦点。
+    function isSensitivePage() {
+        try {
+            const path = ((location.pathname || '') + ' ' + (location.hash || '')).toLowerCase();
+            const host = (location.hostname || '').toLowerCase();
+            // 明显非视频门户（双保险，防止用户去掉了某条 @exclude）
+            if (/(^|\.)(google|baidu|bing|duckduckgo|wikipedia|zhihu|weibo|twitter|facebook|instagram|linkedin|reddit|github|gitlab|notion|feishu|dingtalk|taobao|tmall|jd|alipay|paypal|stripe|amazonaws)\./.test(host)
+                || /^(google|baidu|bing|zhihu|weibo|github|taobao|jd)\./.test(host)) {
+                // 仍允许少数带播放器的例外站（目前无）；直接排除
+                return true;
+            }
+            return /\/(login|log-in|signin|sign-in|sign_in|signup|sign-up|sign_up|register|passport|oauth|sso|auth(?:enticate)?|account\/login|accounts\/login|user\/login|users\/sign_in|session(?:s)?\/new|cas\/login|idp\/|password\/(reset|forgot)|forgot[-_]?password|reset[-_]?password|2fa|mfa|captcha|checkout|cashier|payment|wallet)(\b|\/|$|\?|#)/i.test(path)
+                || /[?#].*(login|signin|sign-in|oauth|sso|auth)=/i.test(location.href || '');
+        } catch (e) {
+            return false;
+        }
+    }
+    if (isSensitivePage()) return;
 
     // ============ 主题定义 ============
     const THEMES = {
@@ -394,30 +555,55 @@
         const safeLeft = 'env(safe-area-inset-left, 0px)';
         const safeRight = 'env(safe-area-inset-right, 0px)';
         const safeTop = 'env(safe-area-inset-top, 0px)';
+        const safeBottom = 'env(safe-area-inset-bottom, 0px)';
 
+        // 横排：水平居中，不再套用 left/right:0（否则与 left:50% 冲突，右侧模式更会贴边错位）；
+        // 贴底时（offsetY 偏高）改用 bottom 定位并扣掉 safe-area，避免被系统手势条/播放器控制栏裁掉。
         let extraCSS = '';
         if (config.layout === 'horizontal') {
+            const oy = Math.max(0, Math.min(100, Number(config.offsetY) || 50));
+            const nearBottom = oy >= 78;
+            const posBlock = nearBottom
+                ? `left: 50% !important;
+                right: auto !important;
+                top: auto !important;
+                bottom: calc(${Math.max(2, 100 - oy)}% + ${safeBottom}) !important;
+                transform: translateX(-50%) !important;`
+                : `left: 50% !important;
+                right: auto !important;
+                top: calc(${oy}% + ${safeTop}) !important;
+                bottom: auto !important;
+                transform: translateX(-50%) !important;`;
             extraCSS = `
-                white-space: nowrap;
-                width: auto;
-                max-width: 80vw;
+                ${posBlock}
+                white-space: nowrap !important;
+                width: auto !important;
+                max-width: min(92vw, 720px) !important;
                 padding: 8px 16px !important;
-                left: 50%;
-                transform: translateX(-50%) !important;
-                top: calc(${config.offsetY}% + ${safeTop}) !important;
-                letter-spacing: 2px;
+                letter-spacing: 2px !important;
+                margin-left: 0 !important;
+                margin-right: 0 !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+                max-height: none !important;
             `;
         }
 
         const baseZ = isFS ? 2147483647 : 99998;
 
+        // 竖排才钉在左右侧；横排定位完全交给 extraCSS，避免 left/right:0 与居中互相打架
+        const sidePin = isVertical
+            ? `${config.position}: 0 !important;
+            top: ${config.offsetY}% !important;
+            transform: translateY(-50%) !important;
+            margin-${config.position}: ${config.position === 'left' ? safeLeft : safeRight};`
+            : `left: 50% !important; right: auto !important;`;
+
         titleEl.style.cssText = `
             position: fixed !important;
-            ${config.position}: 0 !important;
-            top: ${config.layout === 'vertical' ? config.offsetY + '%' : 'calc(' + config.offsetY + '% + ' + safeTop + ')'} !important;
-            transform: ${config.layout === 'vertical' ? 'translateY(-50%)' : 'translateX(-50%)'} !important;
+            ${sidePin}
             width: ${isVertical ? 'fit-content' : 'auto'};
-            max-width: ${isVertical ? '78vw' : '80vw'};
+            max-width: ${isVertical ? '78vw' : 'min(92vw, 720px)'};
             writing-mode: ${config.layout === 'vertical' ? 'vertical-rl' : 'horizontal-tb'} !important;
             text-orientation: ${(isVertical && !config.uprightDigits) ? 'mixed' : 'upright'} !important;
             font-size: ${fs}px !important;
@@ -431,16 +617,15 @@
                 : (config.layout === 'vertical' ? '12px 0 0 12px' : '999px')} !important;
             pointer-events: ${interactive ? 'auto' : 'none'};
             z-index: ${baseZ} !important;
-            letter-spacing: 6px;
-            white-space: pre-wrap; /* 让剧名/集数之间的 \n 真正换行 */
+            letter-spacing: ${isVertical ? 6 : 2}px;
+            white-space: ${isVertical ? 'pre-wrap' : 'nowrap'}; /* 竖排用 \n 分列；横排单行 */
             text-shadow: ${theme.textShadow} !important;
             font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
             transition: opacity 0.3s ease, transform 0.3s ease;
             display: ${visible ? 'block' : 'none'};
             opacity: ${paintOpacity};
             max-height: ${isVertical ? 'calc(100vh - 10%)' : 'none'};
-            overflow: visible;
-            margin-${config.position}: ${config.position === 'left' ? safeLeft : safeRight};
+            overflow: ${isVertical ? 'visible' : 'hidden'};
             ${extraCSS}
         `;
 
@@ -520,6 +705,15 @@
             'h1 yt-formatted-string',
             'h1',
         ],
+        // OnDemandChina：真实剧名在 FullScreen__Episode__title / EpisodeDetail__title（「剧名 - 第N集」），
+        // 页面另有无障碍 h1「观看剧集」和错误的 JSON-LD name=「第N集」，通用选择器会先命中占位文案导致只剩集数。
+        ondemandchina: [
+            'h1.FullScreen__Episode__title', 'h2.EpisodeDetail__title',
+            '[class*="FullScreen__Episode__title" i]', '[class*="EpisodeDetail__title" i]',
+            '[class*="Episode__title" i]', '[class*="ProgramDetail" i] h1', '[class*="ProgramDetail" i] h2',
+            '[class*="titleAndMeta" i] h1', '[class*="titleAndMeta" i] h2',
+            'h1:not(.screen-reader-text)', 'h2:not(.screen-reader-text)',
+        ],
         // v6.0 全站通用：未知站点没有专属选择器，用一组“播放页常见”的宽泛选择器兜底。
         // 误伤由 isJunkSource / cleanTitle 的噪音过滤收住；完全识别不到就整块隐藏，不留空框。
         generic: [
@@ -544,6 +738,7 @@
         if (/bilibili\.com/.test(h)) return 'bilibili';
         if (/mgtv\.com/.test(h)) return 'mgtv';
         if (/(^|\.)youtube\.com$|(^|\.)youtu\.be$/.test(h)) return 'youtube';
+        if (/ondemandchina\.com$/i.test(h)) return 'ondemandchina';
         return 'generic';
     }
 
@@ -613,17 +808,20 @@
     // 这种门户标题，绝不能当剧名显示（真实端到端跑出来过这个笑话）。
     // 只列门户式兜底标题的特征词，宁窄勿宽：正常片名里出现的“在线观看”等不能误判
     const GENERIC_TITLE_RE = /(在线视频网站|海量正版|官网首页|免费在线观看视频|领先的视频平台|弹幕视频网站|好剧看不完|つロ 干杯)/;
+    // 播放页无障碍/骨架占位，绝不能当剧名（ODC 的 h1.screen-reader-text「观看剧集」是典型）
+    const PLACEHOLDER_TITLE_RE = /^(观看剧集|观看影片|观看视频|播放页|剧集详情|影片详情|视频详情|Watch\s*(Episode|Movie|Now|Video)?|Episode\s*Detail|Loading\.?\.?\.?)$/i;
     const BARE_SITE_NAMES = new Set(['爱奇艺', 'iqiyi', '腾讯视频', 'v.qq', '优酷', 'youku', '搜狐视频',
-        '哔哩哔哩', 'bilibili', 'bili', '芒果tv', 'mgtv', 'netflix', 'youtube']);
+        '哔哩哔哩', 'bilibili', 'bili', '芒果tv', 'mgtv', 'netflix', 'youtube', 'ondemandchina', 'odc影视', 'odc']);
 
     function isJunkSource(text) {
         const t = String(text || '').replace(/\s+/g, ' ').trim();
         if (!t) return true;
         if (GENERIC_TITLE_RE.test(t)) return true;
+        if (PLACEHOLDER_TITLE_RE.test(t)) return true;
         const low = t.toLowerCase();
         if (BARE_SITE_NAMES.has(low)) return true;
         const cleaned = cleanTitle(t).toLowerCase();
-        return cleaned.length < 2 || BARE_SITE_NAMES.has(cleaned);
+        return cleaned.length < 2 || BARE_SITE_NAMES.has(cleaned) || PLACEHOLDER_TITLE_RE.test(cleaned);
     }
 
     function isPureEpisodeLike(txt) {
@@ -636,8 +834,14 @@
         const out = [];
         for (const sel of sels) {
             let nodes = [];
-            try { nodes = Array.from(document.querySelectorAll(sel)).slice(0, 4); } catch (e) { continue; }
+            try { nodes = Array.from(document.querySelectorAll(sel)).slice(0, 6); } catch (e) { continue; }
             for (const el of nodes) {
+                // 跳过无障碍/视觉隐藏占位，避免 ODC「观看剧集」之类抢占剧名
+                try {
+                    const cls = String(el.className || '');
+                    if (/screen-reader|sr-only|visually-hidden|aria-hidden/i.test(cls)) continue;
+                    if (el.getAttribute('aria-hidden') === 'true') continue;
+                } catch (e) {}
                 const t = String(el.textContent || el.getAttribute('title') || '').replace(/\s+/g, ' ').trim();
                 if (t && t.length <= 160 && !isJunkSource(t) && out.indexOf(t) < 0) out.push(t);
             }
@@ -683,7 +887,16 @@
             walk(data, 0);
             for (const n of nodes) {
                 const nm = String(n.name || n.headline || '').replace(/\s+/g, ' ').trim();
-                if (!out.name && nm.length >= 2 && nm.length <= 60 && !isJunkSource(nm)) out.name = nm;
+                // ODC 等站 JSON-LD 的 name 常被写成「第1集」，不能当剧名
+                if (!out.name && nm.length >= 2 && nm.length <= 60 && !isJunkSource(nm) && !isPureEpisodeLike(nm)) out.name = nm;
+                // partOfSeries.name 才是真正剧名
+                try {
+                    const series = n.partOfSeries;
+                    const sn = series && String(series.name || '').replace(/\s+/g, ' ').trim();
+                    if (sn && sn.length >= 2 && sn.length <= 60 && !isJunkSource(sn) && !isPureEpisodeLike(sn)) {
+                        if (!out.name || isPureEpisodeLike(out.name)) out.name = sn;
+                    }
+                } catch (e) {}
                 const no = n.episodeNumber;
                 if (!out.episode && no !== undefined && no !== null && /^\d{1,4}$/.test(String(no).trim())) {
                     const num = parseInt(String(no).trim(), 10);
@@ -797,6 +1010,7 @@
     }
 
     // MacCMS 播放页 URL：/play/105860-2-18.html 或 /vodplay/xxx-1-18.html，末段 nid 即集序号
+    // OnDemandChina：/zh-Hans/watch/slug/ep-12 或 /movie-1
     function episodeFromUrl() {
         try {
             const path = location.pathname || '';
@@ -804,6 +1018,16 @@
             if (m) {
                 const n = parseInt(m[3], 10);
                 if (n >= 1 && n <= 2000) return `第${n}集`;
+            }
+            m = path.match(/\/(?:ep|episode|e)[-_]?(\d{1,4})(?:\/|$|\?)/i);
+            if (m) {
+                const n = parseInt(m[1], 10);
+                if (n >= 1 && n <= 2000) return `第${n}集`;
+            }
+            m = path.match(/\/movie[-_]?(\d{1,3})(?:\/|$|\?)/i);
+            if (m) {
+                const n = parseInt(m[1], 10);
+                if (n >= 1 && n <= 50) return `第${n}集`;
             }
             m = location.search.match(/[?&](?:nid|ep|episode|n)=(\d{1,4})\b/i);
             if (m) {
@@ -833,16 +1057,19 @@
         let title = '';
         for (const h of heads) {
             const c = cleanTitle(h);
-            if (c.length >= 2 && c.length <= 60 && !isPureEpisodeLike(c)) { title = c; break; }
+            if (c.length >= 2 && c.length <= 60 && !isPureEpisodeLike(c) && !PLACEHOLDER_TITLE_RE.test(c)) { title = c; break; }
         }
         if (!title && ld.name) {
             const c = cleanTitle(ld.name);
-            if (c.length >= 2 && c.length <= 60 && !isPureEpisodeLike(c)) title = c;
+            if (c.length >= 2 && c.length <= 60 && !isPureEpisodeLike(c) && !PLACEHOLDER_TITLE_RE.test(c)) title = c;
         }
-        if (!title && fromPage.length >= 2 && !isPureEpisodeLike(fromPage)) title = fromPage;
+        if (!title && fromPage.length >= 2 && !isPureEpisodeLike(fromPage) && !PLACEHOLDER_TITLE_RE.test(fromPage)) title = fromPage;
+        // 标题区被副标题/占位污染时，document.title 解析出的更短剧名更干净
         if (title && fromPage.length >= 2 && fromPage.length < title.length && title.indexOf(fromPage) === 0) {
             title = fromPage;
         }
+        // ODC 等：head 命中「观看剧集」类占位时，强制回退到 document.title 解析
+        if (title && PLACEHOLDER_TITLE_RE.test(title) && fromPage.length >= 2) title = fromPage;
 
         // 集数：选集“正在播放”项 > 播放器标题区 > JSON-LD > document.title。
         // 选集高亮/playing 图标是播放器运行时写上去的，切集时最可靠；
@@ -958,7 +1185,8 @@
             }
             return t || num || '';
         }
-        return [t, e].filter(Boolean).join('\n');
+        // 横排用空格连接，避免与 nowrap 冲突导致第二行不可见
+        return [t, e].filter(Boolean).join(config.layout === 'horizontal' ? ' · ' : '\n');
     }
 
     // 渲染：合并模式下整块只有一个 span（单列；超长剧名由 max-height 自动折成多列）；
@@ -985,7 +1213,12 @@
             t.textContent = title;
             titleEl.appendChild(t);
         }
-        if (showTitle && showEp) titleEl.appendChild(document.createTextNode('\n'));
+        // 竖排用换行分两列；横排单行，用间隔符，避免 nowrap 把集数裁掉
+        if (showTitle && showEp) {
+            titleEl.appendChild(document.createTextNode(
+                config.layout === 'horizontal' ? ' · ' : '\n'
+            ));
+        }
         if (showEp) {
             const e = document.createElement('span');
             e.className = 'evt-episode';
@@ -1115,7 +1348,8 @@
                 top: 80px;
                 right: 20px;
                 width: 280px;
-                max-width: calc(100vw - 40px);
+                max-width: calc(100vw - 24px);
+                max-height: calc(100vh - 24px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
                 background: ${theme.panelBg};
                 backdrop-filter: blur(10px);
                 -webkit-backdrop-filter: blur(10px);
@@ -1127,6 +1361,21 @@
                 z-index: 2147483647;
                 box-shadow: 0 8px 32px rgba(0,0,0,0.5);
                 display: none;
+                box-sizing: border-box;
+                overflow: hidden;
+                /* 防止被页面 transform/滚动容器裁切 */
+                -webkit-transform: translateZ(0);
+                transform: translateZ(0);
+            }
+            @media (max-width: 480px) {
+                #episode-title-settings-panel {
+                    top: max(8px, env(safe-area-inset-top, 0px));
+                    left: 12px !important;
+                    right: 12px !important;
+                    width: auto;
+                    max-width: none;
+                    border-radius: 14px;
+                }
             }
             #episode-title-settings-panel .ets-header {
                 display: flex;
@@ -1147,8 +1396,16 @@
             #episode-title-settings-panel .ets-close:hover { opacity: 1; }
             #episode-title-settings-panel .ets-body {
                 padding: 12px 16px;
-                max-height: 70vh;
+                max-height: min(70vh, calc(100vh - 120px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)));
                 overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+                overscroll-behavior: contain;
+            }
+            @media (max-width: 480px) {
+                #episode-title-settings-panel .ets-body {
+                    max-height: min(78vh, calc(100vh - 100px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)));
+                    padding: 10px 14px 16px;
+                }
             }
             #episode-title-settings-panel .ets-body::-webkit-scrollbar { width: 6px; }
             #episode-title-settings-panel .ets-body::-webkit-scrollbar-thumb { background: ${theme.accent}; border-radius: 3px; }
@@ -1326,11 +1583,51 @@
         }
     }
 
+    function clampPanelIntoView() {
+        if (!panelEl) return;
+        // 先显示再量尺寸；手机上曾保存的桌面坐标常整块飞出屏外，表现为「设置菜单不显示」
+        const vw = window.innerWidth || document.documentElement.clientWidth || 360;
+        const vh = window.innerHeight || document.documentElement.clientHeight || 640;
+        const isNarrow = vw <= 480;
+        if (isNarrow) {
+            // 小屏强制左右贴边居中，避免 left 记忆值把面板推到屏外
+            panelEl.style.left = '12px';
+            panelEl.style.right = '12px';
+            panelEl.style.width = 'auto';
+            const rect = panelEl.getBoundingClientRect();
+            const h = rect.height || 360;
+            let top = parseFloat(panelEl.style.top);
+            if (!Number.isFinite(top)) top = 8;
+            top = Math.max(8, Math.min(top, Math.max(8, vh - h - 8)));
+            panelEl.style.top = top + 'px';
+            return;
+        }
+        const rect = panelEl.getBoundingClientRect();
+        const w = rect.width || 280;
+        const h = rect.height || 360;
+        let left = rect.left;
+        let top = rect.top;
+        // 几乎不可见（宽高过小或完全在屏外）时重置到右上默认位
+        if (w < 40 || h < 40 || left > vw - 40 || top > vh - 40 || left + w < 40 || top + h < 40) {
+            left = Math.max(8, vw - w - 20);
+            top = 80;
+        }
+        left = Math.max(4, Math.min(left, vw - Math.min(w, vw - 8)));
+        top = Math.max(4, Math.min(top, vh - Math.min(h, vh - 8)));
+        panelEl.style.left = left + 'px';
+        panelEl.style.top = top + 'px';
+        panelEl.style.right = 'auto';
+    }
+
     function setPanelVisible(show) {
         if (!panelEl) return;
         if (show) {
             mountOverlays(); // 全屏时把面板一起带进 top layer
             panelEl.style.display = 'block';
+            // 下一帧再量，确保布局完成（尤其是手机端 max-height / 安全区）
+            requestAnimationFrame(() => {
+                try { clampPanelIntoView(); } catch (e) {}
+            });
         } else {
             panelEl.style.display = 'none';
         }
@@ -1770,11 +2067,20 @@
     // 窗口可能比上次更小，恢复时夹回可视范围，避免面板被挪出屏外找不回来
     function applyPanelPos() {
         if (!panelEl) return;
+        const vw = window.innerWidth || 360;
+        const vh = window.innerHeight || 640;
+        // 手机端不恢复桌面坐标，统一走 clamp 的居中贴边策略，避免「打开了但看不见」
+        if (vw <= 480) {
+            panelEl.style.left = '12px';
+            panelEl.style.right = '12px';
+            panelEl.style.top = '8px';
+            return;
+        }
         let pos = null;
         try { pos = JSON.parse(rawGet(KV_PANEL_POS) || 'null'); } catch (e) { return; }
         if (!pos || typeof pos.x !== 'number' || typeof pos.y !== 'number') return;
-        panelEl.style.left = Math.max(4, Math.min(window.innerWidth - 80, pos.x)) + 'px';
-        panelEl.style.top = Math.max(4, Math.min(window.innerHeight - 80, pos.y)) + 'px';
+        panelEl.style.left = Math.max(4, Math.min(vw - 80, pos.x)) + 'px';
+        panelEl.style.top = Math.max(4, Math.min(vh - 80, pos.y)) + 'px';
         panelEl.style.right = 'auto';
     }
 
@@ -1962,7 +2268,7 @@
         btn.onmouseenter = () => btn.style.transform = 'scale(1.08)';
         btn.onmouseleave = () => btn.style.transform = 'scale(1)';
         btn.onclick = () => {
-            if (!panelEl) return;
+            if (!panelEl) createPanel();
             setPanelVisible(!isPanelVisible());
         };
         document.body.appendChild(btn);
@@ -2030,9 +2336,14 @@
 
         add('📺 打开设置面板', () => {
             if (!started) { try { start(); } catch (e) {} }
-            if (!panelEl) createPanel();
-            setPanelVisible(true);
-            showToast('已打开设置');
+            // 即使 start 因 iframe/异常未跑完，也要能单独拉起面板（手机端主入口）
+            try {
+                if (!panelEl) createPanel();
+                setPanelVisible(true);
+                showToast('已打开设置');
+            } catch (err) {
+                try { showToast('打开设置失败，请刷新页面重试'); } catch (e) {}
+            }
         });
 
         add(config.enabled ? '⏸ 关闭剧集显示' : '▶️ 开启剧集显示', () => {
