@@ -321,7 +321,34 @@ function Get-CanonicalScriptUrl {
     param([string]$RelPath)
     $slug = Get-RepoSlug
     if (-not $slug -or -not $RelPath) { return $null }
-    return ('https://raw.githubusercontent.com/' + $slug + '/' + $Branch + '/' + ($RelPath -replace '\\', '/'))
+    # 用 jsDelivr 的 fastly 边缘地址：本机网络里 raw.githubusercontent.com 的 TLS 被阻断，
+    # 更新地址若指向 raw，油猴永远取不到新版本；推送后由 Invoke-DocsCdnPurge 刷缓存。
+    $seg = (($RelPath -replace '\\', '/') -split '/') | ForEach-Object { [uri]::EscapeDataString($_) }
+    return ('https://fastly.jsdelivr.net/gh/' + $slug + '@' + $Branch + '/' + ($seg -join '/'))
+}
+
+# 推送成功后刷新 jsDelivr 缓存，否则分支地址最长要等十几小时才见到新版本
+function Invoke-DocsCdnPurge {
+    $slug = Get-RepoSlug
+    if (-not $slug) { return }
+    $url = 'https://purge.jsdelivr.net/gh/' + $slug + '@' + $Branch + '/*'
+    $curl = Join-Path $env:SystemRoot 'System32\curl.exe'
+    try {
+        if (Test-Path -LiteralPath $curl) {
+            $out = (& $curl -s --max-time 20 $url 2>&1) -join ''
+        } else {
+            $out = (Invoke-WebRequest -Uri $url -TimeoutSec 20 -UseBasicParsing).Content
+        }
+        if ($out -match '"status"\s*:\s*"finished"') {
+            Write-Log '已刷新 jsDelivr 缓存（油猴可立即取到新版本）'
+        } elseif ($out -match 'throttled"\s*:\s*true') {
+            Write-Log 'jsDelivr 缓存刷新被限流，稍后自动生效' 'WARN'
+        } else {
+            Write-Log ('jsDelivr 缓存刷新未确认：' + $out.Substring(0, [Math]::Min(120, $out.Length))) 'WARN'
+        }
+    } catch {
+        Write-Log ('jsDelivr 缓存刷新失败（不影响脚本本体与提交）：' + $_.Exception.Message) 'WARN'
+    }
 }
 
 # 只改写已有的 @updateURL / @downloadURL 两行，其余字节（行尾、缩进）保持原样
@@ -749,6 +776,7 @@ function Invoke-Sync {
             $push = RunGit @('push', $RemoteName, ('HEAD:' + $Branch))
             if ($push.Code -eq 0) {
                 Write-Log ('已推送到 ' + $RemoteName + '/' + $Branch)
+                Invoke-DocsCdnPurge
                 break
             }
 
