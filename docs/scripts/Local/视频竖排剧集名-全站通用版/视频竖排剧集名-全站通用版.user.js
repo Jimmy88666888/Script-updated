@@ -794,27 +794,25 @@
         return Math.max(12, Math.round(fs * 0.7));
     }
 
-    // 渲染：剧名 span + “\n” 文本节点 + 集数 span。
-    // 竖排下 “\n” 负责把两段拆成左右两列，两个 span 各用各的字号；
-    // 用 createElement + textContent 构造，剧名里出现 HTML 标签也只会当纯文本，不会被解析。
+    // 渲染：剧名 span + 集数 span，各占一列。
+    // v6.3：不再用 "\n" 文本节点换列。字号 60+、列间距 60+ 时，浏览器会把剧名那一列
+    // 从中间断开、把后续字塞进新列，视觉上就成了“横排倒写”。改为两个 block span：
+    // 换列交给块级布局，列内 white-space: pre 保证永不断行，列宽仍由 line-height 控制。
     function renderTitleParts(title, episode) {
         if (!titleEl) return;
         while (titleEl.firstChild) titleEl.removeChild(titleEl.firstChild);
         const showTitle = config.displayMode !== 'episode' && !!title;
         const showEp = config.displayMode !== 'title' && !!episode;
-        if (showTitle) {
-            const t = document.createElement('span');
-            t.className = 'evt-title';
-            t.textContent = title;
-            titleEl.appendChild(t);
-        }
-        if (showTitle && showEp) titleEl.appendChild(document.createTextNode('\n'));
-        if (showEp) {
-            const e = document.createElement('span');
-            e.className = 'evt-episode';
-            e.textContent = episode;
-            titleEl.appendChild(e);
-        }
+        const makeCol = (cls, text) => {
+            const el = document.createElement('span');
+            el.className = cls;
+            el.textContent = text;
+            el.style.display = 'block';
+            el.style.whiteSpace = 'pre';
+            return el;
+        };
+        if (showTitle) titleEl.appendChild(makeCol('evt-title', title));
+        if (showEp) titleEl.appendChild(makeCol('evt-episode', episode));
         applyEpisodeFontSize();
     }
 
