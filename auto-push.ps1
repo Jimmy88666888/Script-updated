@@ -342,6 +342,19 @@ function Get-ScriptBaseStem {
     return $base
 }
 
+# 从文件名判断变体：电脑版返回空，手机版返回 -mobile。
+# 中文命名的副本（如 视频剧集信息显示手机版.user）没有 -mobile 后缀，也按关键字认出来。
+function Get-ScriptVariant {
+    param([string]$Leaf, [string]$Stem)
+    if (-not $Stem) { return '' }
+    if ($Stem -match '(?i)-mobile$') { return '-mobile' }
+    if ($Stem -match '手机版|手机端') { return '-mobile' }
+    if ($Leaf -and $Stem.StartsWith($Leaf, [System.StringComparison]::OrdinalIgnoreCase)) {
+        if (($Stem.Substring($Leaf.Length)) -match '(?i)^-mobile$') { return '-mobile' }
+    }
+    return ''
+}
+
 # 脚本落位规则：
 #   1) 仓库里已有同名文件 -> 原地替换它原来的文件（Local/ 或 Author/ 下同名目录）
 #   2) 内容能认出身份（@namespace / @name 命中已知脚本）-> 并进原目录，按该目录的命名规范落位
@@ -360,12 +373,10 @@ function Resolve-ScriptPath {
     $hit = Find-ScriptDirByText $Text
     if ($hit) {
         $leaf = $hit.Leaf
-        $variant = ''
-        if ($stem -and $stem.StartsWith($leaf, [System.StringComparison]::OrdinalIgnoreCase)) {
-            $variant = $stem.Substring($leaf.Length)
-        }
+        $variant = Get-ScriptVariant -Leaf $leaf -Stem $stem
         $candPath = Join-Path $hit.Dir ($leaf + $variant + '.user.js')
         if (Test-Path -LiteralPath $candPath) { return $candPath }
+        if ($variant) { return $candPath }
         $main = Get-MainScriptFile -Dir $hit.Dir -Leaf $leaf
         if ($main) { return $main }
         return $candPath
@@ -430,7 +441,12 @@ function Repair-MisplacedScriptFolders {
                     }
                 }
 
+                $fileStem = (Get-NormalizedInboxName $file.Name) -replace '\.user\.js$', ''
+                $variant = Get-ScriptVariant -Leaf $leaf -Stem $fileStem
                 $mainFile = Get-MainScriptFile -Dir $tDir -Leaf $leaf
+                if ($variant -and (-not (Test-Path -LiteralPath (Join-Path $tDir ($leaf + $variant + '.user.js'))))) {
+                    $mainFile = Join-Path $tDir ($leaf + $variant + '.user.js')
+                }
                 if (-not $mainFile) { $mainFile = Join-Path $tDir ($leaf + '.user.js') }
                 $mainRel = ($mainFile.Substring($RepoPath.Length).TrimStart('\')) -replace '\\', '/'
                 $url = Get-CanonicalScriptUrl $mainRel
@@ -443,6 +459,7 @@ function Repair-MisplacedScriptFolders {
                     $archDir = Join-Path $tDir 'archive'
                     if (-not (Test-Path -LiteralPath $archDir)) { New-Item -ItemType Directory -Path $archDir -Force | Out-Null }
                     $base = if ($ver) { $ver } else { 'legacy-' + $file.LastWriteTime.ToString('yyyyMMddHHmmss') }
+                    $base = $base + $variant
                     $dest = Join-Path $archDir ($base + '.user.js')
                     $i = 2
                     while (Test-Path -LiteralPath $dest) {
@@ -521,7 +538,8 @@ function Ingest-Inbox {
                 $oldVer = Get-ScriptVersion $oldText
                 if ($newVer -and $oldVer -and ((Compare-ScriptVersion $newVer $oldVer) -lt 0)) {
                     $archDir = Join-Path $repoDir 'archive'
-                    $archFile = Join-Path $archDir ($newVer + '.user.js')
+                    $variant = Get-ScriptVariant -Leaf (Split-Path -Leaf $repoDir) -Stem ($target -replace '\.user\.js$', '')
+                    $archFile = Join-Path $archDir ($newVer + $variant + '.user.js')
                     if (Test-Path -LiteralPath $archFile) {
                         Remove-Item -LiteralPath $f.FullName -Force -ErrorAction SilentlyContinue
                         Write-Log ('旧版副本 v' + $newVer + ' 已有归档，重复送达已清理：' + $f.Name)
