@@ -86,9 +86,17 @@ LICENSE
 - **更新通道是本仓库**：所有脚本的 `@updateURL` / `@downloadURL` 都指向上面的路径，装一次之后即可自动检查更新。
 - **上游脚本**：`updates.json` 里保留各自上游地址作为数据来源，GitHub Actions 每日 03:17（UTC）比对上游 `@version`，命中新版就同步电脑版与手机版两份文件并重写更新地址。同步器只处理 `upstream` 非空的记录。
 - **本地脚本**：`@namespace` 为 `local.*` 或没有上游地址的，只由本仓库驱动；发新版时改掉文件里的 `// @version` 并推送即可。
-- **缓存**：jsDelivr 对 `@main` 引用约有 12 小时缓存，电脑端会略滞后；急用可把 `@main` 换成具体提交 SHA。
+- **通道**：电脑端统一走 GitHub Pages 镜像（`docs/scripts/` 由 `tools/gen-docs.mjs` 在每次发布时自动同步，地址形如 `https://jimmy88666888.github.io/Script-updated/scripts/...`）；手机端走 `raw.githubusercontent.com` 直链。JS 副本推送后约 1 分钟内生效，不再受 jsDelivr 缓存影响。
 
 ## 变更记录
+
+### 2026-11-28 电脑端镜像改由 GitHub Pages 发布
+
+- 电脑端 `@updateURL` / `@downloadURL` / `@icon` 改为 Pages 镜像 `scripts/` 路径；手机端保持 raw 直链。
+- `tools/gen-docs.mjs` 新增镜像发布：每次生成时把全部脚本（含 `icon.svg`）同步到 `docs/scripts/`，并清理已删脚本的副本。
+- 取消「通用脚本只给一个默认安装入口」的合并：电脑端与手机端各自独立入口与通道。
+- 拆出「视频播放页竖排剧集名 - 手机版」（该脚本原先一份兼顾两端），与「- 电脑版」各自独立更新。
+- 因更新地址再次变化，**已安装的脚本仍需按新链接重装一次**。
 
 ### 2026-11-26 目录重构为 Local / Author
 
