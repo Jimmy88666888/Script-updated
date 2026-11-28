@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name         视频播放页竖排剧集名 - 电脑版
 // @namespace    http://tampermonkey.net/
-// @version      6.2
+// @version      6.3
 // @updateURL    https://jimmy88666888.github.io/Script-updated/scripts/Local/%E8%A7%86%E9%A2%91%E7%AB%96%E6%8E%92%E5%89%A7%E9%9B%86%E5%90%8D-%E5%85%A8%E7%AB%99%E9%80%9A%E7%94%A8%E7%89%88/%E8%A7%86%E9%A2%91%E7%AB%96%E6%8E%92%E5%89%A7%E9%9B%86%E5%90%8D-%E5%85%A8%E7%AB%99%E9%80%9A%E7%94%A8%E7%89%88.user.js
 // @downloadURL  https://jimmy88666888.github.io/Script-updated/scripts/Local/%E8%A7%86%E9%A2%91%E7%AB%96%E6%8E%92%E5%89%A7%E9%9B%86%E5%90%8D-%E5%85%A8%E7%AB%99%E9%80%9A%E7%94%A8%E7%89%88/%E8%A7%86%E9%A2%91%E7%AB%96%E6%8E%92%E5%89%A7%E9%9B%86%E5%90%8D-%E5%85%A8%E7%AB%99%E9%80%9A%E7%94%A8%E7%89%88.user.js
-// @description  电脑端版本。竖排/横排显示剧集名+集数，带完整设置面板、主题、快捷键、全屏适配、按站配置、移动端触摸适配。v4.1 修复爱奇艺等站点全屏不显示；v4.2 剧名优先读播放器 DOM 与选集高亮项，切集不滞后；v4.3 识别失败自动降级；v4.4 切集重播入场动画、小屏字号自适应、竖排长标题溢出保护、可选沉浸淡出、面板位置记忆与 Esc 关闭；v4.5 新增电脑/手机/极简一键预设；v4.6 按真实播放页 DOM 重写识别层（CSS Module 哈希类名、8 位期号、播放器标题区取集数、避开热搜榜等数字干扰）；v4.6.2 修集数位于标题开头时剧名被污染、剧名尾随时长未剥离；v4.7 修竖排换行实为换列、固定单列宽度+overflow:hidden 把集数列整列裁掉（“看不到集数”的真凶）；v4.8 竖排数字/字母改为逐字直立（text-orientation: upright），不再横躺，可在面板切回；v4.9 集数支持独立字号（默认自动取剧名70%），两列高度更协调；v5.0 新增列间距滑杆（竖排下用 line-height 拉开两列，间距仍带背景不断裂）；v5.1 一键预设纳入集数字号与列间距，电脑/手机/极简三档整套观感一起切换；v6.0 全站注入（检测到 video 才启用，iframe 内不运行）、设置入口改为头像按钮（默认仅全屏显示，可自定义图片地址或上传）、面板新增保存选项、未知站点走通用识别兜底（标题区 / JSON-LD / 选集高亮），爱奇艺专属逻辑保持不变
+// @description  电脑端版本。竖排/横排显示剧集名+集数，带完整设置面板、主题、快捷键、全屏适配、按站配置、移动端触摸适配。v4.1 修复爱奇艺等站点全屏不显示；v4.2 剧名优先读播放器 DOM 与选集高亮项，切集不滞后；v4.3 识别失败自动降级；v4.4 切集重播入场动画、小屏字号自适应、竖排长标题溢出保护、可选沉浸淡出、面板位置记忆与 Esc 关闭；v4.5 新增电脑/手机/极简一键预设；v4.6 按真实播放页 DOM 重写识别层（CSS Module 哈希类名、8 位期号、播放器标题区取集数、避开热搜榜等数字干扰）；v4.6.2 修集数位于标题开头时剧名被污染、剧名尾随时长未剥离；v4.7 修竖排换行实为换列、固定单列宽度+overflow:hidden 把集数列整列裁掉（“看不到集数”的真凶）；v4.8 竖排数字/字母改为逐字直立（text-orientation: upright），不再横躺，可在面板切回；v4.9 集数支持独立字号（默认自动取剧名70%），两列高度更协调；v5.0 新增列间距滑杆（竖排下用 line-height 拉开两列，间距仍带背景不断裂）；v5.1 一键预设纳入集数字号与列间距，电脑/手机/极简三档整套观感一起切换；v6.3 修竖排大字号（60+）配大列间距（60+）时剧名列被浏览器从中间断列、视觉上“横排倒写”的问题：剧名与集数改为各占一列的块级元素、列内不再断行，列间距与字号按可用宽高自动收口；v6.0 全站注入（检测到 video 才启用，iframe 内不运行）、设置入口改为头像按钮（默认仅全屏显示，可自定义图片地址或上传）、面板新增保存选项、未知站点走通用识别兜底（标题区 / JSON-LD / 选集高亮），爱奇艺专属逻辑保持不变
 // @author       Jackson Smith
 // @match        *://*/*
 // @noframes
@@ -344,8 +344,10 @@
         // v4.4 字号自适应：小屏按视口等比缩小；竖排再按最长行预估高度二次收缩，
         // 避免手机上 36px 竖排顶满整屏、或长剧名溢出到屏幕外看不见。
         // v4.9：抽成 computeTitleFontSize，集数另算一档字号
+        // v6.3：列宽 = 字号 + 列间距，列间距按可用宽度封顶，避免大字号时两列挤出屏幕
         const isVertical = config.layout === 'vertical';
         const fs = computeTitleFontSize(isVertical);
+        const colGap = isVertical ? getColumnGap(fs) : Math.max(0, Number(config.columnGap) || 0);
         currentTitleFs = fs;
         applyEpisodeFontSize();
 
@@ -392,7 +394,7 @@
             writing-mode: ${config.layout === 'vertical' ? 'vertical-rl' : 'horizontal-tb'} !important;
             text-orientation: ${(isVertical && !config.uprightDigits) ? 'mixed' : 'upright'} !important;
             font-size: ${fs}px !important;
-            line-height: ${fs + (Number(config.columnGap) || 0)}px;
+            line-height: ${fs + colGap}px;
             font-weight: ${config.fontWeight} !important;
             color: ${config.color} !important;
             background: ${bgStyle} !important;
@@ -775,13 +777,44 @@
             : 1;
         let fs = Math.max(14, Math.round(config.fontSize * viewportScale));
         if (isVertical) {
-            // 竖排按最长行预估高度，避免长剧名溢出到屏幕外看不见
-            const longest = String(titleEl.textContent || '').split('\n')
-                .reduce((m, line) => Math.max(m, line.trim().length), 0) || 1;
+            // v6.3：剧名列、集数列各算各的长度，不再把两段拼成一行估高；
+            // 再按“两列总宽不得超过 78vw”收一次，避免大字号 + 大列间距把文字挤出屏幕。
+            const cols = getTitleColumns();
+            let longest = 1;
+            cols.forEach((el) => {
+                const chars = (el.textContent || '').replace(/\n/g, '').trim().length;
+                if (!chars) return;
+                const ratio = el.classList.contains('evt-episode')
+                    ? computeEpisodeFontSize(fs) / Math.max(1, fs)
+                    : 1;
+                longest = Math.max(longest, Math.ceil(chars * ratio));
+            });
             const avail = window.innerHeight * 0.9 - 44;
             if (longest * (fs + 6) > avail) fs = Math.max(14, Math.floor(avail / longest - 6));
+            const gap = getColumnGap(fs);
+            const maxW = window.innerWidth * 0.78 - 16;
+            const colCount = Math.max(1, cols.length);
+            if (colCount * fs + (colCount - 1) * gap > maxW) {
+                fs = Math.max(14, Math.floor((maxW - (colCount - 1) * gap) / colCount));
+            }
         }
         return fs;
+    }
+
+    /** 竖排的列元素：剧名、集数各是一个 block span，各占一列 */
+    function getTitleColumns() {
+        if (!titleEl) return [];
+        return Array.from(titleEl.querySelectorAll('.evt-title, .evt-episode'));
+    }
+
+    /** 实际生效的列间距：最多 1.5 倍字号，且两列总宽不越过 78vw */
+    function getColumnGap(fs) {
+        const raw = Math.max(0, Number(config.columnGap) || 0);
+        const cap = Math.max(0, Math.round(fs * 1.5));
+        const cols = Math.max(1, getTitleColumns().length);
+        const maxW = window.innerWidth * 0.78 - 16 - cols * fs;
+        const fit = cols > 1 ? Math.floor(maxW / (cols - 1)) : raw;
+        return Math.max(0, Math.min(raw, cap, fit));
     }
 
     function computeEpisodeFontSize(fs) {
@@ -845,7 +878,9 @@
             return;
         }
 
-        if (text === lastRenderedText && titleEl.textContent === text) {
+        // v6.3：两列是各自独立的 block span，textContent 里不再有换行，
+        // 判重时用拼接后的纯文本比对，否则每次轮询都会重排一次。
+        if (text === lastRenderedText && titleEl.textContent === parts.join('')) {
             refreshDetectState();
             return; // 文本没变就不重排
         }
