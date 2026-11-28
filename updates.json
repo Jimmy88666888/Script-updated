@@ -668,10 +668,10 @@
     "upstream": "https://update.greasyfork.org/scripts/14178/AC-baidu-%E9%87%8D%E5%AE%9A%E5%90%91%E4%BC%98%E5%8C%96%E7%99%BE%E5%BA%A6%E6%90%9C%E7%8B%97%E8%B0%B7%E6%AD%8C%E5%BF%85%E5%BA%94%E6%90%9C%E7%B4%A2_favicon_%E5%8F%8C%E5%88%97.meta.js",
     "upstream_install": "https://update.greasyfork.org/scripts/14178/AC-baidu-%E9%87%8D%E5%AE%9A%E5%90%91%E4%BC%98%E5%8C%96%E7%99%BE%E5%BA%A6%E6%90%9C%E7%8B%97%E8%B0%B7%E6%AD%8C%E5%BF%85%E5%BA%94%E6%90%9C%E7%B4%A2_favicon_%E5%8F%8C%E5%88%97.user.js",
     "match": [],
-    "update_channel": "repo-mirror",
-    "mirror": "jsdelivr",
+    "update_channel": "repo-raw",
+    "mirror": "raw",
     "universal": false,
-    "update_url": "https://jimmy88666888.github.io/Script-updated/scripts/Author/ac-baidu-search/ac-baidu-search.user.js",
+    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/ac-baidu-search/ac-baidu-search.user.js",
     "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/ac-baidu-search/ac-baidu-search.user.js",
     "group": "Author"
   },
@@ -689,10 +689,10 @@
     "match": [
       "*://*/*"
     ],
-    "update_channel": "repo-mirror",
-    "mirror": "jsdelivr",
+    "update_channel": "repo-raw",
+    "mirror": "raw",
     "universal": false,
-    "update_url": "https://jimmy88666888.github.io/Script-updated/scripts/Author/adguard-extra/adguard-extra.user.js",
+    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/adguard-extra/adguard-extra.user.js",
     "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/adguard-extra/adguard-extra.user.js",
     "group": "Author"
   },
@@ -713,10 +713,10 @@
       "https://gist.github.com/*",
       "https://www.githubstatus.com/*"
     ],
-    "update_channel": "repo-mirror",
-    "mirror": "jsdelivr",
+    "update_channel": "repo-raw",
+    "mirror": "raw",
     "universal": false,
-    "update_url": "https://jimmy88666888.github.io/Script-updated/scripts/Author/github-chinese/github-chinese.user.js",
+    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/github-chinese/github-chinese.user.js",
     "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/github-chinese/github-chinese.user.js",
     "group": "Author"
   },
@@ -735,10 +735,10 @@
       "*://github.com/*",
       "*://bgithub.xyz/*"
     ],
-    "update_channel": "repo-mirror",
-    "mirror": "jsdelivr",
+    "update_channel": "repo-raw",
+    "mirror": "raw",
     "universal": false,
-    "update_url": "https://jimmy88666888.github.io/Script-updated/scripts/Author/github-fast-download/github-fast-download.user.js",
+    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/github-fast-download/github-fast-download.user.js",
     "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/github-fast-download/github-fast-download.user.js",
     "group": "Author"
   },
@@ -968,10 +968,10 @@
       "*://*.google.vu/search?*",
       "*://*.google.ws/search?*"
     ],
-    "update_channel": "repo-mirror",
-    "mirror": "jsdelivr",
+    "update_channel": "repo-raw",
+    "mirror": "raw",
     "universal": false,
-    "update_url": "https://jimmy88666888.github.io/Script-updated/scripts/Author/google-baidu-switcher/google-baidu-switcher.user.js",
+    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/google-baidu-switcher/google-baidu-switcher.user.js",
     "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/google-baidu-switcher/google-baidu-switcher.user.js",
     "group": "Author"
   },
@@ -1048,10 +1048,10 @@
       "*://*.123952.com/*",
       "*://*.123912.com/*"
     ],
-    "update_channel": "repo-mirror",
-    "mirror": "jsdelivr",
+    "update_channel": "repo-raw",
+    "mirror": "raw",
     "universal": false,
-    "update_url": "https://jimmy88666888.github.io/Script-updated/scripts/Author/linkswift/linkswift.user.js",
+    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/linkswift/linkswift.user.js",
     "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/linkswift/linkswift.user.js",
     "group": "Author"
   },
@@ -1069,10 +1069,10 @@
     "match": [
       "*://*/*"
     ],
-    "update_channel": "repo-mirror",
-    "mirror": "jsdelivr",
+    "update_channel": "repo-raw",
+    "mirror": "raw",
     "universal": false,
-    "update_url": "https://jimmy88666888.github.io/Script-updated/scripts/Author/pagetual/pagetual.user.js",
+    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/pagetual/pagetual.user.js",
     "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/pagetual/pagetual.user.js",
     "group": "Author"
   },
@@ -1161,10 +1161,10 @@
       "*://help.aliyun.com/redirect*",
       "*://linux.do/*"
     ],
-    "update_channel": "repo-mirror",
-    "mirror": "jsdelivr",
+    "update_channel": "repo-raw",
+    "mirror": "raw",
     "universal": false,
-    "update_url": "https://jimmy88666888.github.io/Script-updated/scripts/Author/redirect-external-link/redirect-external-link.user.js",
+    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/redirect-external-link/redirect-external-link.user.js",
     "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/redirect-external-link/redirect-external-link.user.js",
     "group": "Author"
   },
@@ -1184,10 +1184,10 @@
       "https://webk.telegram.org/*",
       "https://webz.telegram.org/*"
     ],
-    "update_channel": "repo-mirror",
-    "mirror": "jsdelivr",
+    "update_channel": "repo-raw",
+    "mirror": "raw",
     "universal": false,
-    "update_url": "https://jimmy88666888.github.io/Script-updated/scripts/Author/telegram-media-downloader/telegram-media-downloader.user.js",
+    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/telegram-media-downloader/telegram-media-downloader.user.js",
     "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/telegram-media-downloader/telegram-media-downloader.user.js",
     "group": "Author"
   },
@@ -1305,10 +1305,10 @@
     "upstream": "https://update.greasyfork.org/scripts/537189/%E5%85%A8%E7%BD%91VIP%E8%A7%86%E9%A2%91%E5%85%8D%E8%B4%B9%E7%A0%B4%E8%A7%A3%E5%8E%BB%E5%B9%BF%E5%91%8A%E3%80%90%E6%9C%80%E6%96%B032%E3%80%91.meta.js",
     "upstream_install": "https://update.greasyfork.org/scripts/537189/%E5%85%A8%E7%BD%91VIP%E8%A7%86%E9%A2%91%E5%85%8D%E8%B4%B9%E7%A0%B4%E8%A7%A3%E5%8E%BB%E5%B9%BF%E5%91%8A%E3%80%90%E6%9C%80%E6%96%B032%E3%80%91.user.js",
     "match": [],
-    "update_channel": "repo-mirror",
-    "mirror": "jsdelivr",
+    "update_channel": "repo-raw",
+    "mirror": "raw",
     "universal": false,
-    "update_url": "https://jimmy88666888.github.io/Script-updated/scripts/Author/vip-video-unlock/vip-video-unlock.user.js",
+    "update_url": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/vip-video-unlock/vip-video-unlock.user.js",
     "raw": "https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Author/vip-video-unlock/vip-video-unlock.user.js",
     "group": "Author"
   },

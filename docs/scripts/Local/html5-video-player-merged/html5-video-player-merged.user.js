@@ -23,8 +23,8 @@
 // @grant      GM_registerMenuCommand
 // @grant      GM_setValue
 // @grant      GM_getValue
-// @updateURL    https://jimmy88666888.github.io/Script-updated/scripts/Local/html5-video-player-merged/html5-video-player-merged.user.js
-// @downloadURL  https://jimmy88666888.github.io/Script-updated/scripts/Local/html5-video-player-merged/html5-video-player-merged.user.js
+// @updateURL    https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/undefined
+// @downloadURL  https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/undefined
 // @exclude      *://accounts.google.com/*
 // @exclude      *://login.microsoftonline.com/*
 // @exclude      *://login.live.com/*

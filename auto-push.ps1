@@ -331,8 +331,12 @@ function Get-CanonicalScriptUrl {
     $seg = ($p -split '/') | ForEach-Object { [uri]::EscapeDataString($_) }
     $tail = ($seg -join '/')
     if ($isMobile) { return ('https://raw.githubusercontent.com/' + $slug + '/' + $Branch + '/' + $tail) }
-    $site = 'https://' + ($slug.Split('/')[0].ToLower()) + '.github.io/' + $slug.Split('/')[1]
-    return ($site + '/scripts/' + $tail)
+    # 只有 Local 的电脑版进 Pages 镜像（docs/scripts 里才有副本），Author 一律直链
+    if ($p -match '^Local/') {
+        $site = 'https://' + ($slug.Split('/')[0].ToLower()) + '.github.io/' + $slug.Split('/')[1]
+        return ($site + '/scripts/' + $tail)
+    }
+    return ('https://raw.githubusercontent.com/' + $slug + '/' + $Branch + '/' + $tail)
 }
 
 # 推送成功后无需刷缓存：电脑端镜像由 GitHub Pages 在推送后自动重建（通常 1 分钟内生效）

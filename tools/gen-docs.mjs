@@ -43,12 +43,15 @@ const DRY = process.argv.includes('--dry-run');
 // 电脑端镜像：GitHub Pages 从 docs/ 发布，把脚本副本放在 docs/scripts/ 下即可得到
 // https://<owner>.github.io/<repo>/scripts/<脚本路径> 的稳定地址（无 jsDelivr 缓存问题）。
 const SITE = `https://${OWNER.toLowerCase()}.github.io/${REPO}`;
-const cdn = (f) => `${SITE}/scripts/${f}`;
+const pagesUrl = (f) => `${SITE}/scripts/${f}`;
 const raw = (f) => `https://raw.githubusercontent.com/${OWNER}/${REPO}/main/${f}`;  // 手机端走直链（手机网络可达）
 const blob = (f) => `https://github.com/${OWNER}/${REPO}/blob/main/${f}`;
 
-/** 脚本头部更新地址的规范值：跟随该记录的更新通道（mirror=jsdelivr 走镜像，否则 raw 默认） */
-const headerUrl = (rec) => encodeURI((rec.mirror === 'jsdelivr' ? cdn : raw)(rec.file));
+/** 电脑端地址：只有 Local 走 Pages 镜像（副本入库），Author 一律直链，避免镜像目录膨胀 */
+const desktopUrl = (rec) => (rec.group === 'Local' ? pagesUrl(rec.file) : raw(rec.file));
+
+/** 脚本头部更新地址的规范值：mirror 通道走电脑端地址，否则走动手机端直链 */
+const headerUrl = (rec) => encodeURI((rec.mirror === 'jsdelivr' ? desktopUrl : raw)(rec.file));
 
 const decodeUrl = (u) => {
   try {
@@ -182,8 +185,8 @@ async function buildRecords() {
     const derived = stem === `${item.folder}-mobile` ? 'mobile' : 'pc';
     const platform = prev?.platform_override === 'mobile' ? 'mobile' : derived;
     const universal = false; // 已取消合并：电脑端、手机端各自独立入口与通道
-    // 通道：电脑端走 jsDelivr 镜像（本机网络可达），手机端走 raw 直链（手机网络可达）
-    const useMirror = platform === 'pc';
+    // 通道：只有 Local 的电脑版走 Pages 镜像（副本入库）；Author 一律直链，手机端也是直链
+    const useMirror = platform === 'pc' && item.group === 'Local';
     const pick = (key, fallback) =>
       prev && prev[key] !== undefined && prev[key] !== '' ? prev[key] : fallback;
 
@@ -206,7 +209,7 @@ async function buildRecords() {
       mirror: useMirror ? 'jsdelivr' : 'raw',
       // universal：电脑版与手机版内容一致的脚本，页面上只给一个「默认安装」入口
       universal,
-      update_url: (useMirror ? cdn : raw)(item.file),
+      update_url: useMirror ? pagesUrl(item.file) : raw(item.file),
       raw: raw(item.file),
       group: item.group,
     });
@@ -267,10 +270,10 @@ function readmeLocalTable(scripts) {
     const main = s.pc || s.mobile;
     const href = encodeURI(main.file);
     // 电脑端走 jsDelivr 镜像（本机网络可达），手机端走 raw 直链（手机网络可达）
-    const single = s.pc ? cdn(main.file) : raw(main.file);
+    const single = s.pc ? pagesUrl(main.file) : raw(main.file);
     const install =
       s.pc && s.mobile
-        ? `[电脑端]( ${cdn(s.pc.file)} ) · [手机端]( ${raw(s.mobile.file)} )`
+        ? `[电脑端]( ${pagesUrl(s.pc.file)} ) · [手机端]( ${raw(s.mobile.file)} )`
         : `[安装]( ${single} )`;
     rows.push(`| [${main.name}](${href}) | ${main.version} | ${install} | \`${s.dir}/\` |`);
   }
@@ -286,7 +289,7 @@ function readmeAuthorTable(scripts) {
   for (const s of scripts) {
     const main = s.pc || s.mobile;
     const href = encodeURI(main.file);
-    const pcCell = s.pc ? `[电脑端]( ${cdn(s.pc.file)} )` : '—';
+    const pcCell = s.pc ? `[电脑端]( ${raw(s.pc.file)} )` : '—';
     const mobileCell = s.mobile ? `[手机端]( ${raw(s.mobile.file)} )` : '—';
     const origin = main.upstream_install
       ? main.upstream_install.replace(/^https?:\/\//, '').slice(0, 64) +
@@ -317,13 +320,18 @@ function pageCards(scripts) {
       ? `v${esc(main.version)} · 作者 ${esc(main.author)}`
       : `v${esc(main.version)}`;
     const buttons = [];
+    // Local 的电脑端走 Pages 镜像，Author 走直链，按钮文案随之变化
+    const pcRec = s.pc || null;
+    const pcHref = pcRec ? desktopUrl(pcRec) : '';
+    const pcLabel =
+      pcRec && pcRec.group === 'Local' ? '电脑端安装（镜像）' : '电脑端安装（直链）';
     if (s.pc && s.mobile) {
-      buttons.push(`<a class="btn primary" href="${cdn(s.pc.file)}">电脑端安装（镜像）</a>`);
+      buttons.push(`<a class="btn primary" href="${pcHref}">${pcLabel}</a>`);
       buttons.push(`<a class="btn primary" href="${raw(s.mobile.file)}">手机端安装（直链）</a>`);
     } else if (s.mobile) {
       buttons.push(`<a class="btn primary" href="${raw(main.file)}">手机端安装（直链）</a>`);
     } else {
-      buttons.push(`<a class="btn primary" href="${cdn(main.file)}">电脑端安装（镜像）</a>`);
+      buttons.push(`<a class="btn primary" href="${pcHref}">${pcLabel}</a>`);
     }
     const source = `<a class="btn" href="${blob(main.file)}" target="_blank" rel="noopener">源码</a>`;
     const origin = main.upstream_install
@@ -422,21 +430,21 @@ async function walkFiles(dir) {
   return out;
 }
 
-/** 对齐 docs/scripts 镜像：返回待写/待删操作，内容一致时不产生操作 */
+/** 对齐 docs/scripts 镜像：只镜像 Local 组的电脑版（Author 与手机版都走直链），返回待写/待删操作 */
 async function planMirror(scripts) {
   const wanted = new Map(); // 目标绝对路径 -> 源绝对路径
   for (const s of scripts) {
-    for (const rec of [s.pc, s.mobile]) {
-      if (!rec) continue;
-      wanted.set(path.join(MIRROR_ROOT, rec.file), path.join(ROOT, rec.file));
-      // 脚本旁边的 icon.svg 也一并镜像，避免图标再走外链
-      const iconRel = path.join(path.dirname(rec.file), 'icon.svg');
-      const iconSrc = path.join(ROOT, iconRel);
-      try {
-        if ((await stat(iconSrc)).isFile()) wanted.set(path.join(MIRROR_ROOT, iconRel), iconSrc);
-      } catch {
-        /* 没有图标就跳过 */
-      }
+    if (s.group !== 'Local') continue;
+    const rec = s.pc;
+    if (!rec) continue;
+    wanted.set(path.join(MIRROR_ROOT, rec.file), path.join(ROOT, rec.file));
+    // 脚本旁边的 icon.svg 也一并镜像，避免图标再走外链
+    const iconRel = path.join(path.dirname(rec.file), 'icon.svg');
+    const iconSrc = path.join(ROOT, iconRel);
+    try {
+      if ((await stat(iconSrc)).isFile()) wanted.set(path.join(MIRROR_ROOT, iconRel), iconSrc);
+    } catch {
+      /* 没有图标就跳过 */
     }
   }
 

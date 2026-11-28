@@ -153,8 +153,8 @@
 // @grant        GM_getValue
 // @grant        GM_setValue
 // @run-at       document-body
-// @updateURL    https://jimmy88666888.github.io/Script-updated/scripts/Local/video-episode-info/video-episode-info.user.js
-// @downloadURL  https://jimmy88666888.github.io/Script-updated/scripts/Local/video-episode-info/video-episode-info.user.js
+// @updateURL    https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/undefined
+// @downloadURL  https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/undefined
 // @exclude      *://accounts.google.com/*
 // @exclude      *://login.live.com/*
 // @exclude      *://id.apple.com/*
