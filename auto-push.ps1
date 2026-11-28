@@ -88,6 +88,91 @@ function Get-ScriptVersion {
     return $null
 }
 
+# 读取脚本头部的 @name / @namespace，用来认“这是哪个脚本”。
+# 下载重名文件常被改成脚本名本身（如 视频剧集信息显示.user (2).js），只看文件名会另起一个目录，
+# 有了这两个字段就能回到原来那个目录。
+function Get-ScriptMeta {
+    param([string]$Text)
+    $result = @{ Name = ''; Namespace = '' }
+    if (-not $Text) { return $result }
+    $m = [regex]::Match($Text, '(?m)^[ \t]*//[ \t]*@name[ \t]+(.*?)[ \t\r]*$')
+    if ($m.Success) { $result.Name = $m.Groups[1].Value.Trim() }
+    $m = [regex]::Match($Text, '(?m)^[ \t]*//[ \t]*@namespace[ \t]+(.*?)[ \t\r]*$')
+    if ($m.Success) { $result.Namespace = $m.Groups[1].Value.Trim() }
+    return $result
+}
+
+function Get-MetaKey {
+    param([string]$Value)
+    if (-not $Value) { return '' }
+    return ($Value.Trim().ToLowerInvariant())
+}
+
+# 目录里的“正主”文件：优先 <目录名>.user.js，其次非 -mobile 的，最后随便取一个
+function Get-MainScriptFile {
+    param([string]$Dir, [string]$Leaf)
+    $files = @(Get-ChildItem -LiteralPath $Dir -Filter '*.user.js' -File -Force -ErrorAction SilentlyContinue)
+    if ($files.Count -eq 0) { return $null }
+    $exact = @($files | Where-Object { $_.Name -eq ($Leaf + '.user.js') })
+    if ($exact.Count -gt 0) { return $exact[0].FullName }
+    $desk = @($files | Where-Object { $_.Name -notmatch '-mobile\.user\.js$' })
+    if ($desk.Count -gt 0) { return $desk[0].FullName }
+    return $files[0].FullName
+}
+
+# 脚本身份索引：@namespace / @name / 文件名主干 / 目录名 -> { Dir, Leaf }
+# 每次同步开头刷一次，保证新加进来的脚本也能被认出来。
+$script:ScriptIndex = $null
+function Get-ScriptIndex {
+    param([switch]$Refresh)
+    if (-not $Refresh -and $null -ne $script:ScriptIndex) { return $script:ScriptIndex }
+    $idx = @{}
+    foreach ($root in @('Local', 'Author')) {
+        $rootDir = Join-Path $RepoPath $root
+        if (-not (Test-Path -LiteralPath $rootDir)) { continue }
+        foreach ($d in @(Get-ChildItem -LiteralPath $rootDir -Directory -Force -ErrorAction SilentlyContinue)) {
+            if ($d.Name -match '(?i)\.js$') { continue }   # 误建目录交给 Repair 处理，不进索引
+            $entry = @{ Dir = $d.FullName; Leaf = $d.Name }
+            $nameKey = 'n:' + (Get-MetaKey $d.Name)
+            if (-not $idx.ContainsKey($nameKey)) { $idx[$nameKey] = $entry }
+            foreach ($f in @(Get-ChildItem -LiteralPath $d.FullName -Filter '*.user.js' -File -Force -ErrorAction SilentlyContinue)) {
+                $mb = $f.Name -replace '\.user\.js$', ''
+                $nameKey = 'n:' + (Get-MetaKey $mb)
+                if (-not $idx.ContainsKey($nameKey)) { $idx[$nameKey] = $entry }
+                $text = [System.IO.File]::ReadAllText($f.FullName, [System.Text.Encoding]::UTF8)
+                $meta = Get-ScriptMeta $text
+                if ($meta.Namespace) {
+                    $k = 'ns:' + (Get-MetaKey $meta.Namespace)
+                    if (-not $idx.ContainsKey($k)) { $idx[$k] = $entry }
+                }
+                if ($meta.Name) {
+                    $k = 'n:' + (Get-MetaKey $meta.Name)
+                    if (-not $idx.ContainsKey($k)) { $idx[$k] = $entry }
+                }
+            }
+        }
+    }
+    $script:ScriptIndex = $idx
+    return $idx
+}
+
+# 按脚本内容找它所属的目录：先认 @namespace（最可靠），再认 @name
+function Find-ScriptDirByText {
+    param([string]$Text)
+    if (-not $Text) { return $null }
+    $idx = Get-ScriptIndex
+    $meta = Get-ScriptMeta $Text
+    if ($meta.Namespace) {
+        $k = 'ns:' + (Get-MetaKey $meta.Namespace)
+        if ($idx.ContainsKey($k)) { return $idx[$k] }
+    }
+    if ($meta.Name) {
+        $k = 'n:' + (Get-MetaKey $meta.Name)
+        if ($idx.ContainsKey($k)) { return $idx[$k] }
+    }
+    return $null
+}
+
 function Archive-OldVersions {
     # 同名 .user.js 被新版本覆盖时：先把 HEAD 里的旧版内容写到同级目录下
     # 与脚本同名的子目录中（如 LinkSwift.user.js v1.0.0 -> LinkSwift/1.0.0.user.js），
