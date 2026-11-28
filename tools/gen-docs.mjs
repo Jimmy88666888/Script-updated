@@ -51,7 +51,8 @@ const blob = (f) => `https://github.com/${OWNER}/${REPO}/blob/main/${f}`;
 const desktopUrl = (rec) => (rec.group === 'Local' ? pagesUrl(rec.file) : raw(rec.file));
 
 /** 脚本头部更新地址的规范值：mirror 通道走电脑端地址，否则走动手机端直链 */
-const headerUrl = (rec) => encodeURI((rec.mirror === 'jsdelivr' ? desktopUrl : raw)(rec.file));
+const headerUrl = (rec) =>
+  encodeURI(rec.mirror === 'jsdelivr' ? desktopUrl(rec) : raw(rec.file));
 
 const decodeUrl = (u) => {
   try {

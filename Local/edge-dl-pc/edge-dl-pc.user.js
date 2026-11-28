@@ -2,8 +2,8 @@
 // @name         EdgeDL-PC（电脑版下载接管 + 媒体嗅探）
 // @namespace    local.edgedl-pc
 // @version      1.1.1-pc
-// @updateURL    https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/undefined
-// @downloadURL  https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/undefined
+// @updateURL    https://jimmy88666888.github.io/Script-updated/scripts/Local/edge-dl-pc/edge-dl-pc.user.js
+// @downloadURL  https://jimmy88666888.github.io/Script-updated/scripts/Local/edge-dl-pc/edge-dl-pc.user.js
 // @description  让 Windows 上的 Edge/Chrome 把下载任务交给 Mister Download Manager / IDM / aria2，并嗅探页面媒体、图片悬浮下载、调用 yt-dlp 解析页面视频、推送本机播放器，同时回传下载进度。由安卓版 EdgeDL 改写为 PC 版。1.1 起改为低侵入：不改写宿主 API、不重排页面 DOM，视频/音乐站点默认只嗅探不劫持点击。
 // @author       Jackson Smith
 // @match        *://*/*
