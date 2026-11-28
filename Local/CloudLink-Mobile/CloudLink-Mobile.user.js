@@ -1,12 +1,12 @@
 // ==UserScript==
 // @name              CloudLink Mobile
 // @namespace         github.com/Jimmy88666888/CloudLink-Mobile
-// @version           1.0.1
+// @version           1.0.2
 // @description       国际网盘手机直链助手：Google Drive / OneDrive / Dropbox。复制直链、1DM+、ytdlnis 格式，分享页一键复制。
 // @description:zh-CN 国际网盘手机直链助手：Google Drive / OneDrive / Dropbox。复制直链、1DM+、ytdlnis 格式，分享页一键复制。
 // @author       Jackson Smith
 // @license           MIT
-// @icon              https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/CloudLink-Mobile/icon.svg
+// @icon              https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/CloudLink-Mobile/icon.svg
 // @match             *://drive.google.com/*
 // @match             *://drive.usercontent.google.com/*
 // @match             *://docs.google.com/*
@@ -26,6 +26,58 @@
 // @downloadURL       https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/CloudLink-Mobile/CloudLink-Mobile.user.js
 // @homepageURL       https://github.com/Jimmy88666888/Script-updated/tree/main/CloudLink-Mobile
 // @supportURL        https://github.com/Jimmy88666888/Script-updated/issues
+// @exclude      *://accounts.google.com/*
+// @exclude      *://login.microsoftonline.com/*
+// @exclude      *://login.live.com/*
+// @exclude      *://id.apple.com/*
+// @exclude      *://login.taobao.com/*
+// @exclude      *://passport.jd.com/*
+// @exclude      *://passport.baidu.com/*
+// @exclude      *://passport.weibo.com/*
+// @exclude      *://login.zhihu.com/*
+// @exclude      *://account.xiaomi.com/*
+// @exclude      *://*.alipay.com/*
+// @exclude      *://*.alipay.net/*
+// @exclude      *://*.tenpay.com/*
+// @exclude      *://pay.weixin.qq.com/*
+// @exclude      *://*.paypal.com/*
+// @exclude      *://*.stripe.com/*
+// @exclude      *://checkout.stripe.com/*
+// @exclude      *://*.unionpay.com/*
+// @exclude      *://*.95516.com/*
+// @exclude      *://*.icbc.com.cn/*
+// @exclude      *://*.ccb.com/*
+// @exclude      *://*.boc.cn/*
+// @exclude      *://*.abchina.com/*
+// @exclude      *://*.cmbchina.com/*
+// @exclude      *://*.bankcomm.com/*
+// @exclude      *://*.citicbank.com/*
+// @exclude      *://*.spdb.com.cn/*
+// @exclude      *://*.cmbc.com.cn/*
+// @exclude      *://*.cebbank.com/*
+// @exclude      *://*.psbc.com/*
+// @exclude      *://mail.google.com/*
+// @exclude      *://*.gmail.com/*
+// @exclude      *://*.outlook.com/*
+// @exclude      *://outlook.live.com/*
+// @exclude      *://*.mail.163.com/*
+// @exclude      *://*.mail.126.com/*
+// @exclude      *://*.mail.qq.com/*
+// @exclude      *://*.mail.sina.com.cn/*
+// @exclude      *://*.gov.cn/*
+// @exclude      *://*.feishu.cn/*
+// @exclude      *://*.larksuite.com/*
+// @exclude      *://*.dingtalk.com/*
+// @exclude      *://*.office.com/*
+// @exclude      *://*.office365.com/*
+// @exclude      *://*.onedrive.com/*
+// @exclude      *://*.notion.so/*
+// @exclude      *://*.yuque.com/*
+// @exclude      *://*.microsoft.com/*
+// @exclude      *://*.1password.com/*
+// @exclude      *://*.lastpass.com/*
+// @exclude      *://*.bitwarden.com/*
+// @exclude      *://*.dashlane.com/*
 // ==/UserScript==
 
 (function () {

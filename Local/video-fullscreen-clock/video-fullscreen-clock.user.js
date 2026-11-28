@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         视频全屏显示时间（全站通用增强版）
 // @namespace    local.edge-userscripts/video-fullscreen-clock
-// @version      0.6.11
+// @version      0.6.12
 // @description  0.6.10 手机端取消窄屏精简格式，与桌面端统一使用完整通用样式（日期/星期/农历等由设置开关控制）
 // @description  0.6.9 更换时钟风格脚本图标；设置菜单新增「显示日期 / 显示星期 / 显示农历 / 隐藏时区名称」开关，可按需精简多时区显示内容（隐藏城市名后只保留时间、日期等实际内容）
 // @description  0.6.8 手机浏览器适配：设置面板改为手机全宽浮层、控件加大（输入框 16px 起，避免 iOS 聚焦放大整页）、标题栏可直接手指拖动并限制在屏内；新增半透明悬浮按钮作为手机端设置入口；底部多时区条避开安全区；网页时钟避开刘海并限制宽度；时间条字号在手机上封顶；识别 iOS 原生视频全屏
@@ -36,6 +36,60 @@
 // @license      GPLv3
 // @updateURL    https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/video-fullscreen-clock/video-fullscreen-clock.user.js
 // @downloadURL  https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/video-fullscreen-clock/video-fullscreen-clock.user.js
+// @exclude      *://accounts.google.com/*
+// @exclude      *://login.microsoftonline.com/*
+// @exclude      *://login.live.com/*
+// @exclude      *://id.apple.com/*
+// @exclude      *://login.taobao.com/*
+// @exclude      *://passport.jd.com/*
+// @exclude      *://passport.baidu.com/*
+// @exclude      *://passport.weibo.com/*
+// @exclude      *://login.zhihu.com/*
+// @exclude      *://account.xiaomi.com/*
+// @exclude      *://*.alipay.com/*
+// @exclude      *://*.alipay.net/*
+// @exclude      *://*.tenpay.com/*
+// @exclude      *://pay.weixin.qq.com/*
+// @exclude      *://*.paypal.com/*
+// @exclude      *://*.stripe.com/*
+// @exclude      *://checkout.stripe.com/*
+// @exclude      *://*.unionpay.com/*
+// @exclude      *://*.95516.com/*
+// @exclude      *://*.icbc.com.cn/*
+// @exclude      *://*.ccb.com/*
+// @exclude      *://*.boc.cn/*
+// @exclude      *://*.abchina.com/*
+// @exclude      *://*.cmbchina.com/*
+// @exclude      *://*.bankcomm.com/*
+// @exclude      *://*.citicbank.com/*
+// @exclude      *://*.spdb.com.cn/*
+// @exclude      *://*.cmbc.com.cn/*
+// @exclude      *://*.cebbank.com/*
+// @exclude      *://*.psbc.com/*
+// @exclude      *://mail.google.com/*
+// @exclude      *://*.gmail.com/*
+// @exclude      *://*.outlook.com/*
+// @exclude      *://outlook.live.com/*
+// @exclude      *://*.mail.163.com/*
+// @exclude      *://*.mail.126.com/*
+// @exclude      *://*.mail.qq.com/*
+// @exclude      *://*.mail.sina.com.cn/*
+// @exclude      *://*.gov.cn/*
+// @exclude      *://*.feishu.cn/*
+// @exclude      *://*.larksuite.com/*
+// @exclude      *://*.dingtalk.com/*
+// @exclude      *://*.office.com/*
+// @exclude      *://*.office365.com/*
+// @exclude      *://*.sharepoint.com/*
+// @exclude      *://*.onedrive.com/*
+// @exclude      *://*.notion.so/*
+// @exclude      *://*.yuque.com/*
+// @exclude      *://*.microsoft.com/*
+// @exclude      *://*.live.com/*
+// @exclude      *://*.1password.com/*
+// @exclude      *://*.lastpass.com/*
+// @exclude      *://*.bitwarden.com/*
+// @exclude      *://*.dashlane.com/*
 // ==/UserScript==
 
 (function() {

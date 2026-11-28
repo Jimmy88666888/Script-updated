@@ -6,7 +6,7 @@
 // @name:ja      HTML5ビデオジェスチャー
 // @name:ko      HTML5 비디오 제스처
 // @namespace    local.edge-userscripts/html5-video-mobile
-// @version      72.09
+// @version      72.10
 // @description  集多家之长的手机浏览器触摸手势插件（已合并画中画增强，收紧敏感页嗅探）
 // @description:zh-CN 集多家之长的手机浏览器触摸手势插件（已合并画中画增强，收紧敏感页嗅探）
 // @description:zh-TW 集多家之長的手機瀏覽器觸摸手勢插件（已合併畫中畫增強）
@@ -51,6 +51,41 @@
 // @run-at       document-start
 // @updateURL    https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/html5-video-mobile/html5-video-mobile-mobile.user.js
 // @downloadURL  https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/html5-video-mobile/html5-video-mobile-mobile.user.js
+// @exclude      *://passport.baidu.com/*
+// @exclude      *://passport.weibo.com/*
+// @exclude      *://login.zhihu.com/*
+// @exclude      *://account.xiaomi.com/*
+// @exclude      *://*.95516.com/*
+// @exclude      *://*.bankcomm.com/*
+// @exclude      *://*.citicbank.com/*
+// @exclude      *://*.spdb.com.cn/*
+// @exclude      *://*.cmbc.com.cn/*
+// @exclude      *://*.cebbank.com/*
+// @exclude      *://*.psbc.com/*
+// @exclude      *://mail.google.com/*
+// @exclude      *://*.gmail.com/*
+// @exclude      *://*.outlook.com/*
+// @exclude      *://outlook.live.com/*
+// @exclude      *://*.mail.163.com/*
+// @exclude      *://*.mail.126.com/*
+// @exclude      *://*.mail.qq.com/*
+// @exclude      *://*.mail.sina.com.cn/*
+// @exclude      *://*.gov.cn/*
+// @exclude      *://*.feishu.cn/*
+// @exclude      *://*.larksuite.com/*
+// @exclude      *://*.dingtalk.com/*
+// @exclude      *://*.office.com/*
+// @exclude      *://*.office365.com/*
+// @exclude      *://*.sharepoint.com/*
+// @exclude      *://*.onedrive.com/*
+// @exclude      *://*.notion.so/*
+// @exclude      *://*.yuque.com/*
+// @exclude      *://*.microsoft.com/*
+// @exclude      *://*.live.com/*
+// @exclude      *://*.1password.com/*
+// @exclude      *://*.lastpass.com/*
+// @exclude      *://*.bitwarden.com/*
+// @exclude      *://*.dashlane.com/*
 // ==/UserScript==
 
 (function() {

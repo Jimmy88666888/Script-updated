@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Markdown
 // @namespace    local.edge-userscripts/universal-post-to-markdown
-// @version      3.0.3
+// @version      3.0.4
 // @description  X/Threads/Reddit/IG/FB/Pinterest/DM/TikTok/TG + 微博/小红书/CSDN/知乎 导出 MD+图片/视频（每条旁悬浮按钮）
 // @author       Jackson Smith
 // @icon         data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%230ea5e9'/%3E%3Cstop offset='100%25' stop-color='%236366f1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='32' cy='32' r='30' fill='url(%23g)'/%3E%3Cpath fill='%23fff' d='M18 16h10.5c5.2 0 8.5 2.8 8.5 7.2 0 3.2-1.7 5.5-4.4 6.6L38 48h-7.2l-4.6-16.2H24.5V48H18V16zm6.5 6.2v9.2h3.3c2.8 0 4.4-1.4 4.4-3.6s-1.6-3.6-4.4-3.6h-3.3z'/%3E%3Cpath fill='%23fff' opacity='.9' d='M42 28v8h-3.5l4.5 8 4.5-8H44v-8h-2z'/%3E%3C/svg%3E
@@ -85,6 +85,58 @@
 // @license      MIT
 // @updateURL    https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/universal-post-to-markdown/universal-post-to-markdown.user.js
 // @downloadURL  https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/universal-post-to-markdown/universal-post-to-markdown.user.js
+// @exclude      *://accounts.google.com/*
+// @exclude      *://login.microsoftonline.com/*
+// @exclude      *://login.live.com/*
+// @exclude      *://id.apple.com/*
+// @exclude      *://login.taobao.com/*
+// @exclude      *://passport.jd.com/*
+// @exclude      *://passport.baidu.com/*
+// @exclude      *://account.xiaomi.com/*
+// @exclude      *://*.alipay.com/*
+// @exclude      *://*.alipay.net/*
+// @exclude      *://*.tenpay.com/*
+// @exclude      *://pay.weixin.qq.com/*
+// @exclude      *://*.paypal.com/*
+// @exclude      *://*.stripe.com/*
+// @exclude      *://checkout.stripe.com/*
+// @exclude      *://*.unionpay.com/*
+// @exclude      *://*.95516.com/*
+// @exclude      *://*.icbc.com.cn/*
+// @exclude      *://*.ccb.com/*
+// @exclude      *://*.boc.cn/*
+// @exclude      *://*.abchina.com/*
+// @exclude      *://*.cmbchina.com/*
+// @exclude      *://*.bankcomm.com/*
+// @exclude      *://*.citicbank.com/*
+// @exclude      *://*.spdb.com.cn/*
+// @exclude      *://*.cmbc.com.cn/*
+// @exclude      *://*.cebbank.com/*
+// @exclude      *://*.psbc.com/*
+// @exclude      *://mail.google.com/*
+// @exclude      *://*.gmail.com/*
+// @exclude      *://*.outlook.com/*
+// @exclude      *://outlook.live.com/*
+// @exclude      *://*.mail.163.com/*
+// @exclude      *://*.mail.126.com/*
+// @exclude      *://*.mail.qq.com/*
+// @exclude      *://*.mail.sina.com.cn/*
+// @exclude      *://*.gov.cn/*
+// @exclude      *://*.feishu.cn/*
+// @exclude      *://*.larksuite.com/*
+// @exclude      *://*.dingtalk.com/*
+// @exclude      *://*.office.com/*
+// @exclude      *://*.office365.com/*
+// @exclude      *://*.sharepoint.com/*
+// @exclude      *://*.onedrive.com/*
+// @exclude      *://*.notion.so/*
+// @exclude      *://*.yuque.com/*
+// @exclude      *://*.microsoft.com/*
+// @exclude      *://*.live.com/*
+// @exclude      *://*.1password.com/*
+// @exclude      *://*.lastpass.com/*
+// @exclude      *://*.bitwarden.com/*
+// @exclude      *://*.dashlane.com/*
 // ==/UserScript==
 
 (function () {

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         EdgeDL-PC（电脑版下载接管 + 媒体嗅探）
 // @namespace    local.edgedl-pc
-// @version      1.1.0-pc
+// @version      1.1.1-pc
 // @updateURL    https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Local/edge-dl-pc/edge-dl-pc.user.js
 // @downloadURL  https://cdn.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Local/edge-dl-pc/edge-dl-pc.user.js
 // @description  让 Windows 上的 Edge/Chrome 把下载任务交给 Mister Download Manager / IDM / aria2，并嗅探页面媒体、图片悬浮下载、调用 yt-dlp 解析页面视频、推送本机播放器，同时回传下载进度。由安卓版 EdgeDL 改写为 PC 版。1.1 起改为低侵入：不改写宿主 API、不重排页面 DOM，视频/音乐站点默认只嗅探不劫持点击。
@@ -18,6 +18,60 @@
 // @connect      localhost
 // @license      Apache-2.0
 // @run-at       document-idle
+// @exclude      *://accounts.google.com/*
+// @exclude      *://login.microsoftonline.com/*
+// @exclude      *://login.live.com/*
+// @exclude      *://id.apple.com/*
+// @exclude      *://login.taobao.com/*
+// @exclude      *://passport.jd.com/*
+// @exclude      *://passport.baidu.com/*
+// @exclude      *://passport.weibo.com/*
+// @exclude      *://login.zhihu.com/*
+// @exclude      *://account.xiaomi.com/*
+// @exclude      *://*.alipay.com/*
+// @exclude      *://*.alipay.net/*
+// @exclude      *://*.tenpay.com/*
+// @exclude      *://pay.weixin.qq.com/*
+// @exclude      *://*.paypal.com/*
+// @exclude      *://*.stripe.com/*
+// @exclude      *://checkout.stripe.com/*
+// @exclude      *://*.unionpay.com/*
+// @exclude      *://*.95516.com/*
+// @exclude      *://*.icbc.com.cn/*
+// @exclude      *://*.ccb.com/*
+// @exclude      *://*.boc.cn/*
+// @exclude      *://*.abchina.com/*
+// @exclude      *://*.cmbchina.com/*
+// @exclude      *://*.bankcomm.com/*
+// @exclude      *://*.citicbank.com/*
+// @exclude      *://*.spdb.com.cn/*
+// @exclude      *://*.cmbc.com.cn/*
+// @exclude      *://*.cebbank.com/*
+// @exclude      *://*.psbc.com/*
+// @exclude      *://mail.google.com/*
+// @exclude      *://*.gmail.com/*
+// @exclude      *://*.outlook.com/*
+// @exclude      *://outlook.live.com/*
+// @exclude      *://*.mail.163.com/*
+// @exclude      *://*.mail.126.com/*
+// @exclude      *://*.mail.qq.com/*
+// @exclude      *://*.mail.sina.com.cn/*
+// @exclude      *://*.gov.cn/*
+// @exclude      *://*.feishu.cn/*
+// @exclude      *://*.larksuite.com/*
+// @exclude      *://*.dingtalk.com/*
+// @exclude      *://*.office.com/*
+// @exclude      *://*.office365.com/*
+// @exclude      *://*.sharepoint.com/*
+// @exclude      *://*.onedrive.com/*
+// @exclude      *://*.notion.so/*
+// @exclude      *://*.yuque.com/*
+// @exclude      *://*.microsoft.com/*
+// @exclude      *://*.live.com/*
+// @exclude      *://*.1password.com/*
+// @exclude      *://*.lastpass.com/*
+// @exclude      *://*.bitwarden.com/*
+// @exclude      *://*.dashlane.com/*
 // ==/UserScript==
 
 (function () {
