@@ -41,6 +41,8 @@ $env:GCM_GUI_PROMPT = 'never'
 
 $RepoPath = (Resolve-Path -LiteralPath $RepoPath).Path
 $LogFile = Join-Path $RepoPath 'auto-push.log'
+# GitHub slug 缓存：首次需要拼更新地址时再解析远程，避免每次同步都调 git
+$script:RepoSlug = $null
 # 进程号文件放系统临时目录：不污染仓库，也不受仓库目录权限限制
 $PidFile = Join-Path $env:TEMP 'qwen-autopush-userscripts.pid'
 $TaskName = 'QwenAutoPushUserscripts'
@@ -180,22 +182,70 @@ function Ensure-Inbox {
     }
 }
 
-# LocalSend / 蓝牙 / 网盘在收到重名文件时会自动改名成 xxx (1).user.js、xxx-2.user.js、xxx-副本.user.js。
-# 这类文件往往是同一脚本的重复送达，直接摄取会在仓库里造出第二个“不同名”的脚本。
-# 这里把带尾缀的名字归一化回主名，供摄取环节做同内容去重。
+# 重名文件自动改名的几种写法：
+#   xxx (1).user.js、xxx-2.user.js、xxx-副本.user.js，以及最容易漏的 xxx.user (2).js
+#   （Edge / 资源管理器下载重名时会把尾缀塞在 .user 和 .js 之间）。
+# 旧逻辑只认 .user.js 收尾，遇到最后一种会归一成 "xxx.user (2).js.user.js"，
+# 于是仓库里多出 "Local/xxx.user (2).js/" 这种以 .js 结尾的怪目录。
+# 现在先剥扩展名、再反复滚掉尾缀、最后统一补回 .user.js，几种写法都能归回主名。
 function Get-NormalizedInboxName {
     param([string]$Name)
-    $stem = $Name -replace '\.user\.js$', ''
+    $stem = $Name
+    if ($stem -match '(?i)\.js$') { $stem = $stem.Substring(0, $stem.Length - 3) }
     $changed = $true
     while ($changed) {
         $before = $stem
         $stem = $stem -replace '\s*[（(]\s*(?:\d+|[一二三四五六七八九十]+)\s*[)）]\s*$', ''
         $stem = $stem -replace '[-_ ](?:copy|副本|冲突文件|已接收|来自)\S*$', ''
         $stem = $stem -replace '[-_ ]\d{1,3}$', ''
+        $stem = $stem -replace '(?i)[-_ .]?\.user$', ''
+        $stem = $stem.TrimEnd('-', '_', ' ', '.')
         $changed = ($stem -ne $before)
     }
     if (-not $stem) { return $Name }
     return ($stem + '.user.js')
+}
+
+# 版本号比较：6.7.3 与 6.7.10 必须按数值比（字符串比较会把 6.7.10 判得更小）。
+# 解析不出的（带 -beta 之类）退回序数比较，只求稳定、不抛错。
+function Compare-ScriptVersion {
+    param([string]$Left, [string]$Right)
+    if (-not $Left -or -not $Right) { return 0 }
+    $lv = $null
+    $rv = $null
+    try { $lv = [version]$Left } catch { }
+    try { $rv = [version]$Right } catch { }
+    if ($lv -and $rv) { return $lv.CompareTo($rv) }
+    return ([string]::CompareOrdinal($Left, $Right))
+}
+
+# 仓库的 GitHub slug（owner/repo），用来拼 raw.githubusercontent 地址
+function Get-RepoSlug {
+    if ($null -ne $script:RepoSlug) { return $script:RepoSlug }
+    $script:RepoSlug = ''
+    $u = RunGitOk @('remote', 'get-url', $RemoteName)
+    if ($u) {
+        $s = (($u.Out -join '')).Trim()
+        if ($s -match 'github\.com[:/]+([^/\s]+)/([^/\s]+?)(?:\.git)?/?$') { $script:RepoSlug = $Matches[1] + '/' + $Matches[2] }
+    }
+    return $script:RepoSlug
+}
+
+function Get-CanonicalScriptUrl {
+    param([string]$RelPath)
+    $slug = Get-RepoSlug
+    if (-not $slug -or -not $RelPath) { return $null }
+    return ('https://raw.githubusercontent.com/' + $slug + '/' + $Branch + '/' + ($RelPath -replace '\\', '/'))
+}
+
+# 只改写已有的 @updateURL / @downloadURL 两行，其余字节（行尾、缩进）保持原样
+function Set-ScriptUpdateUrl {
+    param([string]$Text, [string]$Url)
+    if (-not $Url) { return $Text }
+    $eval = { param($m) $m.Groups[1].Value + $Url }
+    $Text = [regex]::Replace($Text, '(?m)^([ \t]*//[ \t]*@updateURL[ \t]+)\S+.*$', $eval)
+    $Text = [regex]::Replace($Text, '(?m)^([ \t]*//[ \t]*@downloadURL[ \t]+)\S+.*$', $eval)
+    return $Text
 }
 
 # 文件名主干：把结尾的版本号（link1.0 / link-1.1 / link v2.0.0）剥掉，归入主干名目录。
@@ -227,6 +277,78 @@ function Resolve-ScriptPath {
         if ($existing.Count -gt 0) { return (Join-Path $dir $FileName) }
     }
     return (Join-Path $RepoPath (Join-Path 'Local' (Join-Path $base $FileName)))
+}
+
+# 误建目录修复：目录名以 .js 结尾本身就是错的——旧版摄取把 "xxx.user (2).js"
+# 当成脚本名建了目录，里面还躺着一个双后缀的 "….js.user.js"。
+# 这里把它们并回正主目录：<脚本名>/archive/<版本>.user.js（正主还没有文件时直接占正主位），
+# 更新地址改回正主 URL，最后删除清空的误建目录。每次同步前都跑一遍，新的同类文件会被就地收编。
+function Repair-MisplacedScriptFolders {
+    $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
+    foreach ($root in @('Local', 'Author')) {
+        $rootDir = Join-Path $RepoPath $root
+        if (-not (Test-Path -LiteralPath $rootDir)) { continue }
+        $junkDirs = @(Get-ChildItem -LiteralPath $rootDir -Directory -Force -ErrorAction SilentlyContinue |
+                      Where-Object { $_.Name -match '(?i)\.js$' })
+        foreach ($d in $junkDirs) {
+            $stem = (Get-NormalizedInboxName $d.Name) -replace '\.user\.js$', ''
+            if (-not $stem) { continue }
+            $files = @(Get-ChildItem -LiteralPath $d.FullName -Recurse -File -Force -ErrorAction SilentlyContinue |
+                       Where-Object { $_.Name -match '(?i)\.js$' })
+            if ($files.Count -eq 0) {
+                Write-Log ('误建目录里没有脚本，保留待人工确认：' + $d.FullName) 'WARN'
+                continue
+            }
+
+            # 正主目录：同名目录已存在就用它（Local 优先，其次 Author），没有就在 Local 下新建
+            $targetDir = $null
+            foreach ($r in @('Local', 'Author')) {
+                $cand = Join-Path $RepoPath (Join-Path $r $stem)
+                if (Test-Path -LiteralPath $cand) { $targetDir = $cand; break }
+            }
+            if (-not $targetDir) {
+                $targetDir = Join-Path $RepoPath (Join-Path 'Local' $stem)
+                New-Item -ItemType Directory -Path $targetDir -Force | Out-Null
+            }
+
+            $mains = @(Get-ChildItem -LiteralPath $targetDir -Filter '*.user.js' -File -Force -ErrorAction SilentlyContinue)
+            $mainFile = if ($mains.Count -gt 0) { $mains[0].FullName } else { Join-Path $targetDir ($stem + '.user.js') }
+            $mainRel = ($mainFile.Substring($RepoPath.Length).TrimStart('\')) -replace '\\', '/'
+            $url = Get-CanonicalScriptUrl $mainRel
+
+            foreach ($file in $files) {
+                $text = [System.IO.File]::ReadAllText($file.FullName, [System.Text.Encoding]::UTF8)
+                $ver = Get-ScriptVersion $text
+                $isMainSlot = ($mains.Count -eq 0) -and (-not (Test-Path -LiteralPath $mainFile))
+                if ($isMainSlot) {
+                    $dest = $mainFile
+                } else {
+                    $archDir = Join-Path $targetDir 'archive'
+                    if (-not (Test-Path -LiteralPath $archDir)) { New-Item -ItemType Directory -Path $archDir -Force | Out-Null }
+                    $base = if ($ver) { $ver } else { 'legacy-' + $file.LastWriteTime.ToString('yyyyMMddHHmmss') }
+                    $dest = Join-Path $archDir ($base + '.user.js')
+                    $i = 2
+                    while (Test-Path -LiteralPath $dest) {
+                        $dest = Join-Path $archDir ($base + '-alt' + $i + '.user.js')
+                        $i++
+                    }
+                }
+                if ($file.FullName -eq $dest) { continue }
+                $newText = Set-ScriptUpdateUrl -Text $text -Url $url
+                [System.IO.File]::WriteAllText($dest, $newText, $utf8NoBom)
+                Remove-Item -LiteralPath $file.FullName -Force -ErrorAction SilentlyContinue
+                Write-Log ('误建目录已并入：' + $file.FullName + ' -> ' + $dest)
+            }
+
+            $left = @(Get-ChildItem -LiteralPath $d.FullName -Recurse -File -Force -ErrorAction SilentlyContinue)
+            if ($left.Count -eq 0) {
+                Remove-Item -LiteralPath $d.FullName -Recurse -Force -ErrorAction SilentlyContinue
+                if (-not (Test-Path -LiteralPath $d.FullName)) { Write-Log ('误建目录已删除：' + $d.FullName) }
+            } else {
+                Write-Log ('误建目录仍有残留文件，未删除：' + $d.FullName) 'WARN'
+            }
+        }
+    }
 }
 
 function Ingest-Inbox {
