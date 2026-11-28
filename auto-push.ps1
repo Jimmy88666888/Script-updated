@@ -343,26 +343,49 @@ function Get-ScriptBaseStem {
 }
 
 # 脚本落位规则：
-#   1) 仓库里已有同名脚本 -> 原地替换它原来的文件（Local/ 或 Author/ 下同名目录）
-#   2) 文件名带版本号（如 link1.0、link1.1）-> 归入主干名目录 link/；目录已存在就放进去，没有就新建
-#   3) 其余视为新脚本 -> Local/<脚本名>/，同名目录已存在则直接放进去，不存在自动新建
+#   1) 仓库里已有同名文件 -> 原地替换它原来的文件（Local/ 或 Author/ 下同名目录）
+#   2) 内容能认出身份（@namespace / @name 命中已知脚本）-> 并进原目录，按该目录的命名规范落位
+#      这样按脚本名下载的 "视频剧集信息显示.user (2).js" 也会回到 video-episode-info/
+#   3) 文件名带版本号（如 link1.0、link1.1）-> 归入主干名目录 link/；目录已存在就放进去，没有就新建
+#   4) 其余视为新脚本 -> Local/<脚本名>/，同名目录已存在则直接放进去，不存在自动新建
 function Resolve-ScriptPath {
-    param([string]$FileName)
+    param([string]$FileName, [string]$Text)
     $stem = $FileName -replace '\.user\.js$', ''
     foreach ($root in @('Local', 'Author')) {
         $cand = Join-Path $RepoPath (Join-Path (Join-Path $root $stem) $FileName)
         if (Test-Path -LiteralPath $cand) { return $cand }
     }
+
+    # 按脚本身份归位：电脑版 / 手机版靠文件名后缀区分，各回各的文件
+    $hit = Find-ScriptDirByText $Text
+    if ($hit) {
+        $leaf = $hit.Leaf
+        $variant = ''
+        if ($stem -and $stem.StartsWith($leaf, [System.StringComparison]::OrdinalIgnoreCase)) {
+            $variant = $stem.Substring($leaf.Length)
+        }
+        $candPath = Join-Path $hit.Dir ($leaf + $variant + '.user.js')
+        if (Test-Path -LiteralPath $candPath) { return $candPath }
+        $main = Get-MainScriptFile -Dir $hit.Dir -Leaf $leaf
+        if ($main) { return $main }
+        return $candPath
+    }
+
     $base = Get-ScriptBaseStem $stem
     foreach ($root in @('Local', 'Author')) {
         $dir = Join-Path $RepoPath (Join-Path $root $base)
         if (-not (Test-Path -LiteralPath $dir)) { continue }
         # 同名目录里已有脚本文件：这是同一脚本的又一个版本，并进这个目录
         $existing = @(Get-ChildItem -LiteralPath $dir -Filter '*.user.js' -File -ErrorAction SilentlyContinue)
-        if ($existing.Count -gt 0) { return (Join-Path $dir $FileName) }
+        if ($existing.Count -gt 0) {
+            $desk = @($existing | Where-Object { $_.Name -notmatch '-mobile\.user\.js$' })
+            $main = if ($desk.Count -gt 0) { $desk[0].FullName } else { $existing[0].FullName }
+            return $main
+        }
     }
-    return (Join-Path $RepoPath (Join-Path 'Local' (Join-Path $base $FileName)))
+    return (Join-Path $RepoPath (Join-Path 'Local' (Join-Path $base ($base + '.user.js'))))
 }
+
 
 # 误建目录修复：目录名以 .js 结尾本身就是错的——旧版摄取把 "xxx.user (2).js"
 # 当成脚本名建了目录，里面还躺着一个双后缀的 "….js.user.js"。
