@@ -56,7 +56,7 @@ LICENSE
 | --- | --- | --- | --- |
 | [CloudLink Desktop](Local/CloudLink-Desktop/CloudLink-Desktop.user.js) | 1.0.3 | [安装]( https://jimmy88666888.github.io/Script-updated/scripts/Local/CloudLink-Desktop/CloudLink-Desktop.user.js ) | `Local/CloudLink-Desktop/` |
 | [CloudLink Mobile](Local/CloudLink-Mobile/CloudLink-Mobile.user.js) | 1.0.2 | [安装]( https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/CloudLink-Mobile/CloudLink-Mobile.user.js ) | `Local/CloudLink-Mobile/` |
-| [EdgeDL 手机版](Local/edge-dl-mobile/edge-dl-mobile.user.js) | 2.3.4-local-float-toggle | [安装]( https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/edge-dl-mobile/edge-dl-mobile.user.js ) | `Local/edge-dl-mobile/` |
+| [EdgeDL 手机版](Local/edge-dl-mobile/edge-dl-mobile.user.js) | 2.3.5-local-float-toggle | [安装]( https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/edge-dl-mobile/edge-dl-mobile.user.js ) | `Local/edge-dl-mobile/` |
 | [EdgeDL-PC（电脑版下载接管 + 媒体嗅探）](Local/edge-dl-pc/edge-dl-pc.user.js) | 1.1.2-pc | [安装]( https://jimmy88666888.github.io/Script-updated/scripts/Local/edge-dl-pc/edge-dl-pc.user.js ) | `Local/edge-dl-pc/` |
 | [HTML5手机版](Local/html5-video-mobile/html5-video-mobile-mobile.user.js) | 72.10 | [安装]( https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/html5-video-mobile/html5-video-mobile-mobile.user.js ) | `Local/html5-video-mobile/` |
 | [HTML5视频播放工具（增强合并版）](Local/html5-video-player-merged/html5-video-player-merged.user.js) | 2.2.8-merged | [安装]( https://jimmy88666888.github.io/Script-updated/scripts/Local/html5-video-player-merged/html5-video-player-merged.user.js ) | `Local/html5-video-player-merged/` |

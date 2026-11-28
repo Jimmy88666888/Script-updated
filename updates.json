@@ -1459,7 +1459,7 @@
     "platform": "mobile",
     "platform_override": "mobile",
     "name": "EdgeDL 手机版",
-    "version": "2.3.4-local-float-toggle",
+    "version": "2.3.5-local-float-toggle",
     "author": "Jackson Smith",
     "license": "Apache-2.0",
     "namespace": "local.edge-userscripts/edge-dl",

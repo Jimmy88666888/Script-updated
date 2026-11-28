@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         EdgeDL
 // @namespace    local.edge-userscripts/edge-dl
-// @version      2.3.4-local-float-toggle
+// @version      2.3.5-local-float-toggle
 // @description  让 Android Edge 支持调用外部下载器接管下载任务（标题/图片/VLC/YTDLnis + 敏感页排除 + 复制链接）+ 图片悬浮下载。本地修复版：可开关悬浮按钮，避免包裹搜索结果/favicon等小图标
 // @icon         https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/edge-dl-mobile/icon.svg
 // @author       Jackson Smith
