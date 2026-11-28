@@ -6,7 +6,7 @@
 // @description:zh-CN 国际网盘手机直链助手：Google Drive / OneDrive / Dropbox。复制直链、1DM+、ytdlnis 格式，分享页一键复制。
 // @author       Jackson Smith
 // @license           MIT
-// @icon              https://fastly.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Local/CloudLink-Mobile/icon.svg
+// @icon              https://jimmy88666888.github.io/Script-updated/scripts/Local/CloudLink-Mobile/icon.svg
 // @match             *://drive.google.com/*
 // @match             *://drive.usercontent.google.com/*
 // @match             *://docs.google.com/*

@@ -6,7 +6,7 @@
 // @description:zh-CN 国际网盘电脑直链助手：Google Drive / OneDrive / Dropbox。支持复制直链、IDM(.ef2)、Mister Download Manager(MDM)、Aria2 RPC、curl/aria2c。
 // @author       Jackson Smith
 // @license           MIT
-// @icon              https://fastly.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Local/CloudLink-Desktop/icon.svg
+// @icon              https://jimmy88666888.github.io/Script-updated/scripts/Local/CloudLink-Desktop/icon.svg
 // @match             *://drive.google.com/*
 // @match             *://drive.usercontent.google.com/*
 // @match             *://docs.google.com/*
