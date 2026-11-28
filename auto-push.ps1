@@ -224,7 +224,8 @@ function Archive-OldVersions {
         if ($dirRel -and ($dirLeaf -eq $baseStem -or $dirLeaf -eq $stem)) {
             # 新结构：脚本已在 Local/<脚本名>/ 或 Author/<脚本名>/ 下，旧版放进该目录的 archive/
             # 电脑版与手机版共用同目录时，用 -mobile 后缀区分同版本号
-            $archName = if ($stem -ne $baseStem) { $oldVer + '-mobile.user.js' } else { $oldVer + '.user.js' }
+            # 旧版号本身已带 -mobile 时不再重复拼接（避免 1.1.3-mobile-mobile）
+            $archName = if ($stem -ne $baseStem -and $oldVer -notmatch '(?i)-mobile$') { $oldVer + '-mobile.user.js' } else { $oldVer + '.user.js' }
             $archDir = Join-Path $parent 'archive'
             $archRel = $dirRel + '/archive/' + $archName
         } else {
