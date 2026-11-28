@@ -1480,7 +1480,7 @@
     "file": "Local/视频竖排剧集名-全站通用版/视频竖排剧集名-全站通用版-mobile.user.js",
     "platform": "mobile",
     "name": "视频播放页竖排剧集名 - 手机版",
-    "version": "6.3",
+    "version": "6.4",
     "author": "Jackson Smith",
     "license": "",
     "namespace": "http://tampermonkey.net/",

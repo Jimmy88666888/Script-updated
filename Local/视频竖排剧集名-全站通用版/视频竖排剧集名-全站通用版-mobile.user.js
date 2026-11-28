@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         视频播放页竖排剧集名 - 手机版
 // @namespace    http://tampermonkey.net/
-// @version      6.3
+// @version      6.4
 // @updateURL    https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/%E8%A7%86%E9%A2%91%E7%AB%96%E6%8E%92%E5%89%A7%E9%9B%86%E5%90%8D-%E5%85%A8%E7%AB%99%E9%80%9A%E7%94%A8%E7%89%88/%E8%A7%86%E9%A2%91%E7%AB%96%E6%8E%92%E5%89%A7%E9%9B%86%E5%90%8D-%E5%85%A8%E7%AB%99%E9%80%9A%E7%94%A8%E7%89%88-mobile.user.js
 // @downloadURL  https://raw.githubusercontent.com/Jimmy88666888/Script-updated/main/Local/%E8%A7%86%E9%A2%91%E7%AB%96%E6%8E%92%E5%89%A7%E9%9B%86%E5%90%8D-%E5%85%A8%E7%AB%99%E9%80%9A%E7%94%A8%E7%89%88/%E8%A7%86%E9%A2%91%E7%AB%96%E6%8E%92%E5%89%A7%E9%9B%86%E5%90%8D-%E5%85%A8%E7%AB%99%E9%80%9A%E7%94%A8%E7%89%88-mobile.user.js
 // @description  手机端版本。竖排/横排显示剧集名+集数，带完整设置面板、主题、快捷键、全屏适配、按站配置、移动端触摸适配。v4.1 修复爱奇艺等站点全屏不显示；v4.2 剧名优先读播放器 DOM 与选集高亮项，切集不滞后；v4.3 识别失败自动降级；v4.4 切集重播入场动画、小屏字号自适应、竖排长标题溢出保护、可选沉浸淡出、面板位置记忆与 Esc 关闭；v4.5 新增电脑/手机/极简一键预设；v4.6 按真实播放页 DOM 重写识别层（CSS Module 哈希类名、8 位期号、播放器标题区取集数、避开热搜榜等数字干扰）；v4.6.2 修集数位于标题开头时剧名被污染、剧名尾随时长未剥离；v4.7 修竖排换行实为换列、固定单列宽度+overflow:hidden 把集数列整列裁掉（“看不到集数”的真凶）；v4.8 竖排数字/字母改为逐字直立（text-orientation: upright），不再横躺，可在面板切回；v4.9 集数支持独立字号（默认自动取剧名70%），两列高度更协调；v5.0 新增列间距滑杆（竖排下用 line-height 拉开两列，间距仍带背景不断裂）；v5.1 一键预设纳入集数字号与列间距，电脑/手机/极简三档整套观感一起切换；v6.0 全站注入（检测到 video 才启用，iframe 内不运行）、设置入口改为头像按钮（默认仅全屏显示，可自定义图片地址或上传）、面板新增保存选项、未知站点走通用识别兜底（标题区 / JSON-LD / 选集高亮），爱奇艺专属逻辑保持不变
@@ -349,6 +349,8 @@
         const fs = computeTitleFontSize(isVertical);
         const colGap = isVertical ? getColumnGap(fs) : Math.max(0, Number(config.columnGap) || 0);
         currentTitleFs = fs;
+        // v6.4：垂直位置拉到 100 时切换成“贴底”锚定，元素底边压住视口底边
+        const anchoredBottom = isBottomAnchored();
         applyEpisodeFontSize();
 
 
@@ -387,8 +389,11 @@
         titleEl.style.cssText = `
             position: fixed !important;
             ${config.position}: 0 !important;
-            top: ${config.layout === 'vertical' ? config.offsetY + '%' : 'calc(' + config.offsetY + '% + ' + safeTop + ')'} !important;
-            transform: ${config.layout === 'vertical' ? 'translateY(-50%)' : 'translateX(-50%)'} !important;
+            top: ${anchoredBottom ? 'auto' : (config.layout === 'vertical' ? config.offsetY + '%' : 'calc(' + config.offsetY + '% + ' + safeTop + ')')} !important;
+            bottom: ${anchoredBottom ? '0' : 'auto'} !important;
+            transform: ${anchoredBottom
+                ? (config.layout === 'vertical' ? 'none' : 'translateX(-50%)')
+                : (config.layout === 'vertical' ? 'translateY(-50%)' : 'translateX(-50%)')} !important;
             width: ${isVertical ? 'fit-content' : 'auto'};
             max-width: ${isVertical ? '78vw' : '80vw'};
             writing-mode: ${config.layout === 'vertical' ? 'vertical-rl' : 'horizontal-tb'} !important;
@@ -411,9 +416,10 @@
             transition: opacity 0.3s ease, transform 0.3s ease;
             display: ${visible ? 'block' : 'none'};
             opacity: ${paintOpacity};
-            max-height: ${isVertical ? 'calc(100vh - 10%)' : 'none'};
+            max-height: ${isVertical ? (anchoredBottom ? 'calc(100vh - 6px)' : 'calc(100vh - 10%)') : 'none'};
             overflow: visible;
             margin-${config.position}: ${config.position === 'left' ? safeLeft : safeRight};
+            margin-bottom: ${anchoredBottom ? 'env(safe-area-inset-bottom, 0px)' : '0'};
             ${extraCSS}
         `;
 
@@ -435,7 +441,13 @@
 
         // v6.3：竖排元素很高时（大字号 + 长剧名），按 offsetY 居中会把上下沿顶出屏幕，
         // 被裁的部分会让人误以为“字散了”。这里量一次真实高度，把 top 收进可视区。
-        if (isVertical) clampVerticalTop();
+        // v6.4：贴底锚定时不需要再收 top（底边已经锁死在视口底边）。
+        if (isVertical && !anchoredBottom) clampVerticalTop();
+    }
+
+    /** 垂直位置拉到 100 时贴底锚定：跳过居中位移，底边对齐视口底边 */
+    function isBottomAnchored() {
+        return Number(config.offsetY) >= 100;
     }
 
     /** 竖排：按实测高度把 top 收进可视区，避免上下溢出被裁 */
@@ -464,7 +476,9 @@
         titleEl.style.opacity = '0';
         const offset = config.position === 'left' ? '-20px' : '20px';
         if (config.layout === 'vertical') {
-            titleEl.style.transform = `translateY(-50%) translateX(${offset})`;
+            titleEl.style.transform = isBottomAnchored()
+                ? `translateX(${offset})`
+                : `translateY(-50%) translateX(${offset})`;
         } else {
             titleEl.style.transform = `translateX(-50%) translateY(${offset})`;
         }
@@ -472,7 +486,9 @@
             requestAnimationFrame(() => {
                 titleEl.style.transition = 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
                 titleEl.style.opacity = '1';
-                titleEl.style.transform = config.layout === 'vertical' ? 'translateY(-50%)' : 'translateX(-50%)';
+                titleEl.style.transform = config.layout === 'vertical'
+                    ? (isBottomAnchored() ? 'none' : 'translateY(-50%)')
+                    : 'translateX(-50%)';
             });
         });
     }
@@ -1279,7 +1295,7 @@
                 <label>集数字号: <span id="ets-epSize-val">${config.episodeFontSize || '自动'}</span>${config.episodeFontSize ? 'px' : '（0=自动≈剧名70%）'}</label>
                 <input type="range" id="ets-epSize" min="0" max="60" step="2" value="${config.episodeFontSize}">
                 <label>垂直位置: <span id="ets-offsetY-val">${config.offsetY}</span>%</label>
-                <input type="range" id="ets-offsetY" min="10" max="90" value="${config.offsetY}">
+                <input type="range" id="ets-offsetY" min="10" max="100" value="${config.offsetY}">
 
                 <label>自定义文字（留空自动识别）</label>
                 <input type="text" id="ets-customText" placeholder="覆盖自动识别" value="${escapeAttr(config.customText)}">
