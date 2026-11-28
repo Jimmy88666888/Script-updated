@@ -432,6 +432,27 @@
         } else {
             titleEl.style.position = 'fixed';
         }
+
+        // v6.3：竖排元素很高时（大字号 + 长剧名），按 offsetY 居中会把上下沿顶出屏幕，
+        // 被裁的部分会让人误以为“字散了”。这里量一次真实高度，把 top 收进可视区。
+        if (isVertical) clampVerticalTop();
+    }
+
+    /** 竖排：按实测高度把 top 收进可视区，避免上下溢出被裁 */
+    function clampVerticalTop() {
+        if (!titleEl) return;
+        requestAnimationFrame(() => {
+            if (!titleEl) return;
+            const h = titleEl.offsetHeight;
+            const vh = window.innerHeight || 1;
+            if (!h) return;
+            const half = (h / vh) * 50;
+            const want = Number(config.offsetY) || 50;
+            const lo = Math.min(99, half + 1);
+            const hi = Math.max(lo, 99 - half);
+            const val = Math.round(Math.min(Math.max(want, lo), hi) * 100) / 100;
+            if (Math.abs(val - want) > 0.5) titleEl.style.setProperty('top', val + '%', 'important');
+        });
     }
 
     function playEntranceAnimation() {
@@ -1249,7 +1270,7 @@
                 <input type="range" id="ets-bgOpacity" min="0" max="1" step="0.05" value="${config.bgOpacity}">
 
                 <label>列间距: <span id="ets-colGap-val">${config.columnGap}</span>px</label>
-                <input type="range" id="ets-colGap" min="0" max="40" step="2" value="${config.columnGap}">
+                <input type="range" id="ets-colGap" min="0" max="80" step="2" value="${config.columnGap}">
                 <label>集数字号: <span id="ets-epSize-val">${config.episodeFontSize || '自动'}</span>${config.episodeFontSize ? 'px' : '（0=自动≈剧名70%）'}</label>
                 <input type="range" id="ets-epSize" min="0" max="60" step="2" value="${config.episodeFontSize}">
                 <label>垂直位置: <span id="ets-offsetY-val">${config.offsetY}</span>%</label>
