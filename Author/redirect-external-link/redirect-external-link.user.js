@@ -83,8 +83,8 @@
 // @compatible   chrome Latest
 // @compatible   firefox Latest
 // @compatible   edge Latest
-// @downloadURL  https://gcore.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Author/redirect-external-link/redirect-external-link.user.js
-// @updateURL    https://gcore.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Author/redirect-external-link/redirect-external-link.user.js
+// @downloadURL  https://jimmy88666888.github.io/Script-updated/scripts/Author/redirect-external-link/redirect-external-link.user.js
+// @updateURL    https://jimmy88666888.github.io/Script-updated/scripts/Author/redirect-external-link/redirect-external-link.user.js
 // ==/UserScript==
 
 (function() {

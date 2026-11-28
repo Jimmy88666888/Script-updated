@@ -34,8 +34,8 @@
 // @connect      api.open-meteo.com
 // @run-at       document-end
 // @license      GPLv3
-// @updateURL    https://gcore.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Local/video-fullscreen-clock/video-fullscreen-clock.user.js
-// @downloadURL  https://gcore.jsdelivr.net/gh/Jimmy88666888/Script-updated@main/Local/video-fullscreen-clock/video-fullscreen-clock.user.js
+// @updateURL    https://jimmy88666888.github.io/Script-updated/scripts/Local/video-fullscreen-clock/video-fullscreen-clock.user.js
+// @downloadURL  https://jimmy88666888.github.io/Script-updated/scripts/Local/video-fullscreen-clock/video-fullscreen-clock.user.js
 // @exclude      *://accounts.google.com/*
 // @exclude      *://login.microsoftonline.com/*
 // @exclude      *://login.live.com/*

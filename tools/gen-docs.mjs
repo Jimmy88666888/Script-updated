@@ -23,7 +23,7 @@
  *   node tools/gen-docs.mjs --dry-run  # 只报告将要发生的变化
  *   node tools/gen-docs.mjs --check    # 有不同步就退出码 1（给 CI / 提交前钩子用）
  */
-import { readFile, writeFile, readdir } from 'node:fs/promises';
+import { readFile, writeFile, readdir, mkdir, rm, stat } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -34,12 +34,16 @@ const REPO = 'Script-updated';
 const MANIFEST = path.join(ROOT, 'updates.json');
 const README = path.join(ROOT, 'README.md');
 const PAGE = path.join(ROOT, 'docs/index.html');
+const MIRROR_ROOT = path.join(ROOT, 'docs/scripts');
 
 const GROUPS = ['Local', 'Author'];
 const CHECK = process.argv.includes('--check');
 const DRY = process.argv.includes('--dry-run');
 
-const cdn = (f) => `https://gcore.jsdelivr.net/gh/${OWNER}/${REPO}@main/${f}`;  // 电脑端镜像：fastly 节点缓存刷新不及时，改用 gcore 节点
+// 电脑端镜像：GitHub Pages 从 docs/ 发布，把脚本副本放在 docs/scripts/ 下即可得到
+// https://<owner>.github.io/<repo>/scripts/<脚本路径> 的稳定地址（无 jsDelivr 缓存问题）。
+const SITE = `https://${OWNER.toLowerCase()}.github.io/${REPO}`;
+const cdn = (f) => `${SITE}/scripts/${f}`;
 const raw = (f) => `https://raw.githubusercontent.com/${OWNER}/${REPO}/main/${f}`;  // 手机端走直链（手机网络可达）
 const blob = (f) => `https://github.com/${OWNER}/${REPO}/blob/main/${f}`;
 
@@ -402,6 +406,57 @@ function renderPage(html, scripts) {
   return out;
 }
 
+async function walkFiles(dir) {
+  const out = [];
+  let entries;
+  try {
+    entries = await readdir(dir, { withFileTypes: true });
+  } catch {
+    return out;
+  }
+  for (const e of entries) {
+    const p = path.join(dir, e.name);
+    if (e.isDirectory()) out.push(...(await walkFiles(p)));
+    else out.push(p);
+  }
+  return out;
+}
+
+/** 对齐 docs/scripts 镜像：返回待写/待删操作，内容一致时不产生操作 */
+async function planMirror(scripts) {
+  const wanted = new Map(); // 目标绝对路径 -> 源绝对路径
+  for (const s of scripts) {
+    for (const rec of [s.pc, s.mobile]) {
+      if (!rec) continue;
+      wanted.set(path.join(MIRROR_ROOT, rec.file), path.join(ROOT, rec.file));
+      // 脚本旁边的 icon.svg 也一并镜像，避免图标再走外链
+      const iconRel = path.join(path.dirname(rec.file), 'icon.svg');
+      const iconSrc = path.join(ROOT, iconRel);
+      try {
+        if ((await stat(iconSrc)).isFile()) wanted.set(path.join(MIRROR_ROOT, iconRel), iconSrc);
+      } catch {
+        /* 没有图标就跳过 */
+      }
+    }
+  }
+
+  const ops = [];
+  for (const [dst, src] of wanted) {
+    const next = await readFile(src, 'utf8');
+    let current = null;
+    try {
+      current = await readFile(dst, 'utf8');
+    } catch {
+      /* 目标还不存在 */
+    }
+    if (current !== next) ops.push({ file: dst, content: next });
+  }
+  for (const f of await walkFiles(MIRROR_ROOT)) {
+    if (!wanted.has(f)) ops.push({ file: f, content: null });
+  }
+  return ops;
+}
+
 async function main() {
   const records = await buildRecords();
   const scriptChanges = await normalizeHeaders(records);
@@ -427,15 +482,22 @@ async function main() {
   // 脚本头部地址已在 normalizeHeaders 中写过（--check / --dry-run 时未写），这里只登记
   for (const file of scriptChanges) changes.push([path.join(ROOT, file), null]);
 
+  // 电脑端镜像：把每个脚本（连同 icon.svg）同步到 docs/scripts/ 下与仓库相同的路径，
+  // GitHub Pages 会把它发布成 https://<owner>.github.io/<repo>/scripts/...
+  const mirrorOps = await planMirror(scripts);
+
   console.log(
     `脚本 ${total} 个（Local ${local} / Author ${author}），清单 ${records.length} 条`
   );
 
-  if (!changes.length) {
-    console.log('说明文件与脚本头部地址均已最新，无需改动');
+  if (!changes.length && !mirrorOps.length) {
+    console.log('说明文件、脚本头部地址与镜像副本均已最新，无需改动');
     return 0;
   }
   for (const [file] of changes) console.log(`  待更新：${path.relative(ROOT, file)}`);
+  for (const op of mirrorOps) {
+    console.log((op.content === null ? '  待删除镜像：' : '  待更新镜像：') + path.relative(ROOT, op.file));
+  }
 
   if (CHECK) {
     console.log('--check：说明文件与脚本现状不同步');
@@ -452,6 +514,16 @@ async function main() {
     }
     await writeFile(file, next, 'utf8');
     console.log(`  已写入：${path.relative(ROOT, file)}`);
+  }
+  for (const op of mirrorOps) {
+    if (op.content === null) {
+      await rm(op.file, { force: true });
+      console.log(`  已删除镜像：${path.relative(ROOT, op.file)}`);
+      continue;
+    }
+    await mkdir(path.dirname(op.file), { recursive: true });
+    await writeFile(op.file, op.content, 'utf8');
+    console.log(`  已更新镜像：${path.relative(ROOT, op.file)}`);
   }
   return 0;
 }
