@@ -321,10 +321,17 @@ function Get-CanonicalScriptUrl {
     param([string]$RelPath)
     $slug = Get-RepoSlug
     if (-not $slug -or -not $RelPath) { return $null }
-    # 用 jsDelivr 的 fastly 边缘地址：本机网络里 raw.githubusercontent.com 的 TLS 被阻断，
-    # 更新地址若指向 raw，油猴永远取不到新版本；推送后由 Invoke-DocsCdnPurge 刷缓存。
-    $seg = (($RelPath -replace '\\', '/') -split '/') | ForEach-Object { [uri]::EscapeDataString($_) }
-    return ('https://fastly.jsdelivr.net/gh/' + $slug + '@' + $Branch + '/' + ($seg -join '/'))
+    # 通道分流：电脑版走 jsDelivr 的 fastly 镜像（本机 raw 被阻断、镜像可达）；
+    # 手机版走 raw 直链（手机网络可直达）。推送后由 Invoke-DocsCdnPurge 刷镜像缓存。
+    $p = $RelPath -replace '\\', '/'
+    $leaf = $p -replace '^.*/', ''
+    $dirLeaf = if ($p.Contains('/')) { ($p -split '/')[-2] } else { '' }
+    $isMobile = ($leaf -match '(?i)-mobile') -or ($leaf -match '手机版|手机端') -or
+                ($dirLeaf -match '(?i)-mobile$') -or ($dirLeaf -match '手机版|手机端')
+    $seg = ($p -split '/') | ForEach-Object { [uri]::EscapeDataString($_) }
+    $tail = ($seg -join '/')
+    if ($isMobile) { return ('https://raw.githubusercontent.com/' + $slug + '/' + $Branch + '/' + $tail) }
+    return ('https://fastly.jsdelivr.net/gh/' + $slug + '@' + $Branch + '/' + $tail)
 }
 
 # 推送成功后刷新 jsDelivr 缓存，否则分支地址最长要等十几小时才见到新版本
