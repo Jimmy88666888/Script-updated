@@ -90,6 +90,13 @@ LICENSE
 
 ## 变更记录
 
+### 2026-11-28 镜像范围收窄到 Local，Author 改走直链
+
+- `docs/scripts/` 现在只放 `Local` 的电脑版（7 个脚本 + 1 个图标，约 0.9MB），原先镜像的 `Author` 副本（约 6MB）已清理。
+- `Author` 的电脑端与手机端统一用 raw 直链，不再经过 Pages 镜像；安装页按钮显示为「电脑端安装（直链）」。
+- 手机版脚本的 `@icon` 一并改回 raw 直链（其镜像副本不再发布）。
+- 代价：直连 `raw.githubusercontent.com` 受限的网络里，`Author` 脚本的电脑端拿不到更新；`Local` 电脑端仍走镜像，不受影响。
+
 ### 2026-11-28 电脑端镜像改由 GitHub Pages 发布
 
 - 电脑端 `@updateURL` / `@downloadURL` / `@icon` 改为 Pages 镜像 `scripts/` 路径；手机端保持 raw 直链。
