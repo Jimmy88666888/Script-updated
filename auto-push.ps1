@@ -321,7 +321,7 @@ function Get-CanonicalScriptUrl {
     param([string]$RelPath)
     $slug = Get-RepoSlug
     if (-not $slug -or -not $RelPath) { return $null }
-    # 通道分流：电脑版走 jsDelivr 的 fastly 镜像（本机 raw 被阻断、镜像可达）；
+    # 通道分流：电脑版走 jsDelivr 的 gcore 镜像（本机 raw 被阻断、镜像可达）；
     # 手机版走 raw 直链（手机网络可直达）。推送后由 Invoke-DocsCdnPurge 刷镜像缓存。
     $p = $RelPath -replace '\\', '/'
     $leaf = $p -replace '^.*/', ''
@@ -331,7 +331,7 @@ function Get-CanonicalScriptUrl {
     $seg = ($p -split '/') | ForEach-Object { [uri]::EscapeDataString($_) }
     $tail = ($seg -join '/')
     if ($isMobile) { return ('https://raw.githubusercontent.com/' + $slug + '/' + $Branch + '/' + $tail) }
-    return ('https://fastly.jsdelivr.net/gh/' + $slug + '@' + $Branch + '/' + $tail)
+    return ('https://gcore.jsdelivr.net/gh/' + $slug + '@' + $Branch + '/' + $tail)
 }
 
 # 推送成功后刷新 jsDelivr 缓存，否则分支地址最长要等十几小时才见到新版本

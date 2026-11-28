@@ -39,7 +39,7 @@ const GROUPS = ['Local', 'Author'];
 const CHECK = process.argv.includes('--check');
 const DRY = process.argv.includes('--dry-run');
 
-const cdn = (f) => `https://fastly.jsdelivr.net/gh/${OWNER}/${REPO}@main/${f}`;
+const cdn = (f) => `https://gcore.jsdelivr.net/gh/${OWNER}/${REPO}@main/${f}`;  // 电脑端镜像：fastly 节点缓存刷新不及时，改用 gcore 节点
 const raw = (f) => `https://raw.githubusercontent.com/${OWNER}/${REPO}/main/${f}`;  // 手机端走直链（手机网络可达）
 const blob = (f) => `https://github.com/${OWNER}/${REPO}/blob/main/${f}`;
 
